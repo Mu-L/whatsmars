@@ -5,31 +5,24 @@
     <parent>
         <artifactId>whatsmars-parent</artifactId>
         <groupId>org.hongxi</groupId>
-        <version>2021.4.1</version>
+        <version>2026.5.1</version>
     </parent>
     <modelVersion>4.0.0</modelVersion>
 
     <artifactId>whatsmars-mq</artifactId>
     <packaging>pom</packaging>
-    <name>${project.artifactId}</name>
+
     <description>RocketMQ, Kafka 封装及demo</description>
 
     <modules>
         <module>whatsmars-mq-rocketmq</module>
-        <module>whatsmars-mq-activemq</module>
         <module>whatsmars-mq-rabbitmq</module>
         <module>whatsmars-mq-kafka</module>
-        <module>whatsmars-mq-activemq-broker</module>
-        <module>rocketmq-spring-boot-starter</module>
         <module>whatsmars-mq-rocketmq-namesrv</module>
         <module>whatsmars-mq-rocketmq-broker</module>
         <module>whatsmars-mq-rocketmq-tools</module>
         <module>whatsmars-mq-rocketmq-spring</module>
-        <module>whatsmars-otter-mq</module>
-        <module>whatsmars-mq-kafka-server</module>
         <module>whatsmars-mq-kafka-spring</module>
-        <module>whatsmars-mq-pulsar</module>
-        <module>whatsmars-mq-pulsar-broker</module>
     </modules>
 
     <dependencyManagement>
@@ -48,12 +41,6 @@
                 <groupId>org.apache.rocketmq</groupId>
                 <artifactId>rocketmq-tools</artifactId>
                 <version>${rocketmq.version}</version>
-            </dependency>
-
-            <dependency>
-                <groupId>org.apache.pulsar</groupId>
-                <artifactId>pulsar-broker</artifactId>
-                <version>${pulsar.version}</version>
             </dependency>
         </dependencies>
     </dependencyManagement>

@@ -5,7 +5,7 @@
     <parent>
         <artifactId>whatsmars-parent</artifactId>
         <groupId>org.hongxi</groupId>
-        <version>2021.4.1</version>
+        <version>2026.5.1</version>
     </parent>
     <modelVersion>4.0.0</modelVersion>
 
@@ -15,7 +15,6 @@
         <module>whatsmars-sentinel-webmvc</module>
         <module>whatsmars-sentinel-aop</module>
         <module>whatsmars-sentinel-httpclient</module>
-        <module>whatsmars-sentinel-okhttp</module>
         <module>whatsmars-sentinel-basic</module>
         <module>whatsmars-sentinel-file-datasource</module>
         <module>whatsmars-sentinel-parameter-flow-control</module>

@@ -29,7 +29,6 @@ hs_err_pid*
 .idea/*
 
 # Others
-activemq-data/*
 dump.rdb
 pom.xml.versionsBackup
 *.jar.original

@@ -17,7 +17,6 @@
 
 package org.hongxi.whatsmars.job;
 
-import org.hongxi.whatsmars.zk.embed.EmbedZookeeperServer;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 
@@ -25,7 +24,6 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 public class Application {
     
     public static void main(final String[] args) {
-        EmbedZookeeperServer.start(2181);
         SpringApplication.run(Application.class, args);
     }
 }

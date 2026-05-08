@@ -1,8 +1,8 @@
 package org.hongxi.whatsmars.rocketmq.boot.consumer;
 
 import lombok.extern.slf4j.Slf4j;
-import org.apache.rocketmq.spring.starter.annotation.RocketMQMessageListener;
-import org.apache.rocketmq.spring.starter.core.RocketMQListener;
+import org.apache.rocketmq.spring.annotation.RocketMQMessageListener;
+import org.apache.rocketmq.spring.core.RocketMQListener;
 import org.hongxi.whatsmars.rocketmq.boot.OrderPaidEvent;
 
 @Slf4j

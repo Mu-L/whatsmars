@@ -1,11 +1,12 @@
 package org.hongxi.whatsmars.redis.client.cluster;
 
+import org.apache.commons.pool2.impl.GenericObjectPoolConfig;
 import org.springframework.beans.factory.DisposableBean;
 import org.springframework.beans.factory.FactoryBean;
 import org.springframework.beans.factory.InitializingBean;
+import redis.clients.jedis.Connection;
 import redis.clients.jedis.HostAndPort;
 import redis.clients.jedis.JedisCluster;
-import redis.clients.jedis.JedisPoolConfig;
 
 import java.util.HashSet;
 import java.util.Set;
@@ -17,7 +18,7 @@ public class RedisClusterClient implements FactoryBean<JedisCluster>, Initializi
 
     private JedisCluster jedisCluster;
 
-    private JedisPoolConfig jedisPoolConfig;
+    private GenericObjectPoolConfig<Connection> poolConfig;
 
     // ip:port,ip:port
     private String address;
@@ -42,7 +43,7 @@ public class RedisClusterClient implements FactoryBean<JedisCluster>, Initializi
     @Override
     public void afterPropertiesSet() throws Exception {
         Set<HostAndPort> hostAndPorts = buildHostAndPorts();
-        jedisCluster = new JedisCluster(hostAndPorts, timeout, jedisPoolConfig);
+        jedisCluster = new JedisCluster(hostAndPorts, timeout, poolConfig);
     }
 
     private Set<HostAndPort> buildHostAndPorts() {
@@ -63,8 +64,8 @@ public class RedisClusterClient implements FactoryBean<JedisCluster>, Initializi
         }
     }
 
-    public void setJedisPoolConfig(JedisPoolConfig jedisPoolConfig) {
-        this.jedisPoolConfig = jedisPoolConfig;
+    public void setPoolConfig(GenericObjectPoolConfig<Connection> poolConfig) {
+        this.poolConfig = poolConfig;
     }
 
     public void setAddress(String address) {

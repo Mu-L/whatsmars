@@ -9,8 +9,6 @@ import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import redis.clients.jedis.*;
 
-import java.util.Set;
-
 /**
  * Created by javahongxi on 2017/6/23.
  */
@@ -28,13 +26,6 @@ public class Demo {
 //    @Autowired
     @Qualifier("redisClusterClient")
     private JedisCluster jedisCluster;
-
-    @Autowired
-    @Qualifier("shardedRedisClient")
-    private ShardedJedisPool shardedRedisClient;
-
-    @Autowired
-    private RedisTemplate redisTemplate;
 
     @Test
     public void testSingleton() {
@@ -82,37 +73,4 @@ public class Demo {
         }
     }
 
-    @Test
-    public void testSharded() {
-        ShardedJedis jedis = shardedRedisClient.getResource();
-        String cacheContent = null;
-        try {
-            cacheContent = jedis.get("hello_world");
-            System.out.println(cacheContent);
-        } finally {
-            if (jedis != null) {
-                jedis.close();
-            }
-        }
-        // 获取redis数据之后，立即归还连接，然后开始进行业务处理
-        if(cacheContent == null) {
-            // DB operation
-        }
-        // ..
-    }
-
-    @Test
-    public void testTemplate() {
-        String key = "domain";
-        redisTemplate.set(key, "hongxi.org");
-        assert "hongxi.org".equals(redisTemplate.get(key));
-    }
-
-    @Test
-    public void testCallback() {
-        String key = "countries";
-        redisTemplate.sadd(key, "China", "America", "Japan");
-        Long result = redisTemplate.execute((jedis) -> jedis.scard(key));
-        assert 3 == result;
-    }
 }

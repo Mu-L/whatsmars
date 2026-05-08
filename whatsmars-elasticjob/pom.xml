@@ -5,17 +5,17 @@
     <parent>
         <artifactId>whatsmars-parent</artifactId>
         <groupId>org.hongxi</groupId>
-        <version>2021.4.1</version>
+        <version>2026.5.1</version>
     </parent>
     <modelVersion>4.0.0</modelVersion>
 
     <artifactId>whatsmars-elasticjob</artifactId>
     <packaging>jar</packaging>
-    <name>${project.artifactId}</name>
+
     <description>elasticjob demo</description>
 
     <properties>
-        <elasticjob.version>3.0.0</elasticjob.version>
+        <elasticjob.version>3.0.5</elasticjob.version>
     </properties>
 
     <dependencies>
@@ -25,26 +25,17 @@
         </dependency>
         <dependency>
             <groupId>org.apache.shardingsphere.elasticjob</groupId>
-            <artifactId>elasticjob-lite-spring-boot-starter</artifactId>
+            <artifactId>elasticjob-spring-boot-starter</artifactId>
             <version>${elasticjob.version}</version>
-        </dependency>
-        <dependency>
-            <groupId>org.apache.curator</groupId>
-            <artifactId>curator-framework</artifactId>
         </dependency>
 
         <dependency>
-            <groupId>org.hongxi</groupId>
-            <artifactId>whatsmars-zk-embed</artifactId>
-            <version>2021.4.1</version>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-jdbc</artifactId>
         </dependency>
         <dependency>
             <groupId>com.h2database</groupId>
             <artifactId>h2</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>org.apache.commons</groupId>
-            <artifactId>commons-dbcp2</artifactId>
         </dependency>
     </dependencies>
 

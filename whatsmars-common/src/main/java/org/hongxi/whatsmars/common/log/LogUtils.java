@@ -20,8 +20,6 @@ public class LogUtils {
             LogbackLoggerCreator.create(name, file);
         } else if (Log4j2Helper.isLog4j2()) {
             Log4j2LoggerCreator.create(name, file);
-        } else if (Log4jHelper.isLog4j()) {
-            Log4jLoggerCreator.create(name, file);
         }
         return LoggerFactory.getLogger(name);
     }
@@ -39,8 +37,6 @@ public class LogUtils {
             LogbackLoggerCreator.create(name, file, pattern, level);
         } else if (Log4j2Helper.isLog4j2() && Log4j2Helper.hasBridge()) {
             Log4j2LoggerCreator.create(name, file, pattern, level);
-        } else if (Log4jHelper.isLog4j() && Log4jHelper.hasBridge()) {
-            Log4jLoggerCreator.create(name, file, pattern, level);
         }
         return LoggerFactory.getLogger(name);
     }
@@ -65,8 +61,6 @@ public class LogUtils {
             LogbackLoggerCreator.create(name, file, pattern, level, maxFileSize, maxBackupIndex);
         } else if (Log4j2Helper.isLog4j2() && Log4j2Helper.hasBridge()) {
             Log4j2LoggerCreator.create(name, file, pattern, level, maxFileSize, maxBackupIndex);
-        } else if (Log4jHelper.isLog4j() && Log4jHelper.hasBridge()) {
-            Log4jLoggerCreator.create(name, file, pattern, level, maxFileSize, maxBackupIndex);
         }
         return LoggerFactory.getLogger(name);
     }

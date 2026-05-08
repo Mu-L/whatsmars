@@ -5,12 +5,12 @@
     <parent>
         <artifactId>whatsmars-spring-boot-samples</artifactId>
         <groupId>org.hongxi</groupId>
-        <version>2021.4.1</version>
+        <version>2026.5.1</version>
     </parent>
     <modelVersion>4.0.0</modelVersion>
 
     <artifactId>whatsmars-boot-sample-mybatis</artifactId>
-    <name>${project.artifactId}</name>
+
     <packaging>jar</packaging>
     <description>Spring Boot Mybatis Sample</description>
 
@@ -20,8 +20,8 @@
             <artifactId>mybatis-spring-boot-starter</artifactId>
         </dependency>
         <dependency>
-            <groupId>mysql</groupId>
-            <artifactId>mysql-connector-java</artifactId>
+            <groupId>com.mysql</groupId>
+            <artifactId>mysql-connector-j</artifactId>
         </dependency>
     </dependencies>
 

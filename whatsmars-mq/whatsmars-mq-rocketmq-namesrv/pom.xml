@@ -5,19 +5,24 @@
     <parent>
         <artifactId>whatsmars-mq</artifactId>
         <groupId>org.hongxi</groupId>
-        <version>2021.4.1</version>
+        <version>2026.5.1</version>
     </parent>
     <modelVersion>4.0.0</modelVersion>
 
     <artifactId>whatsmars-mq-rocketmq-namesrv</artifactId>
     <packaging>jar</packaging>
-    <name>${project.artifactId}</name>
+
     <description>RocketMQ NameServer Startup</description>
 
     <dependencies>
         <dependency>
             <groupId>org.apache.rocketmq</groupId>
             <artifactId>rocketmq-namesrv</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.bouncycastle</groupId>
+            <artifactId>bcpkix-jdk18on</artifactId>
+            <version>1.83</version>
         </dependency>
     </dependencies>
 

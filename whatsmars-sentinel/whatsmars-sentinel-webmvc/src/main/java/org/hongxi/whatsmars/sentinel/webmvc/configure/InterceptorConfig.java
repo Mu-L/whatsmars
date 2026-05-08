@@ -41,7 +41,7 @@ public class InterceptorConfig implements WebMvcConfigurer {
         // which is useful to support "chain" relation flow strategy.
         // We can change it and view different result in `Resource Chain` menu of dashboard.
         config.setWebContextUnify(true);
-        config.setOriginParser(request -> request.getHeader("S-user"));
+//        config.setOriginParser(request -> request.getHeader("S-user"));
 
         // Add sentinel interceptor
         registry.addInterceptor(new SentinelWebInterceptor(config)).addPathPatterns("/**");

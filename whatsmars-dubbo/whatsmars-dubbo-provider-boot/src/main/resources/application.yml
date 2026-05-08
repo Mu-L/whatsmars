@@ -1,31 +1,27 @@
 spring:
   application:
-    name: demo-provider
+    name: dubbo-springboot-demo-provider
 
 dubbo:
-  registry:
-    protocol: zookeeper
-    address: 127.0.0.1:2181
-    id: defaultRegistry
-  protocol:
-    port: 20882
-    name: dubbo
-    status: server
-    id: dubbo
   application:
-    name: demo-provider
-    id: demo-provider
-    qosEnable: true
-    qosPort: 22223
-  scan:
-    basePackages: org.hongxi.whatsmars.dubbo.demo.provider.service
-  provider:
-    threadpool: fixed
-    threads: 200
-    dispatcher: message
-
-registry:
-  other:
-    protocol: zookeeper
-    address: 127.0.0.1:2181
-    id: other
+    name: ${spring.application.name}
+  protocol:
+    name: tri
+    port: -1
+  registry:
+    id: zk-registry
+    address: zookeeper://127.0.0.1:2181
+  config-center:
+    address: zookeeper://127.0.0.1:2181
+  metadata-report:
+    address: zookeeper://127.0.0.1:2181
+  metrics:
+    protocol: prometheus
+    enable-jvm: true
+    enable-registry: true
+    aggregation:
+      enabled: true
+    prometheus:
+      exporter:
+        enabled: true
+    enable-metadata: true

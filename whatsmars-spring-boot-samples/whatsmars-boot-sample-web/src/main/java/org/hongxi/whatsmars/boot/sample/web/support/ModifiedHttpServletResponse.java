@@ -3,9 +3,9 @@ package org.hongxi.whatsmars.boot.sample.web.support;
 import org.springframework.http.MediaType;
 import org.springframework.web.util.ContentCachingResponseWrapper;
 
-import javax.servlet.ServletOutputStream;
-import javax.servlet.http.HttpServletResponse;
-import javax.servlet.http.HttpServletResponseWrapper;
+import jakarta.servlet.ServletOutputStream;
+import jakarta.servlet.http.HttpServletResponse;
+import jakarta.servlet.http.HttpServletResponseWrapper;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.util.Objects;

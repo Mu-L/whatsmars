@@ -6,7 +6,7 @@ import org.hongxi.whatsmars.common.result.ResultHelper;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
-import javax.validation.constraints.Min;
+import jakarta.validation.constraints.Min;
 
 /**
  * Created by shenhongxi on 2020/8/16.
