@@ -1,11 +1,10 @@
 package org.hongxi.whatsmars.kafka.boot;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.kafka.core.KafkaTemplate;
-
-import jakarta.annotation.Resource;
 
 /**
  * Created by shenhongxi on 2018/12/12.
@@ -13,7 +12,7 @@ import jakarta.annotation.Resource;
 @SpringBootApplication
 public class KafkaApplication implements CommandLineRunner {
 
-    @Resource
+    @Autowired
     private KafkaTemplate<String, String> kafkaTemplate;
 
     public static void main(String[] args) {
