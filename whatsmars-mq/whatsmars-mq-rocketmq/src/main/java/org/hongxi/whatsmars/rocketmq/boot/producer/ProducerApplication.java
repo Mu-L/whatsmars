@@ -35,10 +35,8 @@ public class ProducerApplication implements CommandLineRunner {
         }
         rocketMQTemplate.send("test-topic-1", MessageBuilder.withPayload("Hello, World! I'm from spring message").build());
         rocketMQTemplate.syncSend("test-topic-1", "Hello, World! I'm from simple message");
-        rocketMQTemplate.convertAndSend("test-topic-2", new OrderPaidEvent("T_001", new BigDecimal("88.00")));
         rocketMQTemplate.syncSendDelayTimeSeconds("test-topic-1", "I'm delayed message", 60);
         rocketMQTemplate.sendOneWay("test-topic-1", MessageBuilder.withPayload("I'm one way message").build());
-        rocketMQTemplate.syncSendOrderly("test-topic-4", "I'm order message", "1234");
         rocketMQTemplate.asyncSend("test-topic-1", MessageBuilder.withPayload("I'm async message").build(), new SendCallback() {
             @Override
             public void onSuccess(SendResult sendResult) {
@@ -50,9 +48,9 @@ public class ProducerApplication implements CommandLineRunner {
                 log.error(e.getMessage(), e);
             }
         });
+        rocketMQTemplate.convertAndSend("test-topic-2", new OrderPaidEvent("T_001", new BigDecimal("88.00")));
+        rocketMQTemplate.syncSendOrderly("test-topic-3", "I'm order message", "1234");
         System.out.println("send finished!");
-        
-//        rocketMQTemplate.destroy(); // notes:  once rocketMQTemplate be destroyed, you can not send any message again with this rocketMQTemplate
     }
 
 }

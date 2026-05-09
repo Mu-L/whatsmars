@@ -1,16 +1,15 @@
 package org.hongxi.whatsmars.rocketmq.boot.consumer;
 
 import lombok.extern.slf4j.Slf4j;
+import org.apache.rocketmq.spring.annotation.ConsumeMode;
 import org.apache.rocketmq.spring.annotation.RocketMQMessageListener;
 import org.apache.rocketmq.spring.core.RocketMQListener;
-import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
+import org.springframework.stereotype.Service;
 
-/**
- * 指定连接某个MQ集群
- */
-@ConditionalOnProperty(prefix = "trade.mq", value = {"nameServer"})
 @Slf4j
-@RocketMQMessageListener(nameServer = "${trade.mq.nameServer}", instanceName = "${trade.mq.clusterName}", topic = "test-topic-3", consumerGroup = "my-consumer_test-topic-3")
+@Service
+@RocketMQMessageListener(topic = "test-topic-3", consumerGroup = "my-consumer_test-topic-3",
+    consumeMode = ConsumeMode.ORDERLY)
 public class MyConsumer3 implements RocketMQListener<String> {
     @Override
     public void onMessage(String message) {
