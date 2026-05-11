@@ -1,13 +1,13 @@
 package org.hongxi.whatsmars.shardingsphere.service;
 
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
-import cn.hutool.core.util.IdUtil;
 import org.hongxi.whatsmars.shardingsphere.dao.OrderMapper;
 import org.hongxi.whatsmars.shardingsphere.entity.Order;
 import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
+import java.util.UUID;
 
 @Service
 public class OrderService extends ServiceImpl<OrderMapper, Order> {
@@ -18,7 +18,7 @@ public class OrderService extends ServiceImpl<OrderMapper, Order> {
      */
     public Order createOrder(Long userId, BigDecimal amount) {
         Order order = new Order();
-        order.setOrderNo(IdUtil.fastSimpleUUID());  // 生成订单号
+        order.setOrderNo(UUID.randomUUID().toString());  // 生成订单号
         order.setUserId(userId);
         order.setAmount(amount);
         order.setCreateTime(LocalDateTime.now());
