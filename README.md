@@ -10,6 +10,7 @@
 ### Modules intro
 Module | Intro
 ------ | ------
+whatsmars-ai | AI使用示例
 whatsmars-archetypes | 脚手架
 whatsmars-common | 通用公共模块
 whatsmars-dubbo | 高性能分布式RPC框架
