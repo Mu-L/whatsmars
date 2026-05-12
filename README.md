@@ -22,7 +22,6 @@ whatsmars-sentinel | 流量控制与熔断降级组件
 whatsmars-shardingsphere | 分布式数据库中间件
 whatsmars-spring | Spring Framework
 whatsmars-spring-boot-samples | Spring Boot Samples
-whatsmars-zk-embed | zk TestingServer
 
 ### Keywords
 - [x] [*Netty*](https://github.com/netty/netty)
