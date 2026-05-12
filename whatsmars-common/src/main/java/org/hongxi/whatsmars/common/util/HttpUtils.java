@@ -15,8 +15,6 @@ import org.apache.http.impl.client.HttpClientBuilder;
 import org.apache.http.message.BasicNameValuePair;
 import org.apache.http.util.EntityUtils;
 
-import java.io.File;
-import java.io.FileOutputStream;
 import java.io.InputStream;
 import java.nio.charset.Charset;
 import java.util.ArrayList;
@@ -256,27 +254,5 @@ public class HttpUtils {
             throw new RuntimeException(e);
         }
         return url;
-    }
-
-
-
-    public static void main(String[] args) throws Exception {
-        String url = "http://stat.whatsmars.com/ds/x2/f00qvewaxsqdnrzazhhyguhduc7wd8sv.png";
-        InputStream inputStream = HttpUtils.httpGetStream(url, null);
-        try {
-            FileOutputStream fileOutputStream = new FileOutputStream(new File("/Users/javahongxi/Documents/test22222.png"));
-            while (true) {
-                int i = inputStream.read();
-                if( i == -1) {
-                    break;
-                }
-                fileOutputStream.write((byte)i);
-            }
-            fileOutputStream.close();
-        } catch (Exception e) {
-            e.printStackTrace();
-        } finally {
-            inputStream.close();
-        }
     }
 }

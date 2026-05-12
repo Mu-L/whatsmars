@@ -2,17 +2,11 @@
 分布式消息中间件
 
 ### Quick Start
-- .properties指定rocketmqHome,listenPort，启动NamesrvStartup (whatsmars-mq-rocketmq-namesrv)
-- .properties指定rocketmqHome,namesrvAddr等，启动BrokerStartup (whatsmars-mq-rocketmq-broker)
-- 依次启动Consumer,Producer (whatsmars-mq-rocketmq)
-- 管理后台：https://github.com/apache/rocketmq-externals/tree/master/rocketmq-console
-- 命令行管理工具MQAdmin: bin/mqadmin
-- 脚本启动 https://github.com/apache/rocketmq/blob/master/distribution/bin/README.md
-<br>download [rocketmq-all-5.3.2-bin-release.zip](https://dist.apache.org/repos/dist/release/rocketmq/5.3.2/rocketmq-all-5.3.2-bin-release.zip)
+download [rocketmq-all-5.3.2-bin-release.zip](https://dist.apache.org/repos/dist/release/rocketmq/5.3.2/rocketmq-all-5.3.2-bin-release.zip)
 ```
 > nohup sh bin/mqnamesrv &
 > tail -f ~/logs/rocketmqlogs/namesrv.log
-> nohup sh bin/mqbroker -c broker.properties -n localhost:9876 &
+> nohup sh bin/mqbroker -n localhost:9876 &
 > tail -f ~/logs/rocketmqlogs/broker.log
 > export NAMESRV_ADDR=localhost:9876
 > sh bin/tools.sh org.apache.rocketmq.example.quickstart.Producer

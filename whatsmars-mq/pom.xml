@@ -18,31 +18,8 @@
         <module>whatsmars-mq-rocketmq</module>
         <module>whatsmars-mq-rabbitmq</module>
         <module>whatsmars-mq-kafka</module>
-        <module>whatsmars-mq-rocketmq-namesrv</module>
-        <module>whatsmars-mq-rocketmq-broker</module>
-        <module>whatsmars-mq-rocketmq-tools</module>
         <module>whatsmars-mq-rocketmq-spring</module>
         <module>whatsmars-mq-kafka-spring</module>
     </modules>
-
-    <dependencyManagement>
-        <dependencies>
-            <dependency>
-                <groupId>org.apache.rocketmq</groupId>
-                <artifactId>rocketmq-broker</artifactId>
-                <version>${rocketmq.version}</version>
-            </dependency>
-            <dependency>
-                <groupId>org.apache.rocketmq</groupId>
-                <artifactId>rocketmq-namesrv</artifactId>
-                <version>${rocketmq.version}</version>
-            </dependency>
-            <dependency>
-                <groupId>org.apache.rocketmq</groupId>
-                <artifactId>rocketmq-tools</artifactId>
-                <version>${rocketmq.version}</version>
-            </dependency>
-        </dependencies>
-    </dependencyManagement>
 
 </project>
