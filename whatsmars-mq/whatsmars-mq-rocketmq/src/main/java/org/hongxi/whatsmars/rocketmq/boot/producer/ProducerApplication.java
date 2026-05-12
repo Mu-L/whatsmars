@@ -35,7 +35,7 @@ public class ProducerApplication implements CommandLineRunner {
         }
         rocketMQTemplate.send("test-topic-1", MessageBuilder.withPayload("Hello, World! I'm from spring message").build());
         rocketMQTemplate.syncSend("test-topic-1", "Hello, World! I'm from simple message");
-        rocketMQTemplate.syncSendDelayTimeSeconds("test-topic-1", "I'm delayed message", 60);
+        rocketMQTemplate.syncSendDelayTimeSeconds("test-topic-1", "I'm delayed message", 5);
         rocketMQTemplate.sendOneWay("test-topic-1", MessageBuilder.withPayload("I'm one way message").build());
         rocketMQTemplate.asyncSend("test-topic-1", MessageBuilder.withPayload("I'm async message").build(), new SendCallback() {
             @Override
