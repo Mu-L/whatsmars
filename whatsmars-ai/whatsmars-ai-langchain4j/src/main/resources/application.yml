@@ -1,0 +1,11 @@
+langchain4j:
+  open-ai:
+    chat-model:
+      # 通义千问的 OpenAI 兼容接口地址
+      base-url: https://dashscope.aliyuncs.com/compatible-mode/v1
+      api-key: ${OPENAI_API_KEY}
+      # 指定模型，如 qwen-plus, qwen-max 等
+      model-name: qwen-plus
+      # 开启请求响应日志，方便调试
+      log-requests: true
+      log-responses: true

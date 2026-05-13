@@ -4,7 +4,6 @@ import org.springframework.ai.chat.client.ChatClient;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
-import org.springframework.context.ConfigurableApplicationContext;
 import org.springframework.context.annotation.Bean;
 
 @SpringBootApplication
@@ -15,7 +14,7 @@ public class Application {
     }
 
     @Bean
-    CommandLineRunner cli(ChatClient.Builder builder, ConfigurableApplicationContext context) {
+    CommandLineRunner cli(ChatClient.Builder builder) {
         return args -> {
             var chat = builder.build();
             System.out.println("\nSpring AI Hello World!");
@@ -23,7 +22,6 @@ public class Application {
             System.out.println("ASSISTANT: " + 
                     chat.prompt("Tell me a joke").call().content());
             System.out.println("\nHello World demo completed!");
-            context.close();
         };
     }
 }

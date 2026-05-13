@@ -54,6 +54,7 @@
         <httpclient.version>4.5.6</httpclient.version>
         <javassist.version>3.31.0-GA</javassist.version>
         <kryo.version>5.6.2</kryo.version>
+        <langchain4j.beta.version>1.14.1-beta24</langchain4j.beta.version>
         <mybatis-spring.version>3.0.5</mybatis-spring.version>
         <mybatis-plus.version>3.5.15</mybatis-plus.version>
         <protobuf.version>4.34.1</protobuf.version>
@@ -215,6 +216,16 @@
                 <groupId>org.javassist</groupId>
                 <artifactId>javassist</artifactId>
                 <version>${javassist.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>dev.langchain4j</groupId>
+                <artifactId>langchain4j-spring-boot-starter</artifactId>
+                <version>${langchain4j.beta.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>dev.langchain4j</groupId>
+                <artifactId>langchain4j-open-ai-spring-boot-starter</artifactId>
+                <version>${langchain4j.beta.version}</version>
             </dependency>
 
             <!-- 统一某些间接依赖的版本 -->

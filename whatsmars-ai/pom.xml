@@ -14,6 +14,7 @@
 
     <modules>
         <module>whatsmars-ai-spring-ai</module>
+        <module>whatsmars-ai-langchain4j</module>
     </modules>
 
     <build>
