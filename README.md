@@ -1,4 +1,5 @@
 # 🚀whatsmars
+##### Java 17 版本见 https://gitee.com/javahongxi/whatsmars
 *`./mvnw clean package -Dmaven.test.skip`* [`java 11+`](http://www.oracle.com/technetwork/java/javase/downloads) [`mvnrepository`](http://mvn.hongxi.org)
 <br>*What's Mars? Mars is the fourth planet from the Sun and the second-smallest planet in the Solar System after Mercury.*
 <br>Java生态研究(**Spring Boot**🔥 + **Redis**🔥 + **Dubbo**🔥 + **RocketMQ**🔥 + **Elasticsearch**🔥)
