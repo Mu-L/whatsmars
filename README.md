@@ -13,6 +13,7 @@ Module | Intro
 whatsmars-ai | AI使用示例
 whatsmars-archetypes | 脚手架
 whatsmars-common | 通用公共模块
+whatsmars-curator | 最好用的zk客户端
 whatsmars-dubbo | 高性能分布式RPC框架
 whatsmars-elasticjob | 分布式调度框架
 whatsmars-elasticsearch | Elasticsearch
