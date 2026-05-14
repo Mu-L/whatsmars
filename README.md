@@ -29,6 +29,7 @@ whatsmars-spring-boot-samples | Spring Boot Samples
 - [x] [*Dubbo*](https://github.com/apache/dubbo)
 - [x] [*RocketMQ*](https://github.com/apache/rocketmq)
 - [x] [*Kafka*](https://github.com/apache/kafka)
+- [x] [*ZooKeeper*](https://github.com/apache/zookeeper)
 - [x] [*Spring Boot*](https://github.com/spring-projects/spring-boot)
 - [x] [*Spring Framework*](https://github.com/spring-projects/spring-framework)
 - [x] [*Spring Data*](https://github.com/spring-projects/spring-data-examples)

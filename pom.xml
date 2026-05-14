@@ -30,6 +30,7 @@
         <module>whatsmars-netty</module>
         <module>whatsmars-sentinel</module>
         <module>whatsmars-ai</module>
+        <module>whatsmars-curator</module>
     </modules>
 
     <!--这里的properties会覆盖父pom里的重名的配置-->
@@ -60,6 +61,7 @@
         <protobuf.version>4.34.1</protobuf.version>
         <rocketmq.version>5.3.2</rocketmq.version>
         <sentinel.version>1.8.9</sentinel.version>
+        <zookeeper.version>3.9.3</zookeeper.version>
     </properties>
 
     <!--mvn dependency:tree -Dverbose-->
@@ -228,6 +230,27 @@
                 <version>${langchain4j.beta.version}</version>
             </dependency>
 
+            <dependency>
+                <groupId>org.apache.curator</groupId>
+                <artifactId>curator-recipes</artifactId>
+                <version>${curator.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.apache.curator</groupId>
+                <artifactId>curator-x-discovery</artifactId>
+                <version>${curator.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.apache.curator</groupId>
+                <artifactId>curator-test</artifactId>
+                <version>${curator.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.apache.zookeeper</groupId>
+                <artifactId>zookeeper</artifactId>
+                <version>3.9.3</version>
+            </dependency>
+
             <!-- 统一某些间接依赖的版本 -->
             <dependency>
                 <groupId>com.github.luben</groupId>
@@ -259,21 +282,6 @@
                 <groupId>org.apache.curator</groupId>
                 <artifactId>curator-framework</artifactId>
                 <version>${curator.version}</version>
-            </dependency>
-            <dependency>
-                <groupId>org.apache.curator</groupId>
-                <artifactId>curator-recipes</artifactId>
-                <version>${curator.version}</version>
-            </dependency>
-            <dependency>
-                <groupId>org.apache.curator</groupId>
-                <artifactId>curator-x-discovery</artifactId>
-                <version>${curator.version}</version>
-            </dependency>
-            <dependency>
-                <groupId>org.apache.zookeeper</groupId>
-                <artifactId>zookeeper</artifactId>
-                <version>3.9.3</version>
             </dependency>
             <dependency>
                 <groupId>org.checkerframework</groupId>
