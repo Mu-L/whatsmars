@@ -1,6 +1,6 @@
 package org.hongxi.whatsmars.common.util;
 
-import org.apache.commons.lang.StringUtils;
+import org.apache.commons.lang3.StringUtils;
 
 /**
  * Created by shenhongxi on 2020/7/17.

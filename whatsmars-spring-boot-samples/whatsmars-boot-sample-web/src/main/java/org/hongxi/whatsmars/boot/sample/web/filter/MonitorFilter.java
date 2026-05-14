@@ -1,7 +1,7 @@
 package org.hongxi.whatsmars.boot.sample.web.filter;
 
 import lombok.extern.slf4j.Slf4j;
-import org.apache.commons.lang.StringUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.hongxi.whatsmars.boot.sample.web.support.WebUtils;
 import org.hongxi.whatsmars.common.util.CollectionUtils;
 import org.springframework.beans.factory.annotation.Autowired;
