@@ -1,6 +1,8 @@
 package org.hongxi.whatsmars.common.serialize;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
+
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 /**
  * @author shenhongxi 2019/8/5
@@ -13,7 +15,8 @@ public class SerializationTest {
         User user = new User("hongxi", 30);
         byte[] bytes = serialization.serialize(user);
         user = serialization.deserialize(bytes, User.class);
-        assert "hongxi".equals(user.name) && user.age == 30;
+        assertEquals("hongxi", user.name);
+        assertEquals(30, user.age);
     }
 
     @Test
@@ -22,7 +25,8 @@ public class SerializationTest {
         User user = new User("hongxi", 30);
         byte[] bytes = serialization.serialize(user);
         user = serialization.deserialize(bytes, User.class);
-        assert "hongxi".equals(user.name) && user.age == 30;
+        assertEquals("hongxi", user.name);
+        assertEquals(30, user.age);
     }
 
     @Test
@@ -31,7 +35,8 @@ public class SerializationTest {
         User user = new User("hongxi", 30);
         byte[] bytes = serialization.serialize(user);
         user = serialization.deserialize(bytes, User.class);
-        assert "hongxi".equals(user.name) && user.age == 30;
+        assertEquals("hongxi", user.name);
+        assertEquals(30, user.age);
     }
 
     @Test
@@ -41,7 +46,7 @@ public class SerializationTest {
         Integer data = 1;
         byte[] bytes = serialization.serialize(data);
         data = serialization.deserialize(bytes, Integer.class);
-        assert data == 1;
+        assertEquals(1, data);
     }
 
     @Test
@@ -56,7 +61,8 @@ public class SerializationTest {
             classes[i] = data[i].getClass();
         }
         data = serialization.deserializeMulti(bytes, classes);
-        assert data.length == 4 && data[2].toString().equals("xxx");
+        assertEquals(4, data.length);
+        assertEquals("xxx", data[2].toString());
     }
 
     @Test
@@ -71,7 +77,8 @@ public class SerializationTest {
             classes[i] = data[i].getClass();
         }
         data = serialization.deserializeMulti(bytes, classes);
-        assert data.length == 4 && data[2].toString().equals("xxx");
+        assertEquals(4, data.length);
+        assertEquals("xxx", data[2].toString());
     }
 
     @Test
@@ -86,7 +93,8 @@ public class SerializationTest {
             classes[i] = data[i].getClass();
         }
         data = serialization.deserializeMulti(bytes, classes);
-        assert data.length == 4 && data[2].toString().equals("xxx");
+        assertEquals(4, data.length);
+        assertEquals("xxx", data[2].toString());
     }
 
     @Test
@@ -100,7 +108,8 @@ public class SerializationTest {
             classes[i] = data[i].getClass();
         }
         data = serialization.deserializeMulti(bytes, classes);
-        assert data.length == 4 && data[2].toString().equals("xxx");
+        assertEquals(4, data.length);
+        assertEquals("xxx", data[2].toString());
     }
 
 }

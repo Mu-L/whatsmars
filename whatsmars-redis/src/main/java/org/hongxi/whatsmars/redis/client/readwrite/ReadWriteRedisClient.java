@@ -17,7 +17,7 @@ public class ReadWriteRedisClient implements InitializingBean, DisposableBean {
 
     private JedisPool master;
 
-    private List<JedisPool> slaves = new ArrayList<JedisPool>();
+    private List<JedisPool> slaves = new ArrayList<>();
 
     private JedisPoolConfig jedisPoolConfig;
 
@@ -57,101 +57,56 @@ public class ReadWriteRedisClient implements InitializingBean, DisposableBean {
     }
 
     public String get(String key) {
-        Jedis jedis = fetchResource(true);
-        try {
+        try (Jedis jedis = fetchResource(true)) {
             return jedis.get(key);
-        } finally {
-            if (jedis != null) {
-                jedis.close();
-            }
         }
     }
 
     public List<String> mget(String... keys) {
-        Jedis jedis = fetchResource(true);
-        try {
+        try (Jedis jedis = fetchResource(true)) {
             return jedis.mget(keys);
-        } finally {
-            if (jedis != null) {
-                jedis.close();
-            }
         }
     }
 
     public String setex(String key,int seconds,String value) {
-        Jedis jedis = fetchResource(false);
-        try {
-            return jedis.setex(key,seconds,value);
-        } finally {
-            if (jedis != null) {
-                jedis.close();
-            }
+        try (Jedis jedis = fetchResource(false)) {
+            return jedis.setex(key, seconds, value);
         }
     }
 
     public Long setnx(String key,String value) {
-        Jedis jedis = fetchResource(false);
-        try {
-            return jedis.setnx(key,value);
-        } finally {
-            if (jedis != null) {
-                jedis.close();
-            }
+        try (Jedis jedis = fetchResource(false)) {
+            return jedis.setnx(key, value);
         }
     }
 
     public String set(String key,String value) {
-        Jedis jedis = fetchResource(false);
-        try {
-            return jedis.set(key,value);
-        } finally {
-            if (jedis != null) {
-                jedis.close();
-            }
+        try (Jedis jedis = fetchResource(false)) {
+            return jedis.set(key, value);
         }
     }
 
     public Long del(String key) {
-        Jedis jedis = fetchResource(false);
-        try {
+        try (Jedis jedis = fetchResource(false)) {
             return jedis.del(key);
-        } finally {
-            if (jedis != null) {
-                jedis.close();
-            }
         }
     }
 
     public Long expire(String key,int seconds) {
-        Jedis jedis = fetchResource(false);
-        try {
-            return jedis.expire(key,seconds);
-        } finally {
-            if (jedis != null) {
-                jedis.close();
-            }
+        try (Jedis jedis = fetchResource(false)) {
+            return jedis.expire(key, seconds);
         }
     }
 
     public Boolean exists(String key) {
-        Jedis jedis = fetchResource(false);
-        try {
+        try (Jedis jedis = fetchResource(false)) {
             return jedis.exists(key);
-        } finally {
-            if (jedis != null) {
-                jedis.close();
-            }
         }
     }
 
     public Long exists(String... keys) {
-        Jedis jedis = fetchResource(false);
-        try {
+        try (Jedis jedis = fetchResource(false)) {
             return jedis.exists(keys);
-        } finally {
-            if (jedis != null) {
-                jedis.close();
-            }
         }
     }
 

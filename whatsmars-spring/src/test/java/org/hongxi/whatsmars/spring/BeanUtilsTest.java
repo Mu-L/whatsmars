@@ -3,7 +3,7 @@ package org.hongxi.whatsmars.spring;
 import org.hongxi.whatsmars.spring.bean.Address;
 import org.hongxi.whatsmars.spring.bean.Student;
 import org.hongxi.whatsmars.spring.bean.User;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 import org.springframework.beans.BeanUtils;
 
 import java.util.ArrayList;

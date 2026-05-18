@@ -1,7 +1,7 @@
 package org.hongxi.whatsmars.common.serialize;
 
 import org.hongxi.whatsmars.common.mail.EmailSenderClient;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 import java.net.URL;
 import java.util.HashMap;
@@ -9,7 +9,7 @@ import java.util.Map;
 
 public class EmailTest {
 
-    @Test
+//    @Test
     public void t() throws Exception {
         EmailSenderClient client = new EmailSenderClient();
         client.setSmtpPort(25);

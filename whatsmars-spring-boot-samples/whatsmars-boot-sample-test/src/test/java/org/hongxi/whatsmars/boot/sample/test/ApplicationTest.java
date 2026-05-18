@@ -1,18 +1,18 @@
 package org.hongxi.whatsmars.boot.sample.test;
 
-import org.hongxi.whatsmars.boot.sample.test.Application;
-import org.hongxi.whatsmars.boot.sample.test.DemoService;
-import org.junit.Test;
-import org.junit.runner.RunWith;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.ActiveProfiles;
-import org.springframework.test.context.junit4.SpringRunner;
+import org.springframework.test.context.junit.jupiter.SpringExtension;
+
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 /**
  * Created by shenhongxi on 2020/8/29.
  */
-@RunWith(SpringRunner.class)
+@ExtendWith(SpringExtension.class)
 @SpringBootTest(classes = Application.class)
 @ActiveProfiles("dev")
 public class ApplicationTest {
@@ -22,6 +22,6 @@ public class ApplicationTest {
 
     @Test
     public void demoService() {
-        assert "a".equals(demoService.getName());
+        assertEquals("a", demoService.getName());
     }
 }
