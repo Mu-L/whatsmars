@@ -33,3 +33,8 @@ dump.rdb
 pom.xml.versionsBackup
 *.jar.original
 
+# vscode ignore
+.vscode
+
+# qoder ignore
+.qoder
