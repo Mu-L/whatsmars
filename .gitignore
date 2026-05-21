@@ -10,7 +10,8 @@
 # Mobile Tools for Java (J2ME)
 .mtj.tmp/
 
-# Package Files #
+# maven ignore
+target/
 *.jar
 *.war
 *.nar
@@ -18,20 +19,27 @@
 *.zip
 *.tar.gz
 *.rar
+pom.xml.versionsBackup
+*.jar.original
 
-# virtual machine crash logs, see http://www.java.com/en/download/help/error_hotspot.xml
+# virtual machine crash logs
 hs_err_pid*
 
-# IDEA
+# Others
+dump.rdb
+
+# IDEA ignore
 *.iws
 *.iml
 *.ipr
 .idea/*
 
-# Others
-dump.rdb
-pom.xml.versionsBackup
-*.jar.original
+# eclipse ignore
+.settings/
+.project
+.classpath
+.externalToolBuilders
+maven-eclipse.xml
 
 # vscode ignore
 .vscode
