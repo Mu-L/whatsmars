@@ -9,7 +9,7 @@
         <version>2026.5.1</version>
     </parent>
 
-    <artifactId>whatsmars-ai-spring-ai</artifactId>
+    <artifactId>whatsmars-ai-mcp-server</artifactId>
 
     <dependencies>
         <dependency>
@@ -19,7 +19,7 @@
 
         <dependency>
             <groupId>org.springframework.ai</groupId>
-            <artifactId>spring-ai-starter-model-openai</artifactId>
+            <artifactId>spring-ai-starter-mcp-server-webmvc</artifactId>
         </dependency>
     </dependencies>
 
