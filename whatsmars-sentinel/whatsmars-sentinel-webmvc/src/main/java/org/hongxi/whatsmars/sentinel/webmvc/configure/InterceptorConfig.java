@@ -1,10 +1,10 @@
 package org.hongxi.whatsmars.sentinel.webmvc.configure;
 
-import com.alibaba.csp.sentinel.adapter.spring.webmvc.SentinelWebInterceptor;
-import com.alibaba.csp.sentinel.adapter.spring.webmvc.SentinelWebTotalInterceptor;
-import com.alibaba.csp.sentinel.adapter.spring.webmvc.callback.DefaultBlockExceptionHandler;
-import com.alibaba.csp.sentinel.adapter.spring.webmvc.config.SentinelWebMvcConfig;
-import com.alibaba.csp.sentinel.adapter.spring.webmvc.config.SentinelWebMvcTotalConfig;
+import com.alibaba.csp.sentinel.adapter.spring.webmvc_v6x.SentinelWebInterceptor;
+import com.alibaba.csp.sentinel.adapter.spring.webmvc_v6x.SentinelWebTotalInterceptor;
+import com.alibaba.csp.sentinel.adapter.spring.webmvc_v6x.callback.DefaultBlockExceptionHandler;
+import com.alibaba.csp.sentinel.adapter.spring.webmvc_v6x.config.SentinelWebMvcConfig;
+import com.alibaba.csp.sentinel.adapter.spring.webmvc_v6x.config.SentinelWebMvcTotalConfig;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.web.servlet.config.annotation.InterceptorRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
@@ -19,6 +19,9 @@ public class InterceptorConfig implements WebMvcConfigurer {
     public void addInterceptors(InterceptorRegistry registry) {
         // Add Sentinel interceptor
         addSpringMvcInterceptor(registry);
+
+        // If you want to sentinel the total flow, you can add total interceptor
+        addSpringMvcTotalInterceptor(registry);
     }
 
     private void addSpringMvcInterceptor(InterceptorRegistry registry) {
