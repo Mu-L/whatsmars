@@ -1,4 +1,4 @@
-package org.hongxi.whatsmars.elasticsearch;
+package org.hongxi.whatsmars.boot.sample.elasticsearch;
 
 import org.springframework.data.elasticsearch.repository.ElasticsearchRepository;
 

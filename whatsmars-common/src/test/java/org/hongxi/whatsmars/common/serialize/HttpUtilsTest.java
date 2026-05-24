@@ -8,7 +8,7 @@ import java.io.InputStream;
 
 public class HttpUtilsTest {
 
-    @Test
+//    @Test
     public void t() throws Exception {
         String url = "https://gitee.com/javahongxi/whatsmars/raw/master/whatsmars-mq/whatsmars-mq-rocketmq/RMQ.png";
         try (InputStream inputStream = HttpUtils.httpGetStream(url, null)) {

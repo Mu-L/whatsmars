@@ -9,7 +9,6 @@
     </parent>
     <modelVersion>4.0.0</modelVersion>
 
-    <groupId>org.hongxi</groupId>
     <artifactId>whatsmars-spring-boot-samples</artifactId>
     <packaging>pom</packaging>
 
@@ -33,6 +32,7 @@
         <module>whatsmars-boot-sample-test</module>
         <module>whatsmars-boot-sample-mybatis-plus</module>
         <module>whatsmars-boot-sample-webflux</module>
+        <module>whatsmars-boot-sample-elasticsearch</module>
     </modules>
 
     <dependencies>

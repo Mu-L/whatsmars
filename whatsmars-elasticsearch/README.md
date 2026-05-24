@@ -1,4 +1,4 @@
-https://www.elastic.co/cn/downloads/past-releases/elasticsearch-6-4-3
+https://www.elastic.co/cn/downloads/past-releases/elasticsearch-8-18-8
 
 ### ES代替关系型数据库读写分离
 对于关系型数据库，当读请求数远大于写请求数时，读请求会影响写请求的性能，此时我们常用的做法是读写分离。

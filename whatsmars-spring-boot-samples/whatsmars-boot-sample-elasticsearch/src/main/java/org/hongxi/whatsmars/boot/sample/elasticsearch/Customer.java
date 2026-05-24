@@ -1,4 +1,4 @@
-package org.hongxi.whatsmars.elasticsearch;
+package org.hongxi.whatsmars.boot.sample.elasticsearch;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import org.springframework.data.annotation.Id;
