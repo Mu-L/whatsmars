@@ -313,19 +313,104 @@ public class HttpUtils {
      */
     public static InputStream executeAsStream(HttpUriRequest request) {
         try {
-            ClassicHttpResponse response = httpClient.execute(request);
+            // 使用executeOpen获取响应，这样可以保持连接打开直到流被关闭
+            ClassicHttpResponse response = httpClient.executeOpen(null, request, null);
             int statusCode = response.getCode();
             if (statusCode < 200 || statusCode >= 300) {
                 EntityUtils.consume(response.getEntity());
                 throw new HttpException("HTTP error: " + statusCode);
             }
             HttpEntity entity = response.getEntity();
-            if (entity != null && entity.isStreaming()) {
-                return entity.getContent();
+            if (entity != null) {
+                // 返回一个包装流，在关闭时同时关闭响应
+                return new InputStreamWrapper(entity.getContent(), response);
             }
             return null;
         } catch (IOException e) {
             throw new HttpException("Request failed: " + e.getMessage(), e);
+        }
+    }
+
+    /**
+     * 输入流包装类，用于在关闭流时同时关闭HTTP响应
+     */
+    private static class InputStreamWrapper extends InputStream {
+        private final InputStream delegate;
+        private final ClassicHttpResponse response;
+        private volatile boolean closed = false;
+
+        public InputStreamWrapper(InputStream delegate, ClassicHttpResponse response) {
+            this.delegate = delegate;
+            this.response = response;
+        }
+
+        @Override
+        public int read() throws IOException {
+            ensureOpen();
+            return delegate.read();
+        }
+
+        @Override
+        public int read(byte[] b) throws IOException {
+            ensureOpen();
+            return delegate.read(b);
+        }
+
+        @Override
+        public int read(byte[] b, int off, int len) throws IOException {
+            ensureOpen();
+            return delegate.read(b, off, len);
+        }
+
+        @Override
+        public long skip(long n) throws IOException {
+            ensureOpen();
+            return delegate.skip(n);
+        }
+
+        @Override
+        public int available() throws IOException {
+            ensureOpen();
+            return delegate.available();
+        }
+
+        @Override
+        public void close() throws IOException {
+            if (closed) {
+                return;
+            }
+            closed = true;
+            try {
+                delegate.close();
+            } finally {
+                try {
+                    response.close();
+                } catch (IOException e) {
+                    // 忽略关闭响应时的异常
+                }
+            }
+        }
+
+        @Override
+        public synchronized void mark(int readlimit) {
+            delegate.mark(readlimit);
+        }
+
+        @Override
+        public synchronized void reset() throws IOException {
+            ensureOpen();
+            delegate.reset();
+        }
+
+        @Override
+        public boolean markSupported() {
+            return delegate.markSupported();
+        }
+
+        private void ensureOpen() throws IOException {
+            if (closed) {
+                throw new IOException("Stream already closed");
+            }
         }
     }
 
