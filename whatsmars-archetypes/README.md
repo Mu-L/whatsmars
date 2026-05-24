@@ -1,1 +1,0 @@
-脚手架正式版请参考 https://github.com/javahongxi/spring-boot-project
