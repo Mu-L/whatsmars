@@ -65,6 +65,6 @@ public class DefaultExceptionHandler {
             throw e;
         }
         log.error("exception handled, request:{}", request.getRequestURI(), e);
-        return ResultHelper.newErrorResult(500, e.getMessage());
+        return ResultHelper.newErrorResult(500, "系统繁忙，请稍后重试");
     }
 }

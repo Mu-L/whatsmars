@@ -37,8 +37,7 @@ public class AESUtils {
             SecretKeySpec seckey = new SecretKeySpec(enCodeFormat,"AES");
             Cipher cipher = Cipher.getInstance(PADDING);// 创建密码器
             cipher.init(Cipher.ENCRYPT_MODE, seckey);// 初始化
-            byte[] result = cipher.doFinal(data);
-            return result; // 加密
+            return cipher.doFinal(data); // 加密
         } catch (Exception e){
             throw new RuntimeException("encrypt fail!", e);
         }
@@ -63,8 +62,7 @@ public class AESUtils {
             SecretKeySpec seckey = new SecretKeySpec(enCodeFormat, "AES");
             Cipher cipher = Cipher.getInstance(PADDING);// 创建密码器
             cipher.init(Cipher.DECRYPT_MODE, seckey);// 初始化
-            byte[] result = cipher.doFinal(data);
-            return result; // 加密
+            return cipher.doFinal(data); // 加密
         } catch (Exception e){
             throw new RuntimeException("decrypt fail!", e);
         }
@@ -109,12 +107,12 @@ public class AESUtils {
         }
     }
 
-    public static byte[] genarateRandomKey(){
+    public static byte[] generateRandomKey(){
         KeyGenerator keygen = null;
         try {
             keygen = KeyGenerator.getInstance(PADDING);
         } catch (NoSuchAlgorithmException e) {
-            throw new RuntimeException(" genarateRandomKey fail!", e);
+            throw new RuntimeException(" generateRandomKey fail!", e);
         }
         SecureRandom random = new SecureRandom();
         keygen.init(random);
@@ -122,7 +120,7 @@ public class AESUtils {
         return key.getEncoded();
     }
 
-    public static String genarateRandomKeyWithBase64(){
-        return new String(new Base64().encode(genarateRandomKey()));
+    public static String generateRandomKeyWithBase64(){
+        return new String(new Base64().encode(generateRandomKey()));
     }
 }

@@ -16,7 +16,6 @@ public class ProtobufSerialization implements Serialization {
 
     @Override
     public byte[] serialize(Object obj) throws IOException {
-
         ByteArrayOutputStream baos = new ByteArrayOutputStream(1024);
         // 对throwable使用 java ObjectOutputStream进行序列化
         if (Throwable.class.isAssignableFrom(obj.getClass())) {
@@ -46,49 +45,27 @@ public class ProtobufSerialization implements Serialization {
 
     }
 
-    @Override
-    public byte[] serializeMulti(Object[] data) throws IOException {
-        ByteArrayOutputStream baos = new ByteArrayOutputStream(1024);
-        CodedOutputStream output = CodedOutputStream.newInstance(baos);
-        for (Object obj : data) {
-            serialize(output, obj);
-        }
-        output.flush();
-        return baos.toByteArray();
-    }
-
-    @Override
-    public Object[] deserializeMulti(byte[] data, Class<?>[] classes) throws IOException {
-        CodedInputStream in = CodedInputStream.newInstance(data);
-        Object[] objects = new Object[classes.length];
-        for (int i = 0; i < classes.length; i++) {
-            objects[i] = deserialize(in, classes[i]);
-        }
-        return objects;
-    }
-
     protected void serialize(CodedOutputStream output, Object obj) throws IOException {
-
         if (obj == null) {
             output.writeBoolNoTag(true);
         } else {
             output.writeBoolNoTag(false);
             Class<?> clazz = obj.getClass();
-            if (clazz == int.class || clazz == Integer.class) {
+            if (clazz == Integer.class) {
                 output.writeSInt32NoTag((Integer) obj);
-            } else if (clazz == long.class || clazz == Long.class) {
+            } else if (clazz == Long.class) {
                 output.writeSInt64NoTag((Long) obj);
-            } else if (clazz == boolean.class || clazz == Boolean.class) {
+            } else if (clazz == Boolean.class) {
                 output.writeBoolNoTag((Boolean) obj);
-            } else if (clazz == byte.class || clazz == Byte.class) {
+            } else if (clazz == Byte.class) {
                 output.writeRawByte((Byte) obj);
-            } else if (clazz == char.class || clazz == Character.class) {
+            } else if (clazz == Character.class) {
                 output.writeSInt32NoTag((Character) obj);
-            } else if (clazz == short.class || clazz == Short.class) {
+            } else if (clazz == Short.class) {
                 output.writeSInt32NoTag((Short) obj);
-            } else if (clazz == double.class || clazz == Double.class) {
+            } else if (clazz == Double.class) {
                 output.writeDoubleNoTag((Double) obj);
-            } else if (clazz == float.class || clazz == Float.class) {
+            } else if (clazz == Float.class) {
                 output.writeFloatNoTag((Float) obj);
             } else if (clazz == String.class) {
                 output.writeStringNoTag(obj.toString());
@@ -98,7 +75,6 @@ public class ProtobufSerialization implements Serialization {
                 throw new IllegalArgumentException("can't serialize " + clazz);
             }
         }
-
     }
 
     protected Object deserialize(CodedInputStream in, Class<?> clazz) throws IOException {
@@ -106,33 +82,32 @@ public class ProtobufSerialization implements Serialization {
             return null;
         } else {
             Object value;
-            if (clazz == int.class || clazz == Integer.class) {
+            if (clazz == Integer.class) {
                 value = in.readSInt32();
-            } else if (clazz == long.class || clazz == Long.class) {
+            } else if (clazz == Long.class) {
                 value = in.readSInt64();
-            } else if (clazz == boolean.class || clazz == Boolean.class) {
+            } else if (clazz == Boolean.class) {
                 value = in.readBool();
-            } else if (clazz == byte.class || clazz == Byte.class) {
+            } else if (clazz == Byte.class) {
                 value = in.readRawByte();
-            } else if (clazz == char.class || clazz == Character.class) {
+            } else if (clazz == Character.class) {
                 value = (char) in.readSInt32();
-            } else if (clazz == short.class || clazz == Short.class) {
+            } else if (clazz == Short.class) {
                 value = (short) in.readSInt32();
-            } else if (clazz == double.class || clazz == Double.class) {
+            } else if (clazz == Double.class) {
                 value = in.readDouble();
-            } else if (clazz == float.class || clazz == Float.class) {
+            } else if (clazz == Float.class) {
                 value = in.readFloat();
             } else if (clazz == String.class) {
                 value = in.readString();
             } else if (MessageLite.class.isAssignableFrom(clazz)) {
-
                 try {
+                    // 可以考虑缓存一下method
                     Method method = clazz.getDeclaredMethod("newBuilder", null);
                     MessageLite.Builder builder = (MessageLite.Builder) method.invoke(null, null);
                     in.readMessage(builder, null);
                     value = builder.build();
                 } catch (Exception e) {
-                    // 这里应该抛出自定义异常
                     throw new IOException(e);
                 }
             } else {
@@ -141,10 +116,5 @@ public class ProtobufSerialization implements Serialization {
 
             return value;
         }
-    }
-
-    @Override
-    public int getSerializationNumber() {
-        return 4;
     }
 }
