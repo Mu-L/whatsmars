@@ -1,5 +1,5 @@
 # 🚀whatsmars
-*`./mvnw clean package -Dmaven.test.skip`* [`java 17+`](http://www.oracle.com/technetwork/java/javase/downloads) [`mvnrepository`](http://mvn.hongxi.org)
+*`./mvnw clean package -Dmaven.test.skip`* [`java 17+`](https://adoptium.net/zh-CN/temurin/releases) [`mvnrepository`](http://mvn.hongxi.org)
 <br>Java生态研究(**Spring Boot**🔥 + **Redis**🔥 + **Dubbo**🔥 + **RocketMQ**🔥 + **Elasticsearch**🔥)
 - [Spring Boot](https://spring.io/projects/spring-boot) 提高生产力的利器
 - [Redis](https://redis.io/) 缓存，NoSQL 数据库，分布式锁，位图

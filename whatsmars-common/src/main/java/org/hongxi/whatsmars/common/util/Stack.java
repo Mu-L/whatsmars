@@ -7,11 +7,10 @@ import java.util.List;
 /**
  * Stack.
  */
-
 public class Stack<E> {
     private int mSize = 0;
 
-    private List<E> mElements = new ArrayList<E>();
+    private List<E> mElements = new ArrayList<>();
 
     public Stack() {
     }
