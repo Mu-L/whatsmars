@@ -34,9 +34,7 @@ public class ConsumerApplication {
         CompletableFuture<String> future = application.doSayHelloAsync("world");
         try {
             logger.info("async call returned: {}", future.get());
-        } catch (InterruptedException e) {
-            throw new RuntimeException(e);
-        } catch (ExecutionException e) {
+        } catch (InterruptedException | ExecutionException e) {
             throw new RuntimeException(e);
         }
     }
@@ -46,7 +44,6 @@ public class ConsumerApplication {
     }
 
     public CompletableFuture<String> doSayHelloAsync(String name) {
-        CompletableFuture<String> sayHelloAsyncFuture = demoService.sayHelloAsync(name);
-        return sayHelloAsyncFuture;
+        return demoService.sayHelloAsync(name);
     }
 }
