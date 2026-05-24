@@ -9,9 +9,9 @@ import java.io.InputStream;
 public class HttpUtilsTest {
 
 //    @Test
-    public void t() throws Exception {
+    public void testGetAsStream() throws Exception {
         String url = "https://gitee.com/javahongxi/whatsmars/raw/master/whatsmars-mq/whatsmars-mq-rocketmq/RMQ.png";
-        try (InputStream inputStream = HttpUtils.httpGetStream(url, null)) {
+        try (InputStream inputStream = HttpUtils.getAsStream(url, null, null)) {
             FileOutputStream fileOutputStream = new FileOutputStream(System.getProperty("user.home") + "/Downloads/RMQ.png");
             while (true) {
                 int i = inputStream.read();

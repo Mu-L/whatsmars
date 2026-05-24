@@ -2,237 +2,391 @@ package org.hongxi.whatsmars.common.util;
 
 import org.apache.hc.client5.http.classic.methods.HttpGet;
 import org.apache.hc.client5.http.classic.methods.HttpPost;
+import org.apache.hc.client5.http.classic.methods.HttpUriRequest;
+import org.apache.hc.client5.http.config.ConnectionConfig;
 import org.apache.hc.client5.http.config.RequestConfig;
 import org.apache.hc.client5.http.entity.UrlEncodedFormEntity;
 import org.apache.hc.client5.http.entity.mime.MultipartEntityBuilder;
 import org.apache.hc.client5.http.impl.classic.CloseableHttpClient;
-import org.apache.hc.client5.http.impl.classic.HttpClientBuilder;
+import org.apache.hc.client5.http.impl.classic.HttpClients;
+import org.apache.hc.client5.http.impl.io.PoolingHttpClientConnectionManager;
+import org.apache.hc.client5.http.impl.io.PoolingHttpClientConnectionManagerBuilder;
 import org.apache.hc.core5.http.ClassicHttpResponse;
 import org.apache.hc.core5.http.ContentType;
 import org.apache.hc.core5.http.HttpEntity;
 import org.apache.hc.core5.http.NameValuePair;
 import org.apache.hc.core5.http.io.entity.EntityUtils;
 import org.apache.hc.core5.http.io.entity.InputStreamEntity;
+import org.apache.hc.core5.http.io.entity.StringEntity;
 import org.apache.hc.core5.http.message.BasicNameValuePair;
+import org.apache.hc.core5.util.Timeout;
 
 import java.io.File;
+import java.io.IOException;
 import java.io.InputStream;
-import java.nio.charset.Charset;
+import java.io.OutputStream;
+import java.net.URLEncoder;
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
-import java.util.concurrent.TimeUnit;
 
 public class HttpUtils {
 
-    private static final CloseableHttpClient httpClient;
-    public static final String CHARSET = "UTF-8";
+    private static final Timeout DEFAULT_CONNECT_TIMEOUT = Timeout.ofMinutes(3);
+    private static final Timeout DEFAULT_CONNECTION_REQUEST_TIMEOUT = Timeout.ofMinutes(3);
 
-    static {
-        RequestConfig config = RequestConfig.custom()
-                .setConnectTimeout(6000, TimeUnit.MILLISECONDS)
-                .setConnectionRequestTimeout(6000, TimeUnit.MILLISECONDS)
+    private static final CloseableHttpClient httpClient = createHttpClient();
+
+    private static CloseableHttpClient createHttpClient() {
+        // Build connection config
+        ConnectionConfig connectionConfig = ConnectionConfig.custom()
+                .setConnectTimeout(DEFAULT_CONNECT_TIMEOUT)
                 .build();
-        httpClient = HttpClientBuilder.create()
-                .setDefaultRequestConfig(config)
+
+        // Build connection manager
+        PoolingHttpClientConnectionManager connectionManager = PoolingHttpClientConnectionManagerBuilder.create()
+                .setDefaultConnectionConfig(connectionConfig)
+                .build();
+
+        // Build request config
+        RequestConfig requestConfig = RequestConfig.custom()
+                .setConnectionRequestTimeout(DEFAULT_CONNECTION_REQUEST_TIMEOUT)
+                .build();
+
+        // Build HTTP client
+        return HttpClients.custom()
+                .setConnectionManager(connectionManager)
+                .setDefaultRequestConfig(requestConfig)
                 .build();
     }
 
-    public static String httpGet(String url) throws Exception {
-        return httpGet(url, null);
+    // ==================== GET Request ====================
+
+    /**
+     * Execute GET request and return response as String
+     */
+    public static String get(String url) {
+        return get(url, null, null);
     }
 
-    public static String httpGet(String url, Map<String, String> params) throws Exception {
-        return httpGet(url, params, CHARSET);
+    /**
+     * Execute GET request with query parameters
+     */
+    public static String get(String url, Map<String, String> params) {
+        return get(url, params, null);
     }
 
-    public static String httpGet(String url, Map<String, String> params, String charset) throws Exception {
-        if (params != null && !params.isEmpty()) {
-            List<NameValuePair> pairs = new ArrayList<>(params.size());
-            for (Map.Entry<String, String> entry : params.entrySet()) {
-                String value = entry.getValue();
-                if (value != null) {
-                    pairs.add(new BasicNameValuePair(entry.getKey(), value));
+    /**
+     * Execute GET request with query parameters and headers
+     */
+    public static String get(String url, Map<String, String> params, Map<String, String> headers) {
+        String fullUrl = buildUrl(url, params);
+        HttpGet request = new HttpGet(fullUrl);
+        addHeaders(request, headers);
+        return execute(request);
+    }
+
+    /**
+     * Execute GET request and return response as byte array
+     */
+    public static byte[] getAsBytes(String url, Map<String, String> params, Map<String, String> headers) {
+        String fullUrl = buildUrl(url, params);
+        HttpGet request = new HttpGet(fullUrl);
+        addHeaders(request, headers);
+        return executeAsBytes(request);
+    }
+
+    /**
+     * Execute GET request and return InputStream for streaming response
+     */
+    public static InputStream getAsStream(String url, Map<String, String> params, Map<String, String> headers) {
+        String fullUrl = buildUrl(url, params);
+        HttpGet request = new HttpGet(fullUrl);
+        addHeaders(request, headers);
+        return executeAsStream(request);
+    }
+
+    // ==================== POST Request ====================
+
+    /**
+     * Execute POST request with form data
+     */
+    public static String post(String url, Map<String, String> formData) {
+        return post(url, formData, null);
+    }
+
+    /**
+     * Execute POST request with form data and headers
+     */
+    public static String post(String url, Map<String, String> formData, Map<String, String> headers) {
+        HttpPost request = new HttpPost(url);
+        addHeaders(request, headers);
+        if (formData != null && !formData.isEmpty()) {
+            List<NameValuePair> pairs = buildNameValuePairs(formData);
+            request.setEntity(new UrlEncodedFormEntity(pairs, StandardCharsets.UTF_8));
+        }
+        return execute(request);
+    }
+
+    /**
+     * Execute POST request with JSON body
+     */
+    public static String postJson(String url, String jsonBody) {
+        return postJson(url, jsonBody, null);
+    }
+
+    /**
+     * Execute POST request with JSON body and headers
+     */
+    public static String postJson(String url, String jsonBody, Map<String, String> headers) {
+        HttpPost request = new HttpPost(url);
+        addHeaders(request, headers);
+        request.setHeader("Content-Type", ContentType.APPLICATION_JSON.toString());
+        request.setEntity(new StringEntity(jsonBody, ContentType.APPLICATION_JSON));
+        return execute(request);
+    }
+
+    /**
+     * Execute POST request with raw body
+     */
+    public static String postBody(String url, String body, ContentType contentType) {
+        return postBody(url, body, contentType, null);
+    }
+
+    /**
+     * Execute POST request with raw body and headers
+     */
+    public static String postBody(String url, String body, ContentType contentType, Map<String, String> headers) {
+        HttpPost request = new HttpPost(url);
+        addHeaders(request, headers);
+        request.setEntity(new StringEntity(body, contentType));
+        return execute(request);
+    }
+
+    /**
+     * Execute POST request with InputStream body
+     */
+    public static String postStream(String url, InputStream inputStream, ContentType contentType) {
+        return postStream(url, inputStream, contentType, null);
+    }
+
+    /**
+     * Execute POST request with InputStream body and headers
+     */
+    public static String postStream(String url, InputStream inputStream, ContentType contentType, Map<String, String> headers) {
+        HttpPost request = new HttpPost(url);
+        addHeaders(request, headers);
+        request.setEntity(new InputStreamEntity(inputStream, contentType));
+        return execute(request);
+    }
+
+    // ==================== Multipart Upload ====================
+
+    /**
+     * Upload files via multipart/form-data
+     */
+    public static String upload(String url, Map<String, Object> parts) {
+        return upload(url, parts, null);
+    }
+
+    /**
+     * Upload files via multipart/form-data with headers
+     */
+    public static String upload(String url, Map<String, Object> parts, Map<String, String> headers) {
+        HttpPost request = new HttpPost(url);
+        addHeaders(request, headers);
+
+        MultipartEntityBuilder builder = MultipartEntityBuilder.create();
+        builder.setCharset(StandardCharsets.UTF_8);
+
+        if (parts != null) {
+            for (Map.Entry<String, Object> entry : parts.entrySet()) {
+                String key = entry.getKey();
+                Object value = entry.getValue();
+
+                if (value instanceof String) {
+                    builder.addTextBody(key, (String) value, ContentType.TEXT_PLAIN.withCharset(StandardCharsets.UTF_8));
+                } else if (value instanceof byte[]) {
+                    builder.addBinaryBody(key, (byte[]) value);
+                } else if (value instanceof File) {
+                    builder.addBinaryBody(key, (File) value);
+                } else if (value instanceof InputStream) {
+                    builder.addBinaryBody(key, (InputStream) value);
+                } else if (value != null) {
+                    builder.addTextBody(key, String.valueOf(value), ContentType.TEXT_PLAIN.withCharset(StandardCharsets.UTF_8));
                 }
             }
-            String queryString = EntityUtils.toString(new UrlEncodedFormEntity(pairs, Charset.forName(charset)));
-            if (url.indexOf("?") > 0) {
-                url += "&" + queryString;
-            } else {
-                url += "?" + queryString;
-            }
-
         }
-        HttpGet httpGet = new HttpGet(url);
-        return httpClient.execute(httpGet, response -> {
-            int statusCode = response.getCode();
-            if (statusCode != 200) {
-                httpGet.cancel();
-                throw new RuntimeException("HttpClient,error status code :" + statusCode);
-            }
-            HttpEntity entity = response.getEntity();
-            String result = null;
-            if (entity != null) {
-                result = EntityUtils.toString(entity, Charset.forName(charset));
-            }
-            EntityUtils.consume(entity);
-            return result;
-        });
+
+        request.setEntity(builder.build());
+        return execute(request);
     }
 
-    public static String httpPost(String url, HttpEntity requestEntity) throws Exception {
-        return httpPost(url, null, requestEntity);
+    // ==================== Download ====================
+
+    /**
+     * Download file to output stream
+     */
+    public static void download(String url, OutputStream outputStream) {
+        download(url, null, outputStream);
     }
 
-    public static String httpPost(String url, Map<String, String> params, HttpEntity requestEntity) throws Exception {
-        if (params != null && !params.isEmpty()) {
-            List<NameValuePair> pairs = new ArrayList<>();
-            for (Map.Entry<String, String> entry : params.entrySet()) {
-                String value = entry.getValue();
-                if (value != null) {
-                    pairs.add(new BasicNameValuePair(entry.getKey(), value));
-                }
-            }
-            String queryString = EntityUtils.toString(new UrlEncodedFormEntity(pairs, StandardCharsets.UTF_8));
-            if (url.indexOf("?") > 0) {
-                url += "&" + queryString;
-            } else {
-                url += "?" + queryString;
-            }
-        }
-        HttpPost httpPost = new HttpPost(url);
-        if (requestEntity != null) {
-            httpPost.setEntity(requestEntity);
-        }
-        return httpClient.execute(httpPost, response -> {
-            int statusCode = response.getCode();
-            if (statusCode != 200) {
-                httpPost.cancel();
-                throw new RuntimeException("HttpClient,error status code :" + statusCode);
-            }
-            HttpEntity entity = response.getEntity();
-            String result = null;
-            if (entity != null) {
-                result = EntityUtils.toString(entity, StandardCharsets.UTF_8);
-            }
-            EntityUtils.consume(entity);
-            return result;
-        });
-    }
+    /**
+     * Download file to output stream with parameters
+     */
+    public static void download(String url, Map<String, String> params, OutputStream outputStream) {
+        String fullUrl = buildUrl(url, params);
+        HttpGet request = new HttpGet(fullUrl);
 
-    public static String postBodyAsStream(String url, InputStream inputStream, String encoding) throws Exception {
-        HttpPost httpPost = new HttpPost(url);
-        HttpEntity body = new InputStreamEntity(inputStream, ContentType.APPLICATION_OCTET_STREAM);
-        httpPost.setEntity(body);
-        return httpClient.execute(httpPost, response -> {
-            HttpEntity entity = response.getEntity();
-            int statusCode = response.getCode();
-            if (statusCode != 200) {
-                httpPost.cancel();
-                throw new RuntimeException("HttpClient,error status code :" + statusCode);
-            }
-            String result = null;
-            if (entity != null) {
-                result = EntityUtils.toString(entity, Charset.forName(encoding));
-            }
-            EntityUtils.consume(entity);
-            return result;
-        });
-    }
-
-    public static String postBodyAsMultipart(String url, Map<String, Object> contentBodies) throws Exception {
-        return postBodyAsMultipart(url, contentBodies, CHARSET);
-    }
-
-    public static String postBodyAsMultipart(String url, Map<String, Object> contentBodies, String charset) throws Exception {
-        HttpPost httpPost = new HttpPost(url);
-        MultipartEntityBuilder mb = MultipartEntityBuilder.create();
-        mb.setCharset(Charset.forName(charset));
-        for (Map.Entry<String, Object> entry : contentBodies.entrySet()) {
-            Object value = entry.getValue();
-            if (value instanceof String) {
-                mb.addTextBody(entry.getKey(), (String) value, ContentType.TEXT_PLAIN.withCharset(Charset.forName(charset)));
-            } else if (value instanceof byte[]) {
-                mb.addBinaryBody(entry.getKey(), (byte[]) value);
-            } else if (value instanceof InputStream) {
-                mb.addBinaryBody(entry.getKey(), (InputStream) value);
-            } else if (value instanceof File) {
-                mb.addBinaryBody(entry.getKey(), (File) value);
-            } else {
-                mb.addTextBody(entry.getKey(), String.valueOf(value), ContentType.TEXT_PLAIN.withCharset(Charset.forName(charset)));
-            }
-        }
-        httpPost.setEntity(mb.build());
-        return httpClient.execute(httpPost, response -> {
-            HttpEntity entity = response.getEntity();
-            int statusCode = response.getCode();
-            if (statusCode != 200) {
-                httpPost.cancel();
-                throw new RuntimeException("HttpClient,error status code :" + statusCode);
-            }
-            String result = null;
-            if (entity != null) {
-                result = EntityUtils.toString(entity, StandardCharsets.UTF_8);
-            }
-            EntityUtils.consume(entity);
-            return result;
-        });
-    }
-
-    public static InputStream httpGetStream(String url, Map<String, String> params) throws Exception {
-        if (params != null && !params.isEmpty()) {
-            List<NameValuePair> pairs = new ArrayList<>(params.size());
-            for (Map.Entry<String, String> entry : params.entrySet()) {
-                String value = entry.getValue();
-                if (value != null) {
-                    pairs.add(new BasicNameValuePair(entry.getKey(), value));
-                }
-            }
-            String queryString = EntityUtils.toString(new UrlEncodedFormEntity(pairs, StandardCharsets.UTF_8));
-            if (url.indexOf("?") > 0) {
-                url += "&" + queryString;
-            } else {
-                url += "?" + queryString;
-            }
-
-        }
-        HttpGet httpGet = new HttpGet(url);
-        ClassicHttpResponse response = httpClient.execute(httpGet);
-        int statusCode = response.getCode();
-        if (statusCode != 200) {
-            httpGet.cancel();
-            response.close();
-            throw new RuntimeException("HttpClient,error status code :" + statusCode);
-        }
-        HttpEntity entity = response.getEntity();
-        if (entity != null && entity.isStreaming()) {
-            return entity.getContent();
-        }
-        response.close();
-        return null;
-    }
-
-    public static String buildUrl(String url, Map<String, String> params, String charset) {
         try {
-            if (params != null && !params.isEmpty()) {
-                List<NameValuePair> pairs = new ArrayList<>(params.size());
-                for (Map.Entry<String, String> entry : params.entrySet()) {
-                    String value = entry.getValue();
-                    if (value != null) {
-                        pairs.add(new BasicNameValuePair(entry.getKey(), value));
+            httpClient.execute(request, response -> {
+                int statusCode = response.getCode();
+                if (statusCode < 200 || statusCode >= 300) {
+                    throw new HttpException("HTTP error: " + statusCode);
+                }
+
+                HttpEntity entity = response.getEntity();
+                if (entity == null) {
+                    throw new HttpException("Response entity is null");
+                }
+
+                try (InputStream inputStream = entity.getContent()) {
+                    byte[] buffer = new byte[8192];
+                    int bytesRead;
+                    while ((bytesRead = inputStream.read(buffer)) != -1) {
+                        outputStream.write(buffer, 0, bytesRead);
                     }
+                    outputStream.flush();
+                } finally {
+                    EntityUtils.consume(entity);
                 }
-                String queryString = EntityUtils.toString(new UrlEncodedFormEntity(pairs, Charset.forName(charset)));
-                if (url.indexOf("?") > 0) {
-                    url += "&" + queryString;
-                } else {
-                    url += "?" + queryString;
-                }
-            }
-        } catch (Exception e) {
-            throw new RuntimeException(e);
+                return null;
+            });
+        } catch (IOException e) {
+            throw new HttpException("Failed to download: " + e.getMessage(), e);
         }
-        return url;
+    }
+
+    // ==================== Core Methods ====================
+
+    /**
+     * Execute request and return response as String
+     */
+    public static String execute(HttpUriRequest request) {
+        try {
+            return httpClient.execute(request, response -> {
+                HttpEntity entity = response.getEntity();
+                if (entity == null) {
+                    return null;
+                }
+                String result = EntityUtils.toString(entity, StandardCharsets.UTF_8);
+                EntityUtils.consume(entity);
+                return result;
+            });
+        } catch (IOException e) {
+            throw new HttpException("Request failed: " + e.getMessage(), e);
+        }
+    }
+
+    /**
+     * Execute request and return response as byte array
+     */
+    public static byte[] executeAsBytes(HttpUriRequest request) {
+        try {
+            return httpClient.execute(request, response -> {
+                HttpEntity entity = response.getEntity();
+                if (entity == null) {
+                    return null;
+                }
+                byte[] result = EntityUtils.toByteArray(entity);
+                EntityUtils.consume(entity);
+                return result;
+            });
+        } catch (IOException e) {
+            throw new HttpException("Request failed: " + e.getMessage(), e);
+        }
+    }
+
+    /**
+     * Execute request and return response as InputStream
+     */
+    public static InputStream executeAsStream(HttpUriRequest request) {
+        try {
+            ClassicHttpResponse response = httpClient.execute(request);
+            int statusCode = response.getCode();
+            if (statusCode < 200 || statusCode >= 300) {
+                EntityUtils.consume(response.getEntity());
+                throw new HttpException("HTTP error: " + statusCode);
+            }
+            HttpEntity entity = response.getEntity();
+            if (entity != null && entity.isStreaming()) {
+                return entity.getContent();
+            }
+            return null;
+        } catch (IOException e) {
+            throw new HttpException("Request failed: " + e.getMessage(), e);
+        }
+    }
+
+    // ==================== Utility Methods ====================
+
+    private static void addHeaders(HttpUriRequest request, Map<String, String> headers) {
+        // Add custom headers
+        if (headers != null) {
+            for (Map.Entry<String, String> entry : headers.entrySet()) {
+                request.setHeader(entry.getKey(), entry.getValue());
+            }
+        }
+    }
+
+    private static List<NameValuePair> buildNameValuePairs(Map<String, String> data) {
+        List<NameValuePair> pairs = new ArrayList<>();
+        for (Map.Entry<String, String> entry : data.entrySet()) {
+            if (entry.getValue() != null) {
+                pairs.add(new BasicNameValuePair(entry.getKey(), entry.getValue()));
+            }
+        }
+        return pairs;
+    }
+
+    private static String buildUrl(String url, Map<String, String> params) {
+        if (params == null || params.isEmpty()) {
+            return url;
+        }
+
+        StringBuilder sb = new StringBuilder(url);
+        boolean hasQuery = url.contains("?");
+
+        for (Map.Entry<String, String> entry : params.entrySet()) {
+            if (entry.getValue() != null) {
+                sb.append(hasQuery ? "&" : "?");
+                sb.append(encode(entry.getKey()));
+                sb.append("=");
+                sb.append(encode(entry.getValue()));
+                hasQuery = true;
+            }
+        }
+        return sb.toString();
+    }
+
+    private static String encode(String value) {
+        try {
+            return URLEncoder.encode(value, StandardCharsets.UTF_8);
+        } catch (Exception e) {
+            return value;
+        }
+    }
+
+    // ==================== HTTP Exception ====================
+
+    public static class HttpException extends RuntimeException {
+        public HttpException(String message) {
+            super(message);
+        }
+
+        public HttpException(String message, Throwable cause) {
+            super(message, cause);
+        }
     }
 }

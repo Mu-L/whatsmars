@@ -42,8 +42,8 @@ public class CollectionUtils {
     }
 
     public static List<String> sortSimpleName(List<String> list) {
-        if (list != null && list.size() > 0) {
-            Collections.sort(list, SIMPLE_NAME_COMPARATOR);
+        if (list != null && !list.isEmpty()) {
+            list.sort(SIMPLE_NAME_COMPARATOR);
         }
         return list;
     }
@@ -94,7 +94,7 @@ public class CollectionUtils {
             return null;
         }
         List<String> list = new ArrayList<>();
-        if (map.size() == 0) {
+        if (map.isEmpty()) {
             return list;
         }
         for (Map.Entry<String, String> entry : map.entrySet()) {
@@ -112,7 +112,7 @@ public class CollectionUtils {
     public static String join(List<String> list, String separator) {
         StringBuilder sb = new StringBuilder();
         for (String ele : list) {
-            if (sb.length() > 0) {
+            if (!sb.isEmpty()) {
                 sb.append(separator);
             }
             sb.append(ele);

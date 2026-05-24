@@ -29,7 +29,7 @@ public final class MDCTool {
     }  
   
     public static <V> MDCCallable<V> callable(Supplier<V> supplier) {  
-        return new MDCCallable<>(() -> supplier.get());  
+        return new MDCCallable<>(supplier::get);
     }  
   
 } 
