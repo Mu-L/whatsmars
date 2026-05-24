@@ -35,12 +35,10 @@ public class IOUtils {
         int read;
         long total = 0;
         byte[] buff = new byte[bufferSize];
-        while (is.available() > 0) {
-            read = is.read(buff, 0, buff.length);
-            if (read > 0) {
-                os.write(buff, 0, read);
-                total += read;
-            }
+        // 不要使用 is.available()，它不可靠
+        while ((read = is.read(buff, 0, buff.length)) != -1) {
+            os.write(buff, 0, read);
+            total += read;
         }
         return total;
     }

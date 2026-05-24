@@ -33,8 +33,8 @@ import java.util.Map;
 
 public class HttpUtils {
 
-    private static final Timeout DEFAULT_CONNECT_TIMEOUT = Timeout.ofMinutes(3);
-    private static final Timeout DEFAULT_CONNECTION_REQUEST_TIMEOUT = Timeout.ofMinutes(3);
+    private static final Timeout DEFAULT_CONNECT_TIMEOUT = Timeout.ofSeconds(30);
+    private static final Timeout DEFAULT_CONNECTION_REQUEST_TIMEOUT = Timeout.ofSeconds(30);
 
     private static final CloseableHttpClient httpClient = createHttpClient();
 

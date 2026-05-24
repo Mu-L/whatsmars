@@ -8,13 +8,12 @@ import javax.crypto.SecretKeyFactory;
 import javax.crypto.spec.DESKeySpec;
 import java.security.SecureRandom;
 
-
 public class DESUtils {
     private static final String DES = "DES";
     private static final String PADDING = "DES/ECB/PKCS5Padding";
     private static final String DEFAULT_ENCODING = "utf-8";
 
-    public final static String encrypt(String code, String key) {
+    public static String encrypt(String code, String key) {
         try {
             return Base64.encodeBase64String(encrypt(code.getBytes(DEFAULT_ENCODING), key
                     .getBytes(DEFAULT_ENCODING)));
@@ -29,14 +28,14 @@ public class DESUtils {
         SecureRandom sr = new SecureRandom();
         DESKeySpec dks = new DESKeySpec(key);
         SecretKeyFactory keyFactory = SecretKeyFactory.getInstance(DES);
-        SecretKey securekey = keyFactory.generateSecret(dks);
+        SecretKey secretKey = keyFactory.generateSecret(dks);
         Cipher cipher = Cipher.getInstance(PADDING);
-        cipher.init(Cipher.ENCRYPT_MODE, securekey, sr);
+        cipher.init(Cipher.ENCRYPT_MODE, secretKey, sr);
         return cipher.doFinal(src);
 
     }
 
-    public final static String decrypt(String data, String key) {
+    public static String decrypt(String data, String key) {
         try {
             //base64,default-charset is UTF-8
             return new String(decrypt(Base64.decodeBase64(data),
@@ -52,11 +51,10 @@ public class DESUtils {
         SecureRandom sr = new SecureRandom();
         DESKeySpec dks = new DESKeySpec(key);
         SecretKeyFactory keyFactory = SecretKeyFactory.getInstance(DES);
-        SecretKey securekey = keyFactory.generateSecret(dks);
+        SecretKey secretKey = keyFactory.generateSecret(dks);
         Cipher cipher = Cipher.getInstance(PADDING);
-        cipher.init(Cipher.DECRYPT_MODE, securekey, sr);
+        cipher.init(Cipher.DECRYPT_MODE, secretKey, sr);
         return cipher.doFinal(src);
     }
-
 
 }

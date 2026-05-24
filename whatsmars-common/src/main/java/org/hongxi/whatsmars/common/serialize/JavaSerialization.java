@@ -9,17 +9,20 @@ public class JavaSerialization implements Serialization {
 
     @Override
     public byte[] serialize(Object obj) throws IOException {
-        ByteArrayOutputStream baos = new ByteArrayOutputStream();
-        ObjectOutputStream oos = new ObjectOutputStream(baos);
-        oos.writeObject(obj);
-        return baos.toByteArray();
+        try (ByteArrayOutputStream baos = new ByteArrayOutputStream();
+             ObjectOutputStream oos = new ObjectOutputStream(baos)) {
+            oos.writeObject(obj);
+            return baos.toByteArray();
+        }
     }
 
+    @SuppressWarnings("unchecked")
     @Override
     public <T> T deserialize(byte[] bytes, Class<T> clz) throws IOException, ClassNotFoundException {
-        ByteArrayInputStream bais = new ByteArrayInputStream(bytes);
-        ObjectInputStream ois = new ObjectInputStream(bais);
-        return (T) ois.readObject();
+        try (ByteArrayInputStream bais = new ByteArrayInputStream(bytes);
+             ObjectInputStream ois = new ObjectInputStream(bais)) {
+            return (T) ois.readObject();
+        }
     }
 
 }
