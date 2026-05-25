@@ -16,62 +16,49 @@
 
     <dependencies>
         <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter</artifactId>
+        </dependency>
+
+        <dependency>
+            <groupId>org.apache.dubbo</groupId>
+            <artifactId>dubbo</artifactId>
+            <version>${dubbo.version}</version>
+        </dependency>
+        <dependency>
             <groupId>org.apache.dubbo</groupId>
             <artifactId>dubbo-registry-zookeeper</artifactId>
             <version>${dubbo.version}</version>
         </dependency>
-
         <dependency>
             <groupId>org.apache.dubbo</groupId>
             <artifactId>dubbo-configcenter-zookeeper</artifactId>
             <version>${dubbo.version}</version>
         </dependency>
-
-        <dependency>
-            <groupId>org.apache.dubbo</groupId>
-            <artifactId>dubbo-config-spring</artifactId>
-            <version>${dubbo.version}</version>
-        </dependency>
-
         <dependency>
             <groupId>org.apache.dubbo</groupId>
             <artifactId>dubbo-metadata-report-zookeeper</artifactId>
             <version>${dubbo.version}</version>
         </dependency>
-
-        <!-- Observability -->
         <dependency>
             <groupId>org.apache.dubbo</groupId>
-            <artifactId>dubbo-tracing-otel-zipkin-spring-boot-starter</artifactId>
+            <artifactId>dubbo-config-spring</artifactId>
             <version>${dubbo.version}</version>
         </dependency>
-
-        <dependency>
-            <groupId>org.apache.dubbo</groupId>
-            <artifactId>dubbo-qos</artifactId>
-            <version>${dubbo.version}</version>
-        </dependency>
-
         <dependency>
             <groupId>org.apache.dubbo</groupId>
             <artifactId>dubbo-spring-boot-starter</artifactId>
             <version>${dubbo.version}</version>
         </dependency>
-
         <dependency>
-            <groupId>org.springframework.boot</groupId>
-            <artifactId>spring-boot-starter</artifactId>
-            <exclusions>
-                <exclusion>
-                    <groupId>org.springframework.boot</groupId>
-                    <artifactId>spring-boot-starter-logging</artifactId>
-                </exclusion>
-            </exclusions>
+            <groupId>org.apache.dubbo</groupId>
+            <artifactId>dubbo-tracing-otel-zipkin-spring-boot-starter</artifactId>
+            <version>${dubbo.version}</version>
         </dependency>
-
         <dependency>
-            <groupId>org.springframework.boot</groupId>
-            <artifactId>spring-boot-starter-log4j2</artifactId>
+            <groupId>org.apache.dubbo</groupId>
+            <artifactId>dubbo-qos</artifactId>
+            <version>${dubbo.version}</version>
         </dependency>
 
         <dependency>

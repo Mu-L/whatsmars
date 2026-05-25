@@ -9,9 +9,10 @@ import java.util.concurrent.ExecutionException;
 import org.hongxi.whatsmars.dubbo.demo.api.DemoService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
-import org.springframework.context.ConfigurableApplicationContext;
+import org.springframework.context.annotation.Bean;
 
 /**
  * Created by javahongxi on 2017/12/4.
@@ -25,25 +26,20 @@ public class ConsumerApplication {
     private DemoService demoService;
 
     public static void main(String[] args) {
-
-        ConfigurableApplicationContext context = SpringApplication.run(ConsumerApplication.class, args);
-        ConsumerApplication application = context.getBean(ConsumerApplication.class);
-        String result = application.doSayHello("world");
-        logger.info("result: {}", result);
-
-        CompletableFuture<String> future = application.doSayHelloAsync("world");
-        try {
-            logger.info("async call returned: {}", future.get());
-        } catch (InterruptedException | ExecutionException e) {
-            throw new RuntimeException(e);
-        }
+        SpringApplication.run(ConsumerApplication.class, args);
     }
 
-    public String doSayHello(String name) {
-        return demoService.sayHello(name);
-    }
+    @Bean
+    CommandLineRunner commandLineRunner() {
+        return args -> {
+            logger.info("result: {}", demoService.sayHello("world"));
 
-    public CompletableFuture<String> doSayHelloAsync(String name) {
-        return demoService.sayHelloAsync(name);
+            CompletableFuture<String> future = demoService.sayHelloAsync("world");
+            try {
+                logger.info("async call returned: {}", future.get());
+            } catch (InterruptedException | ExecutionException e) {
+                throw new RuntimeException(e);
+            }
+        };
     }
 }
