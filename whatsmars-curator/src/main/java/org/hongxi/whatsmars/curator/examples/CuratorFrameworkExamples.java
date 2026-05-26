@@ -31,7 +31,7 @@ public class CuratorFrameworkExamples {
 
     private static final Logger logger = LoggerFactory.getLogger(CuratorFrameworkExamples.class);
     private static final String ZK_ADDRESS = "127.0.0.1:2181";
-    private static final String BASE_PATH = "/curator-demo";
+    private static final String BASE_PATH = "/curator/demo";
 
     /**
      * 运行所有示例

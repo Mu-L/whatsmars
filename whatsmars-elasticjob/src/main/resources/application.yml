@@ -7,7 +7,7 @@ elasticjob:
     type: RDB
   regCenter:
     serverLists: localhost:2181
-    namespace: elasticjob-springboot
+    namespace: elasticjob-demo
   jobs:
     simpleJob:
       elasticJobClass: org.apache.shardingsphere.elasticjob.simple.job.SimpleJob

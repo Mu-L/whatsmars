@@ -8,6 +8,8 @@ import org.springframework.web.bind.annotation.*;
 
 import jakarta.validation.constraints.Min;
 
+import java.time.LocalDateTime;
+
 /**
  * Created by shenhongxi on 2020/8/16.
  */
@@ -46,5 +48,15 @@ public class SampleController {
     @GetMapping("/hello/{name}")
     public Result<String> hello4(@PathVariable String name) {
         return ResultHelper.newSuccessResult("Hello, " + name);
+    }
+
+    @RequestMapping("/hello5")
+    public Result<LocalDateTime> hello5(@RequestParam LocalDateTime dateTime) {
+        return ResultHelper.newSuccessResult(dateTime);
+    }
+
+    @RequestMapping("/hello6")
+    public Result<User> hello6(User user) {
+        return ResultHelper.newSuccessResult(user);
     }
 }

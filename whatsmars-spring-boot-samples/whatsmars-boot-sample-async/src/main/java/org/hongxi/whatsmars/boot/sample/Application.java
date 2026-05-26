@@ -29,7 +29,7 @@ public class Application {
         try {
             log.info(future.get());
         } catch (InterruptedException | ExecutionException e) {
-            e.printStackTrace();
+            log.error("future get error", e);
         }
         messageService.send();
         log.info("......end");

@@ -25,7 +25,7 @@ public class MonitorAspect {
         long start = System.currentTimeMillis();
         // record invocation (times)
         logger.info("{} start time: {}", tag, start);
-        Object obj = null;
+        Object obj;
         try {
             obj = pjp.proceed();
         } catch (Exception e) {
