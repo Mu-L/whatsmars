@@ -61,7 +61,7 @@ public class ServiceDiscoveryExamples {
         
         @Override
         public String toString() {
-            return "InstanceDetails{description='" + description + "', weight=" + weight + "}";
+            return "InstanceInfo{description='" + description + "', weight=" + weight + "}";
         }
     }
     
@@ -116,17 +116,17 @@ public class ServiceDiscoveryExamples {
         /**
          * 更新服务实例信息
          */
-        public void updatePayload(InstanceInfo details) throws Exception {
+        public void updatePayload(InstanceInfo instanceInfo) throws Exception {
             ServiceInstance<InstanceInfo> updatedInstance = ServiceInstance.<InstanceInfo>builder()
                 .name(serviceName)
                 .id(instance.getId())
                 .address(instance.getAddress())
                 .port(instance.getPort())
-                .payload(details)
+                .payload(instanceInfo)
                 .build();
             
             discovery.updateService(updatedInstance);
-            logger.info("服务实例信息已更新: {}", details);
+            logger.info("服务实例信息已更新: {}", instanceInfo);
         }
         
         @Override

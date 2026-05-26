@@ -272,7 +272,9 @@ public class PathCacheExamples {
          * 创建节点树
          */
         public void createTree() throws Exception {
-            // 创建父节点
+            if (client.checkExists().forPath(path + "/level1/level2/level3") != null) {
+                client.delete().deletingChildrenIfNeeded().forPath(path + "/level1/level2/level3");
+            }
             client.create().creatingParentsIfNeeded()
                 .withMode(CreateMode.PERSISTENT)
                 .forPath(path + "/level1/level2/level3", "root".getBytes(StandardCharsets.UTF_8));
