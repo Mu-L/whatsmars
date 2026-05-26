@@ -81,6 +81,12 @@
                 <artifactId>shardingsphere-jdbc</artifactId>
                 <version>${shardingsphere.version}</version>
             </dependency>
+            <!--elasticjob依赖了shardingsphere-jdbc-spi-->
+            <dependency>
+                <groupId>org.apache.shardingsphere</groupId>
+                <artifactId>shardingsphere-infra-spi</artifactId>
+                <version>${shardingsphere.version}</version>
+            </dependency>
             <dependency>
                 <groupId>com.github.pagehelper</groupId>
                 <artifactId>pagehelper-spring-boot-starter</artifactId>
@@ -346,7 +352,7 @@
                     </execution>
                 </executions>
             </plugin>
-            <!--mvn versions:set -DoldVersion=Rocket.S7 -DnewVersion=Rocket.S8-->
+            <!--mvn versions:set -DoldVersion=2021.4.1 -DnewVersion=2026.5.1-->
             <plugin>
                 <groupId>org.codehaus.mojo</groupId>
                 <artifactId>versions-maven-plugin</artifactId>

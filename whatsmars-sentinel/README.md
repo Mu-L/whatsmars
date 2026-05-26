@@ -1,6 +1,3 @@
-## Adapter
-dubbo sentinel demo 见 whatsmars-dubbo-provider-boot
-
 ## transport http
 `http://localhost:8719/getRules?type=flow/degrade/system`
 
