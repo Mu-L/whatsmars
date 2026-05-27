@@ -1,0 +1,5 @@
+spring:
+  pulsar:
+    consumer:
+      subscription:
+        initial-position: earliest

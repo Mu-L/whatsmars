@@ -20,6 +20,7 @@
         <module>whatsmars-mq-kafka</module>
         <module>whatsmars-mq-rocketmq-spring</module>
         <module>whatsmars-mq-kafka-spring</module>
+        <module>whatsmars-mq-pulsar</module>
     </modules>
 
 </project>
