@@ -5,6 +5,7 @@ spring:
 dubbo:
   application:
     name: ${spring.application.name}
+    qos-port: 22222
   protocol:
     name: tri
     port: -1
