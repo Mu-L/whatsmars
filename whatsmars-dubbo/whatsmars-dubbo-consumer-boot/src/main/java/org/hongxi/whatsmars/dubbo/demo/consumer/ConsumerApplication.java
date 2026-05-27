@@ -7,6 +7,7 @@ import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ExecutionException;
 
 import org.hongxi.whatsmars.dubbo.demo.api.DemoService;
+import org.hongxi.whatsmars.dubbo.demo.api.vo.User;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.boot.CommandLineRunner;
@@ -40,6 +41,8 @@ public class ConsumerApplication {
             } catch (InterruptedException | ExecutionException e) {
                 throw new RuntimeException(e);
             }
+
+            logger.info("echo: {}", demoService.echo(new User("lily", 20)));
         };
     }
 }

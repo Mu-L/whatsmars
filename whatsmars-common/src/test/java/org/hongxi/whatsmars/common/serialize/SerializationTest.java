@@ -15,8 +15,8 @@ public class SerializationTest {
         User user = new User("hongxi", 30);
         byte[] bytes = serialization.serialize(user);
         user = serialization.deserialize(bytes, User.class);
-        assertEquals("hongxi", user.name);
-        assertEquals(30, user.age);
+        assertEquals("hongxi", user.name());
+        assertEquals(30, user.age());
     }
 
     @Test
@@ -25,8 +25,8 @@ public class SerializationTest {
         User user = new User("hongxi", 30);
         byte[] bytes = serialization.serialize(user);
         user = serialization.deserialize(bytes, User.class);
-        assertEquals("hongxi", user.name);
-        assertEquals(30, user.age);
+        assertEquals("hongxi", user.name());
+        assertEquals(30, user.age());
     }
 
     @Test
@@ -35,8 +35,8 @@ public class SerializationTest {
         User user = new User("hongxi", 30);
         byte[] bytes = serialization.serialize(user);
         user = serialization.deserialize(bytes, User.class);
-        assertEquals("hongxi", user.name);
-        assertEquals(30, user.age);
+        assertEquals("hongxi", user.name());
+        assertEquals(30, user.age());
     }
 
     @Test
