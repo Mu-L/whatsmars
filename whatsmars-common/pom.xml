@@ -48,12 +48,9 @@
             <optional>true</optional>
         </dependency>
 
-        <!-- Source: https://mvnrepository.com/artifact/org.apache.dubbo/hessian-lite -->
         <dependency>
             <groupId>org.apache.dubbo</groupId>
             <artifactId>hessian-lite</artifactId>
-            <version>4.0.4</version>
-            <scope>compile</scope>
         </dependency>
         <dependency>
             <groupId>com.alibaba.fastjson2</groupId>
