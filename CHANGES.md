@@ -1,5 +1,6 @@
 ## 2026.5.1
 - Upgrade to Java 17
+- Upgrade Spring Boot to 3.5.14
 - Add module `whatsmars-ai`
 - Remove useless modules
 
