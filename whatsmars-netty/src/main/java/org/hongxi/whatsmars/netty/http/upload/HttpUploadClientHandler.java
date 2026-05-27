@@ -29,8 +29,7 @@ public class HttpUploadClientHandler extends SimpleChannelInboundHandler<HttpObj
 
     @Override
     public void channelRead0(ChannelHandlerContext ctx, HttpObject msg) {
-        if (msg instanceof HttpResponse) {
-            HttpResponse response = (HttpResponse) msg;
+        if (msg instanceof HttpResponse response) {
 
             System.err.println("STATUS: " + response.status());
             System.err.println("VERSION: " + response.protocolVersion());
@@ -50,8 +49,7 @@ public class HttpUploadClientHandler extends SimpleChannelInboundHandler<HttpObj
                 System.err.println("CONTENT {");
             }
         }
-        if (msg instanceof HttpContent) {
-            HttpContent chunk = (HttpContent) msg;
+        if (msg instanceof HttpContent chunk) {
             System.err.println(chunk.content().toString(CharsetUtil.UTF_8));
 
             if (chunk instanceof LastHttpContent) {

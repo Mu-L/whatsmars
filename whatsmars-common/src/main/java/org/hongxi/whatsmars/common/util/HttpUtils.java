@@ -205,14 +205,14 @@ public class HttpUtils {
                 String key = entry.getKey();
                 Object value = entry.getValue();
 
-                if (value instanceof String) {
-                    builder.addTextBody(key, (String) value, ContentType.TEXT_PLAIN.withCharset(StandardCharsets.UTF_8));
-                } else if (value instanceof byte[]) {
-                    builder.addBinaryBody(key, (byte[]) value);
-                } else if (value instanceof File) {
-                    builder.addBinaryBody(key, (File) value);
-                } else if (value instanceof InputStream) {
-                    builder.addBinaryBody(key, (InputStream) value);
+                if (value instanceof String s) {
+                    builder.addTextBody(key, s, ContentType.TEXT_PLAIN.withCharset(StandardCharsets.UTF_8));
+                } else if (value instanceof byte[] bytes) {
+                    builder.addBinaryBody(key, bytes);
+                } else if (value instanceof File file) {
+                    builder.addBinaryBody(key, file);
+                } else if (value instanceof InputStream inputStream) {
+                    builder.addBinaryBody(key, inputStream);
                 } else if (value != null) {
                     builder.addTextBody(key, String.valueOf(value), ContentType.TEXT_PLAIN.withCharset(StandardCharsets.UTF_8));
                 }

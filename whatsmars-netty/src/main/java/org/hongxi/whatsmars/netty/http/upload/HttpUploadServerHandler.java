@@ -75,8 +75,8 @@ public class HttpUploadServerHandler extends SimpleChannelInboundHandler<HttpObj
 
     @Override
     public void channelRead0(ChannelHandlerContext ctx, HttpObject msg) throws Exception {
-        if (msg instanceof HttpRequest) {
-            HttpRequest request = this.request = (HttpRequest) msg;
+        if (msg instanceof HttpRequest request) {
+            this.request = request;
             URI uri = new URI(request.uri());
             if (!uri.getPath().startsWith("/form")) {
                 // Write Menu
@@ -151,9 +151,8 @@ public class HttpUploadServerHandler extends SimpleChannelInboundHandler<HttpObj
         // check if the decoder was constructed before
         // if not it handles the form get
         if (decoder != null) {
-            if (msg instanceof HttpContent) {
+            if (msg instanceof HttpContent chunk) {
                 // New chunk is received
-                HttpContent chunk = (HttpContent) msg;
                 try {
                     decoder.offer(chunk);
                 } catch (ErrorDataDecoderException e1) {
@@ -211,9 +210,9 @@ public class HttpUploadServerHandler extends SimpleChannelInboundHandler<HttpObj
                 StringBuilder builder = new StringBuilder();
                 if (partialContent == null) {
                     partialContent = (HttpData) data;
-                    if (partialContent instanceof FileUpload) {
+                    if (partialContent instanceof FileUpload fileUpload) {
                         builder.append("Start FileUpload: ")
-                            .append(((FileUpload) partialContent).getFilename()).append(" ");
+                            .append(fileUpload.getFilename()).append(" ");
                     } else {
                         builder.append("Start Attribute: ")
                             .append(partialContent.getName()).append(" ");

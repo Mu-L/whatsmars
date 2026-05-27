@@ -103,8 +103,7 @@ public class MonitorFilter implements WebFilter, InitializingBean {
                 return UNKNOWN_PATH;
             }
             exchange.getAttributes().remove(handlerKey);
-            if (handler instanceof HandlerMethod) {
-                HandlerMethod handlerMethod = (HandlerMethod) handler;
+            if (handler instanceof HandlerMethod handlerMethod) {
                 String methodSign = handlerMethod.getMethod().toGenericString();
                 String pathPattern = pathPatterns.get(methodSign);
                 if (StringUtils.hasLength(pathPattern)) {

@@ -59,16 +59,16 @@ public class RedisClientHandler extends ChannelDuplexHandler {
     }
 
     private static void printAggregatedRedisResponse(RedisMessage msg) {
-        if (msg instanceof SimpleStringRedisMessage) {
-            System.out.println(((SimpleStringRedisMessage) msg).content());
-        } else if (msg instanceof ErrorRedisMessage) {
-            System.out.println(((ErrorRedisMessage) msg).content());
-        } else if (msg instanceof IntegerRedisMessage) {
-            System.out.println(((IntegerRedisMessage) msg).value());
-        } else if (msg instanceof FullBulkStringRedisMessage) {
-            System.out.println(getString((FullBulkStringRedisMessage) msg));
-        } else if (msg instanceof ArrayRedisMessage) {
-            for (RedisMessage child : ((ArrayRedisMessage) msg).children()) {
+        if (msg instanceof SimpleStringRedisMessage stringMsg) {
+            System.out.println(stringMsg.content());
+        } else if (msg instanceof ErrorRedisMessage errorMsg) {
+            System.out.println(errorMsg.content());
+        } else if (msg instanceof IntegerRedisMessage intMsg) {
+            System.out.println(intMsg.value());
+        } else if (msg instanceof FullBulkStringRedisMessage bulkMsg) {
+            System.out.println(getString(bulkMsg));
+        } else if (msg instanceof ArrayRedisMessage arrayMsg) {
+            for (RedisMessage child : arrayMsg.children()) {
                 printAggregatedRedisResponse(child);
             }
         } else {

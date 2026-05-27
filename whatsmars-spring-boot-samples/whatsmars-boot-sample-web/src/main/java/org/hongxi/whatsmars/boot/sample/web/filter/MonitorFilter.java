@@ -95,8 +95,7 @@ public class MonitorFilter extends OncePerRequestFilter {
                 return UNKNOWN_URI;
             }
             Object handler = handlerExecutionChain.getHandler();
-            if (handler instanceof HandlerMethod) {
-                HandlerMethod handlerMethod = (HandlerMethod) handler;
+            if (handler instanceof HandlerMethod handlerMethod) {
                 String methodSign = handlerMethod.getMethod().toGenericString();
                 String uriPattern = uriPatterns.get(methodSign);
                 if (StringUtils.isNotBlank(uriPattern)) {

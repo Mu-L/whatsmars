@@ -32,8 +32,8 @@ public class NumberEncoder extends MessageToByteEncoder<Number> {
     protected void encode(ChannelHandlerContext ctx, Number msg, ByteBuf out) {
         // Convert to a BigInteger first for easier implementation.
         BigInteger v;
-        if (msg instanceof BigInteger) {
-            v = (BigInteger) msg;
+        if (msg instanceof BigInteger bigInteger) {
+            v = bigInteger;
         } else {
             v = new BigInteger(String.valueOf(msg));
         }

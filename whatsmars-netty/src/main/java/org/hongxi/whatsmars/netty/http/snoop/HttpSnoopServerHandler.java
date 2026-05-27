@@ -48,8 +48,8 @@ public class HttpSnoopServerHandler extends SimpleChannelInboundHandler<Object> 
 
     @Override
     protected void channelRead0(ChannelHandlerContext ctx, Object msg) {
-        if (msg instanceof HttpRequest) {
-            HttpRequest request = this.request = (HttpRequest) msg;
+        if (msg instanceof HttpRequest request) {
+            this.request = request;
 
             if (HttpUtil.is100ContinueExpected(request)) {
                 send100Continue(ctx);
@@ -89,8 +89,7 @@ public class HttpSnoopServerHandler extends SimpleChannelInboundHandler<Object> 
             appendDecoderResult(buf, request);
         }
 
-        if (msg instanceof HttpContent) {
-            HttpContent httpContent = (HttpContent) msg;
+        if (msg instanceof HttpContent httpContent) {
 
             ByteBuf content = httpContent.content();
             if (content.isReadable()) {
@@ -100,10 +99,9 @@ public class HttpSnoopServerHandler extends SimpleChannelInboundHandler<Object> 
                 appendDecoderResult(buf, request);
             }
 
-            if (msg instanceof LastHttpContent) {
+            if (msg instanceof LastHttpContent trailer) {
                 buf.append("END OF CONTENT\r\n");
 
-                LastHttpContent trailer = (LastHttpContent) msg;
                 if (!trailer.trailingHeaders().isEmpty()) {
                     buf.append("\r\n");
                     for (CharSequence name: trailer.trailingHeaders().names()) {
