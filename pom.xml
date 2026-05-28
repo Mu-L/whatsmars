@@ -31,6 +31,7 @@
         <module>whatsmars-ai</module>
         <module>whatsmars-curator</module>
         <module>whatsmars-nacos</module>
+        <module>whatsmars-grpc</module>
     </modules>
 
     <!--这里的properties会覆盖父pom里的重名的配置-->
@@ -49,6 +50,7 @@
         <elasticjob.version>3.0.5</elasticjob.version>
         <fastjson.version>1.2.83</fastjson.version>
         <fastjson2.version>2.0.61</fastjson2.version>
+        <grpc.version>1.81.0</grpc.version>
         <guava.version>33.6.0-jre</guava.version>
         <hessian-lite.version>4.0.4</hessian-lite.version>
         <langchain4j.beta.version>1.14.1-beta24</langchain4j.beta.version>
@@ -157,6 +159,23 @@
                 <groupId>com.alibaba.csp</groupId>
                 <artifactId>sentinel-parameter-flow-control</artifactId>
                 <version>${sentinel.version}</version>
+            </dependency>
+
+            <dependency>
+                <groupId>io.grpc</groupId>
+                <artifactId>grpc-netty-shaded</artifactId>
+                <version>${grpc.version}</version>
+                <scope>runtime</scope>
+            </dependency>
+            <dependency>
+                <groupId>io.grpc</groupId>
+                <artifactId>grpc-protobuf</artifactId>
+                <version>${grpc.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>io.grpc</groupId>
+                <artifactId>grpc-stub</artifactId>
+                <version>${grpc.version}</version>
             </dependency>
 
             <dependency>

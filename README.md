@@ -16,6 +16,7 @@ whatsmars-curator | 最好用的zk客户端
 whatsmars-dubbo | 高性能分布式RPC框架
 whatsmars-elasticjob | 分布式调度框架
 whatsmars-elasticsearch | Elasticsearch
+whatsmars-grpc | 跨语言的协议与框架
 whatsmars-mq | 消息中间件RocketMQ,Kafka等
 whatsmars-nacos | 注册与配置中心
 whatsmars-netty | NIO框架首选
