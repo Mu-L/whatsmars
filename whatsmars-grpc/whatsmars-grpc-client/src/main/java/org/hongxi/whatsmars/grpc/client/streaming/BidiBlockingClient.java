@@ -109,7 +109,7 @@ public class BidiBlockingClient {
                             Thread.currentThread().interrupt();
                             stream.cancel("Interrupted", e);
                         } catch (StatusException e) {
-                            logger.warn("Encountered error while reading: ", e);
+                            logger.warn("Encountered error while reading: {}", e.getStatus());
                         }
                     }
                 }, "reader");
