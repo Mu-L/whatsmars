@@ -1,17 +1,20 @@
-package org.hongxi.whatsmars.grpc.helloworld;
+package org.hongxi.whatsmars.grpc.client.helloworld;
 
 import io.grpc.Channel;
 import io.grpc.Grpc;
 import io.grpc.InsecureChannelCredentials;
 import io.grpc.ManagedChannel;
 import io.grpc.StatusRuntimeException;
+import org.hongxi.whatsmars.grpc.api.helloworld.GreeterGrpc;
+import org.hongxi.whatsmars.grpc.api.helloworld.HelloReply;
+import org.hongxi.whatsmars.grpc.api.helloworld.HelloRequest;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.util.concurrent.TimeUnit;
 
 /**
- * A simple client that requests a greeting from the {@link HelloWorldServer}.
+ * A simple client that requests a greeting from the HelloWorldServer.
  */
 public class HelloWorldClient {
     private static final Logger logger = LoggerFactory.getLogger(HelloWorldClient.class);
@@ -57,7 +60,7 @@ public class HelloWorldClient {
         if (args.length > 0) {
             if ("--help".equals(args[0])) {
                 System.err.println("Usage: [name [target]]");
-                System.err.println("");
+                System.err.println();
                 System.err.println("  name    The name you wish to be greeted by. Defaults to " + user);
                 System.err.println("  target  The server to connect to. Defaults to " + target);
                 System.exit(1);

@@ -1,9 +1,8 @@
-package org.hongxi.whatsmars.grpc.helloworld;
+package org.hongxi.whatsmars.grpc.server.helloworld;
 
 import io.grpc.Grpc;
 import io.grpc.InsecureServerCredentials;
 import io.grpc.Server;
-import io.grpc.stub.StreamObserver;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -82,13 +81,4 @@ public class HelloWorldServer {
         server.blockUntilShutdown();
     }
 
-    static class GreeterImpl extends GreeterGrpc.GreeterImplBase {
-
-        @Override
-        public void sayHello(HelloRequest req, StreamObserver<HelloReply> responseObserver) {
-            HelloReply reply = HelloReply.newBuilder().setMessage("Hello " + req.getName()).build();
-            responseObserver.onNext(reply);
-            responseObserver.onCompleted();
-        }
-    }
 }
