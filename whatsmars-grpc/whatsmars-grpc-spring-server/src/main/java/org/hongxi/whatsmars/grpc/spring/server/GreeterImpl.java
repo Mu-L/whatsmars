@@ -4,9 +4,9 @@ import io.grpc.stub.StreamObserver;
 import org.hongxi.whatsmars.grpc.api.helloworld.GreeterGrpc;
 import org.hongxi.whatsmars.grpc.api.helloworld.HelloReply;
 import org.hongxi.whatsmars.grpc.api.helloworld.HelloRequest;
-import org.springframework.stereotype.Service;
+import org.springframework.grpc.server.service.GrpcService;
 
-@Service
+@GrpcService
 public class GreeterImpl extends GreeterGrpc.GreeterImplBase {
 
         @Override
