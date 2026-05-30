@@ -16,6 +16,8 @@
         <module>whatsmars-grpc-api</module>
         <module>whatsmars-grpc-server</module>
         <module>whatsmars-grpc-client</module>
+        <module>whatsmars-grpc-spring-server</module>
+        <module>whatsmars-grpc-spring-client</module>
     </modules>
 
 </project>

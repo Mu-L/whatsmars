@@ -63,6 +63,7 @@
         <rocketmq-spring.version>2.3.5</rocketmq-spring.version>
         <sentinel.version>1.8.10</sentinel.version>
         <shardingsphere.version>5.5.2</shardingsphere.version>
+        <spring-grpc.version>0.12.0</spring-grpc.version>
         <zookeeper.version>3.9.3</zookeeper.version>
     </properties>
 
@@ -161,26 +162,29 @@
                 <version>${sentinel.version}</version>
             </dependency>
 
+            <!--如果一个bom里定义了很多第三方依赖的版本，那么是不建议引入这样的bom的-->
+            <!--而grpc-bom就很好，它只包含grpc自身的模块-->
             <dependency>
                 <groupId>io.grpc</groupId>
-                <artifactId>grpc-netty-shaded</artifactId>
+                <artifactId>grpc-bom</artifactId>
                 <version>${grpc.version}</version>
-                <scope>runtime</scope>
+                <type>pom</type>
+                <scope>import</scope>
             </dependency>
             <dependency>
-                <groupId>io.grpc</groupId>
-                <artifactId>grpc-protobuf</artifactId>
-                <version>${grpc.version}</version>
+                <groupId>org.springframework.grpc</groupId>
+                <artifactId>spring-grpc-client-spring-boot-starter</artifactId>
+                <version>${spring-grpc.version}</version>
             </dependency>
             <dependency>
-                <groupId>io.grpc</groupId>
-                <artifactId>grpc-stub</artifactId>
-                <version>${grpc.version}</version>
+                <groupId>org.springframework.grpc</groupId>
+                <artifactId>spring-grpc-server-spring-boot-starter</artifactId>
+                <version>${spring-grpc.version}</version>
             </dependency>
             <dependency>
-                <groupId>io.grpc</groupId>
-                <artifactId>grpc-services</artifactId>
-                <version>${grpc.version}</version>
+                <groupId>org.springframework.grpc</groupId>
+                <artifactId>spring-grpc-spring-boot-starter</artifactId>
+                <version>${spring-grpc.version}</version>
             </dependency>
 
             <dependency>
