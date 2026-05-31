@@ -14,9 +14,6 @@ import org.hongxi.whatsmars.dubbo.demo.api.DemoService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-/**
- * 进程停止时报curator方面的错是正常的，需要await可参考 dubbo-spring-boot AwaitingNonWebApplicationListener
- */
 public class Application {
     private static final Logger logger = LoggerFactory.getLogger(Application.class);
 
@@ -35,8 +32,7 @@ public class Application {
         configCenterConfig.setAddress(ZOOKEEPER_URL);
 
         DubboBootstrap bootstrap = DubboBootstrap.getInstance();
-        bootstrap
-                .application(new ApplicationConfig("dubbo-demo-api-consumer"))
+        bootstrap.application(new ApplicationConfig("dubbo-demo-consumer"))
                 .configCenter(configCenterConfig)
                 .registry(new RegistryConfig(ZOOKEEPER_URL))
                 .metadataReport(new MetadataReportConfig(ZOOKEEPER_URL))
@@ -52,6 +48,8 @@ public class Application {
         GenericService genericService = (GenericService) demoService;
         Object genericInvokeResult = genericService.$invoke(
                 "sayHello", new String[] {String.class.getName()}, new Object[] {"lily"});
-        logger.info("generic invoke returned: {}", genericInvokeResult.toString());
+        logger.info("generic invoke returned: {}", genericInvokeResult);
+
+        bootstrap.await();
     }
 }

@@ -19,7 +19,7 @@ public class Application {
     }
 
     private static void startWithBootstrap() {
-        ServiceConfig<DemoServiceImpl> service = new ServiceConfig<>();
+        ServiceConfig<DemoService> service = new ServiceConfig<>();
         service.setInterface(DemoService.class);
         service.setRef(new DemoServiceImpl());
 
@@ -27,8 +27,7 @@ public class Application {
         configCenterConfig.setAddress(ZOOKEEPER_URL);
 
         DubboBootstrap bootstrap = DubboBootstrap.getInstance();
-        bootstrap
-                .application(new ApplicationConfig("dubbo-demo-api-provider"))
+        bootstrap.application(new ApplicationConfig("dubbo-demo-provider"))
                 .configCenter(configCenterConfig)
                 .registry(new RegistryConfig(ZOOKEEPER_URL))
                 .metadataReport(new MetadataReportConfig(ZOOKEEPER_URL))

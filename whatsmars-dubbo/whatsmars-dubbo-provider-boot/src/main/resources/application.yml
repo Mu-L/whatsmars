@@ -1,13 +1,13 @@
 spring:
   application:
-    name: dubbo-springboot-demo-provider
+    name: dubbo-spring-demo-provider
 
 dubbo:
   application:
     name: ${spring.application.name}
     qos-port: 22222
   protocol:
-    name: tri
+    name: dubbo
     port: -1
   registry:
     id: zk-registry

@@ -1,6 +1,6 @@
 spring:
   application:
-    name: dubbo-springboot-demo-consumer
+    name: dubbo-spring-demo-consumer
 
 dubbo:
   application:
