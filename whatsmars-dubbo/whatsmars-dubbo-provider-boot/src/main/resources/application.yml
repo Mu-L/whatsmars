@@ -7,7 +7,7 @@ dubbo:
     name: ${spring.application.name}
     qos-port: 22222
   protocol:
-    name: dubbo
+    name: tri
     port: -1
   registry:
     id: zk-registry

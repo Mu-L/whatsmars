@@ -10,7 +10,7 @@ import org.apache.dubbo.config.spring.context.annotation.EnableDubbo;
 @SpringBootApplication
 @EnableDubbo
 public class ProviderApplication {
-    public static void main(String[] args) throws Exception {
+    public static void main(String[] args) {
         SpringApplication.run(ProviderApplication.class, args);
     }
 }
