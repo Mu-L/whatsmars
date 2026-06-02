@@ -4,18 +4,16 @@ import com.alibaba.cloud.nacos.annotation.NacosConfig;
 import com.alibaba.cloud.nacos.annotation.NacosConfigListener;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 @Slf4j
 @RestController
-@RequestMapping("/config/test")
-public class ConfigTestController {
+public class AnnotationConfigController {
 
     @NacosConfig(dataId = "github.username", group = "DEFAULT_GROUP")
     private String name;
 
-    @GetMapping("/hello")
+    @GetMapping("/config/hello")
     public String hello() {
         return "Hello, " + name;
     }
