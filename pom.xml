@@ -32,6 +32,7 @@
         <module>whatsmars-curator</module>
         <module>whatsmars-nacos</module>
         <module>whatsmars-grpc</module>
+        <module>whatsmars-spring-cloud</module>
     </modules>
 
     <!--这里的properties会覆盖父pom里的重名的配置-->
