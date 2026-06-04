@@ -39,11 +39,6 @@
             <artifactId>dubbo-metadata-report-zookeeper</artifactId>
             <version>${dubbo.version}</version>
         </dependency>
-        <dependency>
-            <groupId>org.apache.dubbo</groupId>
-            <artifactId>dubbo-tracing-otel-zipkin-spring-boot-starter</artifactId>
-            <version>${dubbo.version}</version>
-        </dependency>
 
         <dependency>
             <groupId>io.micrometer</groupId>
