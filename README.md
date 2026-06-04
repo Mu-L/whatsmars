@@ -39,6 +39,10 @@ whatsmars-spring-boot-samples | Spring Boot Samples
 - [x] [*Redis*](https://github.com/antirez/redis)
 - [x] [*Elasticsearch*](https://github.com/elastic/elasticsearch)
 
+### Other projects
+- [spring-cloud-samples](https://github.com/javahongxi/spring-cloud-samples): Spring Cloud 生态研究 ☁️
+- [jaws](https://github.com/javahongxi/jaws): 轻量级RPC框架 🦈
+
 ### Friendship links
 - [*阿里巴巴Java开发手册*](https://github.com/alibaba/Alibaba-Java-Coding-Guidelines) 📚
 - [*Java诊断利器Arthas*](https://github.com/alibaba/arthas) 👀
