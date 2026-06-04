@@ -1,0 +1,3 @@
+[submodule "whatsmars-spring-cloud"]
+	path = whatsmars-spring-cloud
+	url = https://github.com/javahongxi/spring-cloud-samples
