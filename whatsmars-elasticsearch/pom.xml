@@ -23,6 +23,11 @@
             <groupId>co.elastic.clients</groupId>
             <artifactId>elasticsearch-java</artifactId>
         </dependency>
+        <!-- 提供 Jackson，使 ElasticsearchClient 使用 JacksonJsonpMapper 而非 SimpleJsonpMapper -->
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-json</artifactId>
+        </dependency>
     </dependencies>
 
 </project>
