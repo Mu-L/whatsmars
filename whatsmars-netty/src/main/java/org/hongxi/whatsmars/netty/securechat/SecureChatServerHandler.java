@@ -24,6 +24,8 @@ import io.netty.handler.ssl.SslHandler;
 import io.netty.util.concurrent.Future;
 import io.netty.util.concurrent.GenericFutureListener;
 import io.netty.util.concurrent.GlobalEventExecutor;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.net.InetAddress;
 
@@ -31,6 +33,8 @@ import java.net.InetAddress;
  * Handles a server-side channel.
  */
 public class SecureChatServerHandler extends SimpleChannelInboundHandler<String> {
+
+    private static final Logger logger = LoggerFactory.getLogger(SecureChatServerHandler.class);
 
     static final ChannelGroup channels = new DefaultChannelGroup(GlobalEventExecutor.INSTANCE);
 
@@ -73,7 +77,7 @@ public class SecureChatServerHandler extends SimpleChannelInboundHandler<String>
 
     @Override
     public void exceptionCaught(ChannelHandlerContext ctx, Throwable cause) {
-        cause.printStackTrace();
+        logger.error("Exception caught", cause);
         ctx.close();
     }
 }

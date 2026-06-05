@@ -20,6 +20,8 @@ import io.netty.channel.ChannelFutureListener;
 import io.netty.channel.ChannelHandler.Sharable;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.SimpleChannelInboundHandler;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.net.InetAddress;
 import java.util.Date;
@@ -29,6 +31,8 @@ import java.util.Date;
  */
 @Sharable
 public class TelnetServerHandler extends SimpleChannelInboundHandler<String> {
+
+    private static final Logger logger = LoggerFactory.getLogger(TelnetServerHandler.class);
 
     @Override
     public void channelActive(ChannelHandlerContext ctx) throws Exception {
@@ -70,7 +74,7 @@ public class TelnetServerHandler extends SimpleChannelInboundHandler<String> {
 
     @Override
     public void exceptionCaught(ChannelHandlerContext ctx, Throwable cause) {
-        cause.printStackTrace();
+        logger.error("Exception caught", cause);
         ctx.close();
     }
 }

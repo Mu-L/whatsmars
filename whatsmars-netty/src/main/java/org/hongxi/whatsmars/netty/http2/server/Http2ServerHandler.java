@@ -14,6 +14,8 @@ import io.netty.handler.codec.http2.Http2FrameStream;
 import io.netty.handler.codec.http2.Http2Headers;
 import io.netty.handler.codec.http2.Http2HeadersFrame;
 import io.netty.util.CharsetUtil;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import static io.netty.buffer.Unpooled.copiedBuffer;
 import static io.netty.buffer.Unpooled.unreleasableBuffer;
@@ -31,6 +33,8 @@ import static io.netty.handler.codec.http.HttpResponseStatus.OK;
  */
 @Sharable
 public class Http2ServerHandler extends ChannelDuplexHandler {
+
+    private static final Logger logger = LoggerFactory.getLogger(Http2ServerHandler.class);
 
     private static final ByteBuf RESPONSE_BYTES = unreleasableBuffer(
             copiedBuffer("Hello World", CharsetUtil.UTF_8)).asReadOnly();
@@ -89,7 +93,7 @@ public class Http2ServerHandler extends ChannelDuplexHandler {
 
     @Override
     public void exceptionCaught(ChannelHandlerContext ctx, Throwable cause) {
-        cause.printStackTrace();
+        logger.error("Exception caught", cause);
         ctx.close();
     }
 }

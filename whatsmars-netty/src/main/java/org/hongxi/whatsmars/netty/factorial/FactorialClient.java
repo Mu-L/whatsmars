@@ -23,12 +23,16 @@ import io.netty.channel.socket.nio.NioSocketChannel;
 import io.netty.handler.ssl.SslContext;
 import io.netty.handler.ssl.SslContextBuilder;
 import io.netty.handler.ssl.util.InsecureTrustManagerFactory;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * Sends a sequence of integers to a {@link FactorialServer} to calculate
  * the factorial of the specified integer.
  */
 public final class FactorialClient {
+
+    private static final Logger logger = LoggerFactory.getLogger(FactorialClient.class);
 
     static final boolean SSL = System.getProperty("ssl") != null;
     static final String HOST = System.getProperty("host", "127.0.0.1");
@@ -60,7 +64,7 @@ public final class FactorialClient {
                 (FactorialClientHandler) f.channel().pipeline().last();
 
             // Print out the answer.
-            System.err.format("Factorial of %,d is: %,d", COUNT, handler.getFactorial());
+            logger.info("Factorial of {}, is: {}", COUNT, handler.getFactorial());
         } finally {
             group.shutdownGracefully();
         }

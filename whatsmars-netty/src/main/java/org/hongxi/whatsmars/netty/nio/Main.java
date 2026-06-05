@@ -1,6 +1,8 @@
 package org.hongxi.whatsmars.netty.nio;
 
 import org.hongxi.whatsmars.netty.nio.http.HttpMessageReaderFactory;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.io.IOException;
 
@@ -8,6 +10,8 @@ import java.io.IOException;
  * Created by jjenkov on 19-10-2015.
  */
 public class Main {
+
+    private static final Logger logger = LoggerFactory.getLogger(Main.class);
 
     public static void main(String[] args) throws IOException {
 
@@ -20,7 +24,7 @@ public class Main {
         byte[] httpResponseBytes = httpResponse.getBytes("UTF-8");
 
         MessageProcessor messageProcessor = (request, writeProxy) -> {
-            System.out.println("Message Received from socket: " + request.socketId);
+            logger.info("Message Received from socket: {}", request.socketId);
 
             Message response = writeProxy.getMessage();
             response.socketId = request.socketId;
@@ -33,7 +37,7 @@ public class Main {
 
         server.start();
 
-        System.err.println("Open your web browser and navigate to http://127.0.0.1:9999/");
+        logger.info("Open your web browser and navigate to http://127.0.0.1:9999/");
 
     }
 

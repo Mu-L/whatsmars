@@ -26,12 +26,16 @@ import io.netty.handler.logging.LoggingHandler;
 import io.netty.handler.ssl.SslContext;
 import io.netty.handler.ssl.SslContextBuilder;
 import io.netty.handler.ssl.util.SelfSignedCertificate;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * An HTTP server that sends back the content of the received HTTP request
  * in a pretty plaintext form.
  */
 public final class HttpHelloWorldServer {
+
+    private static final Logger logger = LoggerFactory.getLogger(HttpHelloWorldServer.class);
 
     static final boolean SSL = System.getProperty("ssl") != null;
     static final int PORT = Integer.parseInt(System.getProperty("port", SSL? "8443" : "8080"));
@@ -59,8 +63,7 @@ public final class HttpHelloWorldServer {
 
             Channel ch = b.bind(PORT).sync().channel();
 
-            System.err.println("Open your web browser and navigate to " +
-                    (SSL? "https" : "http") + "://127.0.0.1:" + PORT + '/');
+            logger.info("Open your web browser and navigate to {}://127.0.0.1:{}/", SSL? "https" : "http", PORT);
 
             ch.closeFuture().sync();
         } finally {

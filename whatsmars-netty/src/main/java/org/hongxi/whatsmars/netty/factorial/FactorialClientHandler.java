@@ -19,6 +19,8 @@ import io.netty.channel.ChannelFuture;
 import io.netty.channel.ChannelFutureListener;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.SimpleChannelInboundHandler;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.math.BigInteger;
 import java.util.concurrent.BlockingQueue;
@@ -32,6 +34,8 @@ import java.util.concurrent.LinkedBlockingQueue;
  * this handler to avoid a race condition.
  */
 public class FactorialClientHandler extends SimpleChannelInboundHandler<BigInteger> {
+
+    private static final Logger logger = LoggerFactory.getLogger(FactorialClientHandler.class);
 
     private ChannelHandlerContext ctx;
     private int receivedMessages;
@@ -78,7 +82,7 @@ public class FactorialClientHandler extends SimpleChannelInboundHandler<BigInteg
 
     @Override
     public void exceptionCaught(ChannelHandlerContext ctx, Throwable cause) {
-        cause.printStackTrace();
+        logger.error("Exception caught", cause);
         ctx.close();
     }
 
@@ -102,7 +106,7 @@ public class FactorialClientHandler extends SimpleChannelInboundHandler<BigInteg
             if (future.isSuccess()) {
                 sendNumbers();
             } else {
-                future.cause().printStackTrace();
+                logger.error("Write operation failed", future.cause());
                 future.channel().close();
             }
         }

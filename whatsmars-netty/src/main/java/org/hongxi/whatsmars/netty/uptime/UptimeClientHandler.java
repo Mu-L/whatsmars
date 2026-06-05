@@ -20,6 +20,8 @@ import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.SimpleChannelInboundHandler;
 import io.netty.handler.timeout.IdleState;
 import io.netty.handler.timeout.IdleStateEvent;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.util.concurrent.TimeUnit;
 
@@ -29,6 +31,8 @@ import java.util.concurrent.TimeUnit;
  */
 @Sharable
 public class UptimeClientHandler extends SimpleChannelInboundHandler<Object> {
+
+    private static final Logger logger = LoggerFactory.getLogger(UptimeClientHandler.class);
 
     long startTime = -1;
 
@@ -79,15 +83,15 @@ public class UptimeClientHandler extends SimpleChannelInboundHandler<Object> {
 
     @Override
     public void exceptionCaught(ChannelHandlerContext ctx, Throwable cause) {
-        cause.printStackTrace();
+        logger.error("Exception caught", cause);
         ctx.close();
     }
 
     void println(String msg) {
         if (startTime < 0) {
-            System.err.format("[SERVER IS DOWN] %s%n", msg);
+            logger.warn("[SERVER IS DOWN] {}", msg);
         } else {
-            System.err.format("[UPTIME: %5ds] %s%n", (System.currentTimeMillis() - startTime) / 1000, msg);
+            logger.info("[UPTIME: {}s] {}", (System.currentTimeMillis() - startTime) / 1000, msg);
         }
     }
 }

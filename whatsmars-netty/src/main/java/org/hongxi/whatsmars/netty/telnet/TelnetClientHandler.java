@@ -18,6 +18,8 @@ package org.hongxi.whatsmars.netty.telnet;
 import io.netty.channel.ChannelHandler.Sharable;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.SimpleChannelInboundHandler;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * Handles a client-side channel.
@@ -25,14 +27,16 @@ import io.netty.channel.SimpleChannelInboundHandler;
 @Sharable
 public class TelnetClientHandler extends SimpleChannelInboundHandler<String> {
 
+    private static final Logger logger = LoggerFactory.getLogger(TelnetClientHandler.class);
+
     @Override
     protected void channelRead0(ChannelHandlerContext ctx, String msg) throws Exception {
-        System.err.println(msg);
+        logger.info(msg);
     }
 
     @Override
     public void exceptionCaught(ChannelHandlerContext ctx, Throwable cause) {
-        cause.printStackTrace();
+        logger.error("Exception caught", cause);
         ctx.close();
     }
 }

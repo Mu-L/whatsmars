@@ -1,5 +1,8 @@
 package org.hongxi.whatsmars.netty.nio;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import java.io.IOException;
 import java.nio.ByteBuffer;
 import java.nio.channels.ClosedChannelException;
@@ -11,6 +14,8 @@ import java.util.*;
  * Created by jjenkov on 16-10-2015.
  */
 public class SocketProcessor implements Runnable {
+
+    private static final Logger logger = LoggerFactory.getLogger(SocketProcessor.class);
 
     private Queue<Socket>  inboundSocketQueue   = null;
 
@@ -58,13 +63,13 @@ public class SocketProcessor implements Runnable {
             try{
                 executeCycle();
             } catch(IOException e){
-                e.printStackTrace();
+                logger.error("Error executing cycle", e);
             }
 
             try {
                 Thread.sleep(100);
             } catch (InterruptedException e) {
-                e.printStackTrace();
+                logger.error("Thread sleep interrupted", e);
             }
         }
     }
@@ -132,7 +137,7 @@ public class SocketProcessor implements Runnable {
         }
 
         if(socket.endOfStreamReached){
-            System.out.println("Socket closed: " + socket.socketId);
+            logger.info("Socket closed: {}", socket.socketId);
             this.socketMap.remove(socket.socketId);
             key.attach(null);
             key.cancel();

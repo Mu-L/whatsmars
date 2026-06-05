@@ -17,6 +17,8 @@ package org.hongxi.whatsmars.netty.objectecho;
 
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.ChannelInboundHandlerAdapter;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.util.concurrent.atomic.AtomicInteger;
 
@@ -26,12 +28,14 @@ import java.util.concurrent.atomic.AtomicInteger;
  */
 public class ObjectEchoServerHandler extends ChannelInboundHandlerAdapter {
 
+    private static final Logger logger = LoggerFactory.getLogger(ObjectEchoServerHandler.class);
+
     private int count;
 
     @Override
     public void channelRead(ChannelHandlerContext ctx, Object msg) {
         if (count++ % 1000 == 0) {
-            System.out.println("received Object: " + msg);
+            logger.info("received Object: {}", msg);
         }
         // Echo back the received object to the client.
         ctx.write(msg);
@@ -44,7 +48,7 @@ public class ObjectEchoServerHandler extends ChannelInboundHandlerAdapter {
 
     @Override
     public void exceptionCaught(ChannelHandlerContext ctx, Throwable cause) {
-        cause.printStackTrace();
+        logger.error("Exception caught", cause);
         ctx.close();
     }
 }

@@ -17,18 +17,22 @@ package org.hongxi.whatsmars.netty.localecho;
 
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.SimpleChannelInboundHandler;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class LocalEchoClientHandler extends SimpleChannelInboundHandler<Object> {
+
+    private static final Logger logger = LoggerFactory.getLogger(LocalEchoClientHandler.class);
 
     @Override
     public void channelRead0(ChannelHandlerContext ctx, Object msg) throws Exception {
         // Print as received
-        System.out.println(msg);
+        logger.info("{}", msg);
     }
 
     @Override
     public void exceptionCaught(ChannelHandlerContext ctx, Throwable cause) {
-        cause.printStackTrace();
+        logger.error("Exception caught", cause);
         ctx.close();
     }
 }

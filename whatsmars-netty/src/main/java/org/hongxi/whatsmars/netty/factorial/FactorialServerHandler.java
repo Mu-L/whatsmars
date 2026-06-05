@@ -17,6 +17,8 @@ package org.hongxi.whatsmars.netty.factorial;
 
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.SimpleChannelInboundHandler;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.math.BigInteger;
 
@@ -28,6 +30,8 @@ import java.math.BigInteger;
  * this handler  to avoid a race condition.
  */
 public class FactorialServerHandler extends SimpleChannelInboundHandler<BigInteger> {
+
+    private static final Logger logger = LoggerFactory.getLogger(FactorialServerHandler.class);
 
     private BigInteger lastMultiplier = new BigInteger("1");
     private BigInteger factorial = new BigInteger("1");
@@ -42,12 +46,12 @@ public class FactorialServerHandler extends SimpleChannelInboundHandler<BigInteg
 
     @Override
     public void channelInactive(ChannelHandlerContext ctx) throws Exception {
-        System.err.printf("Factorial of %,d is: %,d%n", lastMultiplier, factorial);
+        logger.info("Factorial of {}, is: {}", lastMultiplier, factorial);
     }
 
     @Override
     public void exceptionCaught(ChannelHandlerContext ctx, Throwable cause) throws Exception {
-        cause.printStackTrace();
+        logger.error("Exception caught", cause);
         ctx.close();
     }
 }

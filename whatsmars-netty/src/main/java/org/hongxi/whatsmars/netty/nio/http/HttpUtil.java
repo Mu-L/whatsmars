@@ -1,11 +1,16 @@
 package org.hongxi.whatsmars.netty.nio.http;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import java.io.UnsupportedEncodingException;
 
 /**
  * Created by jjenkov on 19-10-2015.
  */
 public class HttpUtil {
+
+    private static final Logger logger = LoggerFactory.getLogger(HttpUtil.class);
 
     private static final byte[] GET    = new byte[]{'G','E','T'};
     private static final byte[] POST   = new byte[]{'P','O','S','T'};
@@ -43,7 +48,7 @@ public class HttpUtil {
                 try {
                     findContentLength(src, prevEndOfHeader, endIndex, httpHeaders);
                 } catch (UnsupportedEncodingException e) {
-                    e.printStackTrace();
+                    logger.error("Error parsing content length", e);
                 }
             }
 

@@ -26,6 +26,8 @@ import io.netty.handler.codec.http.cookie.DefaultCookie;
 import io.netty.handler.ssl.SslContext;
 import io.netty.handler.ssl.SslContextBuilder;
 import io.netty.handler.ssl.util.InsecureTrustManagerFactory;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.net.URI;
 
@@ -34,6 +36,8 @@ import java.net.URI;
  * {@link System#out} to test {@link HttpSnoopServer}.
  */
 public final class HttpSnoopClient {
+
+    private static final Logger logger = LoggerFactory.getLogger(HttpSnoopClient.class);
 
     static final String URL = System.getProperty("url", "http://127.0.0.1:8080/");
 
@@ -51,7 +55,7 @@ public final class HttpSnoopClient {
         }
 
         if (!"http".equalsIgnoreCase(scheme) && !"https".equalsIgnoreCase(scheme)) {
-            System.err.println("Only HTTP(S) is supported.");
+            logger.warn("Only HTTP(S) is supported.");
             return;
         }
 

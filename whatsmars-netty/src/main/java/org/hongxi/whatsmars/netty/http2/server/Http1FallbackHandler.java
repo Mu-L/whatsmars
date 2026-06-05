@@ -9,6 +9,8 @@ import io.netty.handler.codec.http.FullHttpResponse;
 import io.netty.handler.codec.http.HttpMessage;
 import io.netty.handler.codec.http.HttpUtil;
 import io.netty.util.CharsetUtil;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import static io.netty.handler.codec.http.HttpHeaderNames.CONTENT_LENGTH;
 import static io.netty.handler.codec.http.HttpHeaderNames.CONTENT_TYPE;
@@ -22,6 +24,8 @@ import static io.netty.handler.codec.http.HttpVersion.HTTP_1_1;
  * 使用此 Handler 以普通 HTTP/1.1 方式处理请求。
  */
 public class Http1FallbackHandler extends SimpleChannelInboundHandler<HttpMessage> {
+
+    private static final Logger logger = LoggerFactory.getLogger(Http1FallbackHandler.class);
 
     private static final byte[] CONTENT = "Hello World - via HTTP/1.1 (no HTTP/2 upgrade)".getBytes(CharsetUtil.UTF_8);
 
@@ -48,7 +52,7 @@ public class Http1FallbackHandler extends SimpleChannelInboundHandler<HttpMessag
 
     @Override
     public void exceptionCaught(ChannelHandlerContext ctx, Throwable cause) {
-        cause.printStackTrace();
+        logger.error("Exception caught", cause);
         ctx.close();
     }
 }

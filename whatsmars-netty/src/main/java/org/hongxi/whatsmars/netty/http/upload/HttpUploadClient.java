@@ -29,6 +29,8 @@ import io.netty.handler.ssl.SslContext;
 import io.netty.handler.ssl.SslContextBuilder;
 import io.netty.handler.ssl.util.InsecureTrustManagerFactory;
 import io.netty.util.internal.SocketUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -40,6 +42,8 @@ import java.util.Map.Entry;
  * This class is meant to be run against {@link HttpUploadServer}.
  */
 public final class HttpUploadClient {
+
+    private static final Logger logger = LoggerFactory.getLogger(HttpUploadClient.class);
 
     static final String BASE_URL = System.getProperty("baseUrl", "http://127.0.0.1:8080/");
     static final String FILE = System.getProperty("file", "upload.txt");
@@ -69,7 +73,7 @@ public final class HttpUploadClient {
         }
 
         if (!"http".equalsIgnoreCase(scheme) && !"https".equalsIgnoreCase(scheme)) {
-            System.err.println("Only HTTP(S) is supported.");
+            logger.warn("Only HTTP(S) is supported.");
             return;
         }
 

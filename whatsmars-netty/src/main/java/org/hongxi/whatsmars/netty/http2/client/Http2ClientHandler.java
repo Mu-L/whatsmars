@@ -60,7 +60,7 @@ public class Http2ClientHandler extends SimpleChannelInboundHandler<Http2StreamF
 
     @Override
     public void exceptionCaught(ChannelHandlerContext ctx, Throwable cause) {
-        cause.printStackTrace();
+        logger.error("Exception caught", cause);
         latch.countDown();
         ctx.close();
     }

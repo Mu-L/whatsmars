@@ -20,11 +20,15 @@ import io.netty.channel.ChannelFuture;
 import io.netty.channel.ChannelFutureListener;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.SimpleChannelInboundHandler;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * Handles a client-side channel.
  */
 public class DiscardClientHandler extends SimpleChannelInboundHandler<Object> {
+
+    private static final Logger logger = LoggerFactory.getLogger(DiscardClientHandler.class);
 
     private ByteBuf content;
     private ChannelHandlerContext ctx;
@@ -53,7 +57,7 @@ public class DiscardClientHandler extends SimpleChannelInboundHandler<Object> {
     @Override
     public void exceptionCaught(ChannelHandlerContext ctx, Throwable cause) {
         // Close the connection when an exception is raised.
-        cause.printStackTrace();
+        logger.error("Exception caught", cause);
         ctx.close();
     }
 
@@ -71,7 +75,7 @@ public class DiscardClientHandler extends SimpleChannelInboundHandler<Object> {
             if (future.isSuccess()) {
                 generateTraffic();
             } else {
-                future.cause().printStackTrace();
+                logger.error("Write operation failed", future.cause());
                 future.channel().close();
             }
         }

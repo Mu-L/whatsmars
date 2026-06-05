@@ -19,39 +19,42 @@ import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.SimpleChannelInboundHandler;
 import io.netty.handler.codec.http.*;
 import io.netty.util.CharsetUtil;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class HttpSnoopClientHandler extends SimpleChannelInboundHandler<HttpObject> {
+
+    private static final Logger logger = LoggerFactory.getLogger(HttpSnoopClientHandler.class);
 
     @Override
     public void channelRead0(ChannelHandlerContext ctx, HttpObject msg) {
         if (msg instanceof HttpResponse response) {
 
-            System.err.println("STATUS: " + response.status());
-            System.err.println("VERSION: " + response.protocolVersion());
-            System.err.println();
+            logger.info("STATUS: {}", response.status());
+            logger.info("VERSION: {}", response.protocolVersion());
+            logger.info("");
 
             if (!response.headers().isEmpty()) {
                 for (CharSequence name: response.headers().names()) {
                     for (CharSequence value: response.headers().getAll(name)) {
-                        System.err.println("HEADER: " + name + " = " + value);
+                        logger.info("HEADER: {} = {}", name, value);
                     }
                 }
-                System.err.println();
+                logger.info("");
             }
 
             if (HttpUtil.isTransferEncodingChunked(response)) {
-                System.err.println("CHUNKED CONTENT {");
+                logger.info("CHUNKED CONTENT {{");
             } else {
-                System.err.println("CONTENT {");
+                logger.info("CONTENT {{");
             }
         }
         if (msg instanceof HttpContent content) {
 
-            System.err.print(content.content().toString(CharsetUtil.UTF_8));
-            System.err.flush();
+            logger.info(content.content().toString(CharsetUtil.UTF_8));
 
             if (content instanceof LastHttpContent) {
-                System.err.println("} END OF CONTENT");
+                logger.info("}} END OF CONTENT");
                 ctx.close();
             }
         }
@@ -59,7 +62,7 @@ public class HttpSnoopClientHandler extends SimpleChannelInboundHandler<HttpObje
 
     @Override
     public void exceptionCaught(ChannelHandlerContext ctx, Throwable cause) {
-        cause.printStackTrace();
+        logger.error("Exception caught", cause);
         ctx.close();
     }
 }

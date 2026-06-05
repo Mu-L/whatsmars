@@ -17,20 +17,24 @@ package org.hongxi.whatsmars.netty.securechat;
 
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.SimpleChannelInboundHandler;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * Handles a client-side channel.
  */
 public class SecureChatClientHandler extends SimpleChannelInboundHandler<String> {
 
+    private static final Logger logger = LoggerFactory.getLogger(SecureChatClientHandler.class);
+
     @Override
     public void channelRead0(ChannelHandlerContext ctx, String msg) throws Exception {
-        System.err.println(msg);
+        logger.info(msg);
     }
 
     @Override
     public void exceptionCaught(ChannelHandlerContext ctx, Throwable cause) {
-        cause.printStackTrace();
+        logger.error("Exception caught", cause);
         ctx.close();
     }
 }

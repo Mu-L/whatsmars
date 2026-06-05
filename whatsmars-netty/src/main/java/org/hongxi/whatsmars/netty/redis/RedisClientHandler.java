@@ -24,6 +24,8 @@ import io.netty.handler.codec.CodecException;
 import io.netty.handler.codec.redis.*;
 import io.netty.util.CharsetUtil;
 import io.netty.util.ReferenceCountUtil;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -32,6 +34,8 @@ import java.util.List;
  * An example Redis client handler. This handler read input from STDIN and write output to STDOUT.
  */
 public class RedisClientHandler extends ChannelDuplexHandler {
+
+    private static final Logger logger = LoggerFactory.getLogger(RedisClientHandler.class);
 
     @Override
     public void write(ChannelHandlerContext ctx, Object msg, ChannelPromise promise) {
@@ -53,20 +57,19 @@ public class RedisClientHandler extends ChannelDuplexHandler {
 
     @Override
     public void exceptionCaught(ChannelHandlerContext ctx, Throwable cause) {
-        System.err.print("exceptionCaught: ");
-        cause.printStackTrace(System.err);
+        logger.error("Exception caught", cause);
         ctx.close();
     }
 
     private static void printAggregatedRedisResponse(RedisMessage msg) {
         if (msg instanceof SimpleStringRedisMessage stringMsg) {
-            System.out.println(stringMsg.content());
+            logger.info("{}", stringMsg.content());
         } else if (msg instanceof ErrorRedisMessage errorMsg) {
-            System.out.println(errorMsg.content());
+            logger.info("{}", errorMsg.content());
         } else if (msg instanceof IntegerRedisMessage intMsg) {
-            System.out.println(intMsg.value());
+            logger.info("{}", intMsg.value());
         } else if (msg instanceof FullBulkStringRedisMessage bulkMsg) {
-            System.out.println(getString(bulkMsg));
+            logger.info("{}", getString(bulkMsg));
         } else if (msg instanceof ArrayRedisMessage arrayMsg) {
             for (RedisMessage child : arrayMsg.children()) {
                 printAggregatedRedisResponse(child);

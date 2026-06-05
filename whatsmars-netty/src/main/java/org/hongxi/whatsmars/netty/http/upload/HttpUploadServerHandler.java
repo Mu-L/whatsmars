@@ -26,6 +26,8 @@ import io.netty.handler.codec.http.multipart.HttpPostRequestDecoder.EndOfDataDec
 import io.netty.handler.codec.http.multipart.HttpPostRequestDecoder.ErrorDataDecoderException;
 import io.netty.handler.codec.http.multipart.InterfaceHttpData.HttpDataType;
 import io.netty.util.CharsetUtil;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.io.IOException;
 import java.net.URI;
@@ -34,14 +36,12 @@ import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Set;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 
 import static io.netty.buffer.Unpooled.copiedBuffer;
 
 public class HttpUploadServerHandler extends SimpleChannelInboundHandler<HttpObject> {
 
-    private static final Logger logger = Logger.getLogger(HttpUploadServerHandler.class.getName());
+    private static final Logger logger = LoggerFactory.getLogger(HttpUploadServerHandler.class);
 
     private HttpRequest request;
 
@@ -131,7 +131,7 @@ public class HttpUploadServerHandler extends SimpleChannelInboundHandler<HttpObj
             try {
                 decoder = new HttpPostRequestDecoder(factory, request);
             } catch (ErrorDataDecoderException e1) {
-                e1.printStackTrace();
+                logger.error("Error decoding data", e1);
                 responseContent.append(e1.getMessage());
                 writeResponse(ctx.channel());
                 ctx.channel().close();
@@ -156,7 +156,7 @@ public class HttpUploadServerHandler extends SimpleChannelInboundHandler<HttpObj
                 try {
                     decoder.offer(chunk);
                 } catch (ErrorDataDecoderException e1) {
-                    e1.printStackTrace();
+                    logger.error("Error decoding data", e1);
                     responseContent.append(e1.getMessage());
                     writeResponse(ctx.channel());
                     ctx.channel().close();
@@ -197,7 +197,7 @@ public class HttpUploadServerHandler extends SimpleChannelInboundHandler<HttpObj
                 if (data != null) {
                     // check if current HttpData is a FileUpload and previously set as partial
                     if (partialContent == data) {
-                        logger.info(" 100% (FinalSize: " + partialContent.length() + ")");
+                        logger.info(" 100% (FinalSize: {})", partialContent.length());
                         partialContent = null;
                     }
                     // new value
@@ -242,7 +242,7 @@ public class HttpUploadServerHandler extends SimpleChannelInboundHandler<HttpObj
                 value = attribute.getValue();
             } catch (IOException e1) {
                 // Error while reading data from File, only print name and error
-                e1.printStackTrace();
+                logger.error("Error reading attribute value", e1);
                 responseContent.append("\r\nBODY Attribute: " + attribute.getHttpDataType().name() + ": "
                         + attribute.getName() + " Error while reading value: " + e1.getMessage() + "\r\n");
                 return;
@@ -266,7 +266,7 @@ public class HttpUploadServerHandler extends SimpleChannelInboundHandler<HttpObj
                             responseContent.append(fileUpload.getString(fileUpload.getCharset()));
                         } catch (IOException e1) {
                             // do nothing for the example
-                            e1.printStackTrace();
+                            logger.error("Error reading file content", e1);
                         }
                         responseContent.append("\r\n");
                     } else {
@@ -413,7 +413,7 @@ public class HttpUploadServerHandler extends SimpleChannelInboundHandler<HttpObj
 
     @Override
     public void exceptionCaught(ChannelHandlerContext ctx, Throwable cause) throws Exception {
-        logger.log(Level.WARNING, responseContent.toString(), cause);
+        logger.warn(responseContent.toString(), cause);
         ctx.channel().close();
     }
 }

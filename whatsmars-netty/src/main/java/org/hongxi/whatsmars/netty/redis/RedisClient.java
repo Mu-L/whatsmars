@@ -25,6 +25,8 @@ import io.netty.handler.codec.redis.RedisBulkStringAggregator;
 import io.netty.handler.codec.redis.RedisDecoder;
 import io.netty.handler.codec.redis.RedisEncoder;
 import io.netty.util.concurrent.GenericFutureListener;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.io.BufferedReader;
 import java.io.InputStreamReader;
@@ -33,6 +35,9 @@ import java.io.InputStreamReader;
  * Simple Redis client that demonstrates Redis commands against a Redis server.
  */
 public class RedisClient {
+
+    private static final Logger logger = LoggerFactory.getLogger(RedisClient.class);
+
     private static final String HOST = System.getProperty("host", "127.0.0.1");
     private static final int PORT = Integer.parseInt(System.getProperty("port", "6379"));
 
@@ -58,7 +63,7 @@ public class RedisClient {
             Channel ch = b.connect(HOST, PORT).sync().channel();
 
             // Read commands from the stdin.
-            System.out.println("Enter Redis commands (quit to end)");
+            logger.info("Enter Redis commands (quit to end)");
             ChannelFuture lastWriteFuture = null;
             BufferedReader in = new BufferedReader(new InputStreamReader(System.in));
             for (;;) {
@@ -76,8 +81,7 @@ public class RedisClient {
                     @Override
                     public void operationComplete(ChannelFuture future) throws Exception {
                         if (!future.isSuccess()) {
-                            System.err.print("write failed: ");
-                            future.cause().printStackTrace(System.err);
+                            logger.error("write failed", future.cause());
                         }
                     }
                 });

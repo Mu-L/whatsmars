@@ -24,11 +24,15 @@ import io.netty.channel.local.LocalServerChannel;
 import io.netty.channel.nio.NioEventLoopGroup;
 import io.netty.handler.logging.LogLevel;
 import io.netty.handler.logging.LoggingHandler;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.io.BufferedReader;
 import java.io.InputStreamReader;
 
 public final class LocalEcho {
+
+    private static final Logger logger = LoggerFactory.getLogger(LocalEcho.class);
 
     static final String PORT = System.getProperty("port", "test_port");
 
@@ -79,7 +83,7 @@ public final class LocalEcho {
             Channel ch = cb.connect(addr).sync().channel();
 
             // Read commands from the stdin.
-            System.out.println("Enter text (quit to end)");
+            logger.info("Enter text (quit to end)");
             ChannelFuture lastWriteFuture = null;
             BufferedReader in = new BufferedReader(new InputStreamReader(System.in));
             for (;;) {
