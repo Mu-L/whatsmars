@@ -95,7 +95,7 @@ public class ManualFlowControlServer {
                                 onReadyHandler.wasReady = false;
                             }
                         } catch (Throwable throwable) {
-                            throwable.printStackTrace();
+                            logger.error("Error handling request", throwable);
                             responseObserver.onError(
                                     Status.UNKNOWN.withDescription("Error handling request").withCause(throwable).asException());
                         }
@@ -104,7 +104,7 @@ public class ManualFlowControlServer {
                     @Override
                     public void onError(Throwable t) {
                         // End the response stream if the client presents an error.
-                        t.printStackTrace();
+                        logger.error("Error in streaming", t);
                         responseObserver.onCompleted();
                     }
 
@@ -130,11 +130,11 @@ public class ManualFlowControlServer {
             @Override
             public void run() {
                 // Use stderr here since the logger may have been reset by its JVM shutdown hook.
-                System.err.println("Shutting down");
+                logger.info("Shutting down");
                 try {
                     server.shutdown().awaitTermination(30, TimeUnit.SECONDS);
                 } catch (InterruptedException e) {
-                    e.printStackTrace(System.err);
+                    logger.error("Error during server shutdown", e);
                 }
             }
         });

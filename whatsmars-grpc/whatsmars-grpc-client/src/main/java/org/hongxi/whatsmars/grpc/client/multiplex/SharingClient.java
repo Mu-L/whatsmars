@@ -56,7 +56,7 @@ public class SharingClient {
      */
     private void greet(String name, GreeterGrpc.GreeterBlockingStub stub, String stubName)
             throws InterruptedException {
-        System.out.println("Will try to greet " + name + " using " + stubName);
+        logger.info("Will try to greet {} using {}", name, stubName);
         HelloRequest request = HelloRequest.newBuilder().setName(name).build();
         HelloReply response;
         try {
@@ -65,7 +65,7 @@ public class SharingClient {
             logger.warn("RPC failed: {}", e.getStatus());
             return;
         }
-        System.out.println("Greeting: " + response.getMessage());
+        logger.info("Greeting: {}", response.getMessage());
         // pause to allow interleaving
         Thread.sleep(1000);
     }
@@ -86,7 +86,7 @@ public class SharingClient {
         StreamObserver<EchoResponse> responseObserver = new StreamObserver<EchoResponse>() {
             @Override
             public void onNext(EchoResponse response) {
-                System.out.println("Received an echo: " + response.getMessage());
+                logger.info("Received an echo: {}", response.getMessage());
                 valuesReceived.add(response.getMessage());
             }
 
@@ -98,7 +98,7 @@ public class SharingClient {
 
             @Override
             public void onCompleted() {
-                System.out.println("Server acknowledged end of echo stream.");
+                logger.info("Server acknowledged end of echo stream.");
                 future.set(valuesReceived);
             }
         };
@@ -112,7 +112,7 @@ public class SharingClient {
 
                 try {
                     for (String curValue : valuesToSend) {
-                        System.out.println("Sending an echo request for: " + curValue);
+                        logger.info("Sending an echo request for: {}", curValue);
                         EchoRequest req = EchoRequest.newBuilder().setMessage(curValue).build();
                         requestObserver.onNext(req);
 
@@ -149,10 +149,10 @@ public class SharingClient {
         // Allow passing in the user and target strings as command line arguments
         if (args.length > 0) {
             if ("--help".equals(args[0])) {
-                System.err.println("Usage: [name [target]]");
-                System.err.println();
-                System.err.println("  name    The name you wish to be greeted by. Defaults to " + user);
-                System.err.println("  target  The server to connect to. Defaults to " + target);
+                logger.info("Usage: [name [target]]");
+                logger.info("");
+                logger.info("  name    The name you wish to be greeted by. Defaults to {}", user);
+                logger.info("  target  The server to connect to. Defaults to {}", target);
                 System.exit(1);
             }
             user = args[0];
@@ -180,12 +180,12 @@ public class SharingClient {
             // Receiving happens asynchronously
 
             String resultStr = future.get(1, TimeUnit.MINUTES).toString();
-            System.out.println("The echo requests and results were:");
-            System.out.println(echoInput.toString());
-            System.out.println(resultStr);
+            logger.info("The echo requests and results were:");
+            logger.info("{}", echoInput.toString());
+            logger.info("{}", resultStr);
 
             if (!future.isDone()) {
-                System.err.println("Streaming rpc failed to complete in 1 minute");
+                logger.warn("Streaming rpc failed to complete in 1 minute");
             }
         } finally {
             // ManagedChannels use resources like threads and TCP connections. To prevent leaking these

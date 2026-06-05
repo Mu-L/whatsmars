@@ -58,7 +58,7 @@ public class HealthServiceClient {
             logger.warn("RPC failed: {}", e.getStatus());
             return;
         } catch (Exception e) {
-            e.printStackTrace();
+            logger.error("Unexpected error", e);
             return;
         }
         logger.info("Greeting: {}", response.getMessage());
@@ -84,8 +84,7 @@ public class HealthServiceClient {
         // whose service is not in SERVING state to be unavailable. Since we only have a single server
         // we are connecting to, then the load balancer will return an error without sending the RPC.
 
-        System.out.println("\nDoing test with" + (enableHealthChecking ? "" : "out")
-                + " health checking\n");
+        logger.info("\nDoing test with{} health checking\n", enableHealthChecking ? "" : "out");
 
         try {
             HealthServiceClient client = new HealthServiceClient(channel);
@@ -153,10 +152,10 @@ public class HealthServiceClient {
         // Allow passing in the user and target strings as command line arguments
         if (args.length > 0) {
             if ("--help".equals(args[0])) {
-                System.err.println("Usage: [target [name] [name] ...]");
-                System.err.println();
-                System.err.println("  target  The server to connect to. Defaults to " + target);
-                System.err.println("  name    The names you wish to be greeted by. Defaults to " + Arrays.toString(users));
+                logger.info("Usage: [target [name] [name] ...]");
+                logger.info("");
+                logger.info("  target  The server to connect to. Defaults to {}", target);
+                logger.info("  name    The names you wish to be greeted by. Defaults to {}", Arrays.toString(users));
                 System.exit(1);
             }
             target = args[0];

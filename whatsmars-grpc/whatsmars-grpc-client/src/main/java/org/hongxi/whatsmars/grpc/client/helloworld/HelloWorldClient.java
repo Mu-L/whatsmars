@@ -59,10 +59,10 @@ public class HelloWorldClient {
         // Allow passing in the user and target strings as command line arguments
         if (args.length > 0) {
             if ("--help".equals(args[0])) {
-                System.err.println("Usage: [name [target]]");
-                System.err.println();
-                System.err.println("  name    The name you wish to be greeted by. Defaults to " + user);
-                System.err.println("  target  The server to connect to. Defaults to " + target);
+                logger.info("Usage: [name [target]]");
+                logger.info("");
+                logger.info("  name    The name you wish to be greeted by. Defaults to {}", user);
+                logger.info("  target  The server to connect to. Defaults to {}", target);
                 System.exit(1);
             }
             user = args[0];

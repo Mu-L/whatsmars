@@ -41,18 +41,18 @@ public class HelloWorldServer {
             @Override
             public void run() {
                 // Use stderr here since the logger may have been reset by its JVM shutdown hook.
-                System.err.println("*** shutting down gRPC server since JVM is shutting down");
+                logger.info("Shutting down gRPC server since JVM is shutting down");
                 try {
                     HelloWorldServer.this.stop();
                 } catch (InterruptedException e) {
                     if (server != null) {
                         server.shutdownNow();
                     }
-                    e.printStackTrace(System.err);
+                    logger.error("Error during server shutdown", e);
                 } finally {
                     executor.shutdown();
                 }
-                System.err.println("*** server shut down");
+                logger.info("Server shut down");
             }
         });
     }

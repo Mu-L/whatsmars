@@ -26,6 +26,8 @@ import org.hongxi.whatsmars.grpc.api.helloworld.HelloReply;
 import org.hongxi.whatsmars.grpc.api.helloworld.HelloRequest;
 import io.grpc.protobuf.StatusProto;
 import io.grpc.stub.StreamObserver;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.ExecutionException;
@@ -36,6 +38,8 @@ import javax.annotation.Nullable;
  * Shows how to set and read com.google.rpc.Status objects as google.rpc.Status error details.
  */
 public class ErrorDetailsExample {
+    private static final Logger logger = LoggerFactory.getLogger(ErrorDetailsExample.class);
+
     private static final DebugInfo DEBUG_INFO =
             DebugInfo.newBuilder()
                     .addStackEntries("stack_entry_1")
@@ -124,7 +128,7 @@ public class ErrorDetailsExample {
             stub.sayHello(HelloRequest.newBuilder().build());
         } catch (Exception e) {
             verifyErrorReply(e);
-            System.out.println("Blocking call received expected error details");
+            logger.info("Blocking call received expected error details");
         }
     }
 
@@ -140,7 +144,7 @@ public class ErrorDetailsExample {
             throw new RuntimeException(e);
         } catch (ExecutionException e) {
             verifyErrorReply(e.getCause());
-            System.out.println("Future call direct received expected error details");
+            logger.info("Future call direct received expected error details");
         }
     }
 
@@ -162,7 +166,7 @@ public class ErrorDetailsExample {
                     @Override
                     public void onFailure(Throwable t) {
                         verifyErrorReply(t);
-                        System.out.println("Future callback received expected error details");
+                        logger.info("Future callback received expected error details");
                         latch.countDown();
                     }
                 },
@@ -187,7 +191,7 @@ public class ErrorDetailsExample {
             @Override
             public void onError(Throwable t) {
                 verifyErrorReply(t);
-                System.out.println("Async call received expected error details");
+                logger.info("Async call received expected error details");
                 latch.countDown();
             }
 

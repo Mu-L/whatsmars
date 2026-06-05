@@ -53,7 +53,7 @@ public class CancellationServer {
                 try {
                     server.shutdown().awaitTermination(30, TimeUnit.SECONDS);
                 } catch (InterruptedException e) {
-                    e.printStackTrace(System.err);
+                    logger.error("Error during server shutdown", e);
                 }
             }
         });
@@ -88,14 +88,14 @@ public class CancellationServer {
             // It is safe to cast the provided observer to ServerCallStreamObserver.
             ServerCallStreamObserver<EchoResponse> responseCallObserver =
                     (ServerCallStreamObserver<EchoResponse>) responseObserver;
-            System.out.println("\nBidi RPC started");
+            logger.info("Bidi RPC started");
             class EchoObserver implements StreamObserver<EchoRequest> {
                 private static final int delayMs = 200;
                 private final List<Future<?>> echos = new ArrayList<>();
 
                 @Override
                 public void onNext(EchoRequest request) {
-                    System.out.println("Bidi RPC received request: " + request.getMessage());
+                    logger.info("Bidi RPC received request: {}", request.getMessage());
                     EchoResponse response
                             = EchoResponse.newBuilder().setMessage(request.getMessage()).build();
                     Runnable echo = () -> responseObserver.onNext(response);
@@ -104,20 +104,20 @@ public class CancellationServer {
 
                 @Override
                 public void onCompleted() {
-                    System.out.println("Bidi RPC client finished");
+                    logger.info("Bidi RPC client finished");
                     // Let each echo happen two more times, and then stop.
                     List<Future<?>> echosCopy = new ArrayList<>(echos);
                     Runnable complete = () -> {
                         stopEchos(echosCopy);
                         responseObserver.onCompleted();
-                        System.out.println("Bidi RPC completed");
+                        logger.info("Bidi RPC completed");
                     };
                     echos.add(scheduler.schedule(complete, 2 * delayMs, TimeUnit.MILLISECONDS));
                 }
 
                 @Override
                 public void onError(Throwable t) {
-                    System.out.println("Bidi RPC failed: " + Status.fromThrowable(t));
+                    logger.info("Bidi RPC failed: {}", Status.fromThrowable(t));
                     stopEchos(echos);
                     scheduler.execute(() -> responseObserver.onError(t));
                 }
@@ -125,7 +125,7 @@ public class CancellationServer {
                 public void onCancel() {
                     // If onCompleted() hasn't been called by this point, then this method and onError are
                     // both called. If onCompleted() has been called, then just this method is called.
-                    System.out.println("Bidi RPC cancelled");
+                    logger.info("Bidi RPC cancelled");
                     stopEchos(echos);
                 }
 
@@ -155,7 +155,7 @@ public class CancellationServer {
             // this method only returns once it has a result. ServerCallStreamObserver guarantees the
             // Runnable is not run at the same time as other RPC callback methods (including this method),
             // so the cancellation notification would be guaranteed to occur too late.
-            System.out.println("\nUnary RPC started: " + request.getMessage());
+            logger.info("Unary RPC started: {}", request.getMessage());
             Context currentContext = Context.current();
             // Let's start a multi-part operation. We can check cancellation periodically.
             for (int i = 0; i < 10; i++) {
@@ -163,7 +163,7 @@ public class CancellationServer {
                 // Context.isCancelled() is similar, but also returns true when the RPC completes normally.
                 // It doesn't matter which API is used here.
                 if (currentContext.isCancelled()) {
-                    System.out.println("Unary RPC cancelled");
+                    logger.info("Unary RPC cancelled");
                     responseObserver.onError(
                             Status.CANCELLED.withDescription("RPC cancelled").asRuntimeException());
                     return;
@@ -190,7 +190,7 @@ public class CancellationServer {
             responseObserver.onNext(
                     EchoResponse.newBuilder().setMessage(request.getMessage()).build());
             responseObserver.onCompleted();
-            System.out.println("Unary RPC completed");
+            logger.info("Unary RPC completed");
         }
     }
 }

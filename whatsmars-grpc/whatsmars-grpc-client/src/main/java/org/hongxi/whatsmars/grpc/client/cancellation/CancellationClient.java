@@ -17,6 +17,8 @@ import org.hongxi.whatsmars.grpc.api.echo.EchoRequest;
 import org.hongxi.whatsmars.grpc.api.echo.EchoResponse;
 import io.grpc.stub.ClientCallStreamObserver;
 import io.grpc.stub.StreamObserver;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.util.concurrent.TimeUnit;
 
@@ -24,6 +26,8 @@ import java.util.concurrent.TimeUnit;
  * A client that cancels RPCs to an Echo server.
  */
 public class CancellationClient {
+    private static final Logger logger = LoggerFactory.getLogger(CancellationClient.class);
+
     private final Channel channel;
 
     public CancellationClient(Channel channel) {
@@ -98,34 +102,34 @@ public class CancellationClient {
      * Say hello to server, just like in helloworld example.
      */
     public void echoBlocking(String text) {
-        System.out.println("\nYelling: " + text);
+        logger.info("Yelling: {}", text);
         EchoRequest request = EchoRequest.newBuilder().setMessage(text).build();
         EchoResponse response;
         try {
             response = EchoGrpc.newBlockingStub(channel).unaryEcho(request);
         } catch (StatusRuntimeException e) {
-            System.out.println("RPC failed: " + e.getStatus());
+            logger.info("RPC failed: {}", e.getStatus());
             return;
         }
-        System.out.println("Echo: " + response.getMessage());
+        logger.info("Echo: {}", response.getMessage());
     }
 
     /**
      * Say hello to the server, but using future API.
      */
     public ListenableFuture<EchoResponse> echoFuture(String text) {
-        System.out.println("\nYelling: " + text);
+        logger.info("Yelling: {}", text);
         EchoRequest request = EchoRequest.newBuilder().setMessage(text).build();
         ListenableFuture<EchoResponse> future = EchoGrpc.newFutureStub(channel).unaryEcho(request);
         Futures.addCallback(future, new FutureCallback<EchoResponse>() {
             @Override
             public void onSuccess(EchoResponse response) {
-                System.out.println("Echo: " + response.getMessage());
+                logger.info("Echo: {}", response.getMessage());
             }
 
             @Override
             public void onFailure(Throwable t) {
-                System.out.println("RPC failed: " + Status.fromThrowable(t));
+                logger.info("RPC failed: {}", Status.fromThrowable(t));
             }
         }, MoreExecutors.directExecutor());
         return future;
@@ -135,7 +139,7 @@ public class CancellationClient {
      * Say hello to the server, but using async API and cancelling.
      */
     public ClientCallStreamObserver<EchoRequest> echoAsync(String text) {
-        System.out.println("\nYelling: " + text);
+        logger.info("Yelling: {}", text);
         EchoRequest request = EchoRequest.newBuilder().setMessage(text).build();
 
         // Client-streaming and bidirectional RPCs can cast the returned StreamObserver to
@@ -150,17 +154,17 @@ public class CancellationClient {
                 EchoGrpc.newStub(channel).bidirectionalStreamingEcho(new StreamObserver<EchoResponse>() {
                     @Override
                     public void onNext(EchoResponse response) {
-                        System.out.println("Echo: " + response.getMessage());
+                        logger.info("Echo: {}", response.getMessage());
                     }
 
                     @Override
                     public void onCompleted() {
-                        System.out.println("RPC completed");
+                        logger.info("RPC completed");
                     }
 
                     @Override
                     public void onError(Throwable t) {
-                        System.out.println("RPC failed: " + Status.fromThrowable(t));
+                        logger.info("RPC failed: {}", Status.fromThrowable(t));
                     }
                 });
 
@@ -175,9 +179,9 @@ public class CancellationClient {
         String target = "localhost:50051";
         if (args.length > 0) {
             if ("--help".equals(args[0])) {
-                System.err.println("Usage: [target]");
-                System.err.println();
-                System.err.println("  target  The server to connect to. Defaults to " + target);
+                logger.info("Usage: [target]");
+                logger.info("");
+                logger.info("  target  The server to connect to. Defaults to {}", target);
                 System.exit(1);
             }
             target = args[0];

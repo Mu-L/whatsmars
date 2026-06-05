@@ -41,8 +41,8 @@ public class BidiBlockingClient {
         // Allow passing in the user and target strings as command line arguments
         if (args.length > 0) {
             if ("--help".equals(args[0])) {
-                System.err.println("Usage: [target]\n");
-                System.err.println("  target  The server to connect to. Defaults to " + target);
+                logger.info("Usage: [target]\n");
+                logger.info("  target  The server to connect to. Defaults to {}", target);
                 System.exit(1);
             }
             target = args[0];
@@ -63,7 +63,7 @@ public class BidiBlockingClient {
             List<String> twoThreadResult = useTwoThreads(blockingStub, echoInput);
             long finish = System.currentTimeMillis();
 
-            System.out.println("The echo requests and results were:");
+            logger.info("The echo requests and results were:");
             printResultMessage("Input", echoInput, 0L);
             printResultMessage("2 threads", twoThreadResult, finish - start);
         } finally {

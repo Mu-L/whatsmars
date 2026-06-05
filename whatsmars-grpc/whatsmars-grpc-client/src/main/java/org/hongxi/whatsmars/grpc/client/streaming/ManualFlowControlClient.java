@@ -86,7 +86,7 @@ public class ManualFlowControlClient {
 
                     @Override
                     public void onError(Throwable t) {
-                        t.printStackTrace();
+                        logger.error("Error in streaming", t);
                         done.countDown();
                     }
 

@@ -231,7 +231,7 @@ public final class GrpcProxy<ReqT, RespT> implements ServerCallHandler<ReqT, Res
         });
         server.awaitTermination();
         if (!channel.awaitTermination(1, TimeUnit.SECONDS)) {
-            System.out.println("Channel didn't shut down promptly");
+            logger.warn("Channel didn't shut down promptly");
         }
     }
 }
