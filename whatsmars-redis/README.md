@@ -1,16 +1,4 @@
-# [Redis](https://github.com/antirez/redis)
-Redis is an in-memory database that persists on disk. The data model is key-value,
-but many different kind of values are supported: Strings, Lists, Sets, Sorted Sets,
-Hashes, HyperLogLogs, Bitmaps. https://redis.io http://redis.net.cn
-
-### Spring Data Redis
-- Spring Data’s mission is to provide a familiar and consistent, Spring-based programming model
-for data access while still retaining the special traits of the underlying data store.
-- SDR对Redis的标准模式和Cluster模式进行了充分封装，但并未对客户端sharding进行良好封装，需要开发者自己实现，
-这也是SDR和[Jedis](https://github.com/xetorthio/jedis)相比，唯一缺少的特性。另外，Redis官网给出了一个
-Redis的Java客户端列表，SDR支持Jedis, [Lettuce](https://github.com/lettuce-io/lettuce-core) ['lɛtɪs]，
-Spring Boot 2.x默认使用Lettuce。
-- Jedis相比Lettuce和[Redission](https://github.com/redisson/redisson)，最大的特点是简单易集成，这从源代码量就可感受到。
+## [Redis](https://github.com/antirez/redis)
 
 ### Redis集群方案
 - 客户端分片: 操作简单，无法动态扩缩容 `简单方案`
@@ -37,5 +25,3 @@ MySQL的主要任务是把数据组织成树表，在磁盘和内存之间进行
 - [Connection and Thread Safety](https://blog.csdn.net/javahongxi/article/details/50559829)
 - [如何根据key前缀统计内存占用](https://segmentfault.com/q/1010000010575235)
 - [《Redis设计与实现》](https://e.jd.com/30189715.html) `e.jd.com`
-
-[whatsmars-boot-sample-redis](https://github.com/javahongxi/whatsmars/tree/master/whatsmars-spring-boot-samples/whatsmars-boot-sample-redis)

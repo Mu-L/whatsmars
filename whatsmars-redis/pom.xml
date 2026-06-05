@@ -12,7 +12,7 @@
     <artifactId>whatsmars-redis</artifactId>
     <packaging>jar</packaging>
 
-    <description>Redis客户端简单封装</description>
+    <description>Redis demo</description>
 
     <dependencies>
         <dependency>
@@ -22,25 +22,10 @@
         <dependency>
             <groupId>org.springframework</groupId>
             <artifactId>spring-context</artifactId>
-            <optional>true</optional>
-        </dependency>
-        <dependency>
-            <groupId>com.alibaba.fastjson2</groupId>
-            <artifactId>fastjson2</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>com.fasterxml.jackson.core</groupId>
-            <artifactId>jackson-databind</artifactId>
         </dependency>
         <dependency>
             <groupId>ch.qos.logback</groupId>
             <artifactId>logback-classic</artifactId>
-            <optional>true</optional>
-        </dependency>
-        <dependency>
-            <groupId>commons-logging</groupId>
-            <artifactId>commons-logging</artifactId>
-            <optional>true</optional>
         </dependency>
 
         <dependency>
