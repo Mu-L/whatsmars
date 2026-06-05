@@ -8,6 +8,7 @@ import org.hongxi.whatsmars.elasticsearch.example.QueryExample;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.context.ConfigurableApplicationContext;
 import org.springframework.context.annotation.Bean;
 
 /**
@@ -24,7 +25,10 @@ import org.springframework.context.annotation.Bean;
 public class Application {
 
     public static void main(String[] args) {
-        SpringApplication.run(Application.class, args);
+        ConfigurableApplicationContext context = SpringApplication.run(Application.class, args);
+        // 非 Web 应用，CommandLineRunner 执行完后主动关闭容器，
+        // 触发 RestClient 的 destroyMethod 释放连接池线程，使 JVM 正常退出
+        SpringApplication.exit(context);
     }
 
     @Bean
