@@ -1,0 +1,14 @@
+server:
+  port: 8081
+spring:
+  application:
+    name: otel-sample
+
+management:
+  tracing:
+    sampling:
+      probability: 1.0
+  endpoints:
+    web:
+      exposure:
+        include: health,info

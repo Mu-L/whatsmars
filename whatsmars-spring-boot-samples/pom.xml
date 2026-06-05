@@ -33,6 +33,8 @@
         <module>whatsmars-boot-sample-mybatis-plus</module>
         <module>whatsmars-boot-sample-webflux</module>
         <module>whatsmars-boot-sample-elasticsearch</module>
+        <module>whatsmars-boot-sample-opentelemetry</module>
+        <module>whatsmars-boot-sample-tracing</module>
     </modules>
 
     <dependencies>

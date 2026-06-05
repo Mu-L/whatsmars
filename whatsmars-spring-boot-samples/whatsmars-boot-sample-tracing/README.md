@@ -1,0 +1,1 @@
+本项目用于演示trace: boot-sample-opentelemetry → boot-sample-tracing
