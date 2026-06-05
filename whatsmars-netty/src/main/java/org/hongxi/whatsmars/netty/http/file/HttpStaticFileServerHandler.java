@@ -192,15 +192,15 @@ public class HttpStaticFileServerHandler extends SimpleChannelInboundHandler<Ful
             @Override
             public void operationProgressed(ChannelProgressiveFuture future, long progress, long total) {
                 if (total < 0) { // total unknown
-                    logger.info(future.channel() + " Transfer progress: " + progress);
+                    logger.info("{} Transfer progress: {}", future.channel(), progress);
                 } else {
-                    logger.info(future.channel() + " Transfer progress: " + progress + " / " + total);
+                    logger.info("{} Transfer progress: {} / {}", future.channel(), progress, total);
                 }
             }
 
             @Override
             public void operationComplete(ChannelProgressiveFuture future) {
-                logger.info(future.channel() + " Transfer complete.");
+                logger.info("{} Transfer complete.", future.channel());
             }
         });
 

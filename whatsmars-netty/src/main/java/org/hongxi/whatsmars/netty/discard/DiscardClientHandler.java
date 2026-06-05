@@ -69,15 +69,12 @@ public class DiscardClientHandler extends SimpleChannelInboundHandler<Object> {
         ctx.writeAndFlush(content.retainedDuplicate()).addListener(trafficGenerator);
     }
 
-    private final ChannelFutureListener trafficGenerator = new ChannelFutureListener() {
-        @Override
-        public void operationComplete(ChannelFuture future) {
-            if (future.isSuccess()) {
-                generateTraffic();
-            } else {
-                logger.error("Write operation failed", future.cause());
-                future.channel().close();
-            }
+    private final ChannelFutureListener trafficGenerator = future -> {
+        if (future.isSuccess()) {
+            generateTraffic();
+        } else {
+            logger.error("Write operation failed", future.cause());
+            future.channel().close();
         }
     };
 }
