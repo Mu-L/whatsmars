@@ -1,0 +1,19 @@
+server:
+  port: 8082
+
+# xxl-job config
+xxl:
+  job:
+    enabled: true
+    admin:
+      # 调度中心地址，集群部署用逗号分隔
+      addresses: http://127.0.0.1:8080/xxl-job-admin
+    accessToken: default_token
+    executor:
+      # 执行器 AppName，在调度中心新建任务时需一致
+      appname: xxl-job-executor-sample
+      address:
+      ip:
+      port: 9998
+      logpath: ~/logs/xxl-job/jobhandler
+      logretentiondays: 30
