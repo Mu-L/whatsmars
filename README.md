@@ -26,19 +26,6 @@ whatsmars-shardingsphere | 分布式数据库中间件
 whatsmars-spring | Spring Framework
 whatsmars-spring-boot-samples | Spring Boot Samples
 
-### Keywords
-- [x] [*Netty*](https://github.com/netty/netty)
-- [x] [*Dubbo*](https://github.com/apache/dubbo)
-- [x] [*RocketMQ*](https://github.com/apache/rocketmq)
-- [x] [*Kafka*](https://github.com/apache/kafka)
-- [x] [*ZooKeeper*](https://github.com/apache/zookeeper)
-- [x] [*Spring Boot*](https://github.com/spring-projects/spring-boot)
-- [x] [*Spring Framework*](https://github.com/spring-projects/spring-framework)
-- [x] [*Spring Data*](https://github.com/spring-projects/spring-data-examples)
-- [ ] [*Spring Cloud*](https://github.com/spring-cloud)
-- [x] [*Redis*](https://github.com/antirez/redis)
-- [x] [*Elasticsearch*](https://github.com/elastic/elasticsearch)
-
 ### Other projects
 - Spring Cloud 生态研究：[spring-cloud-samples](https://github.com/javahongxi/spring-cloud-samples)
 - 开发轻量级 RPC 框架：[jaws](https://github.com/javahongxi/jaws)
