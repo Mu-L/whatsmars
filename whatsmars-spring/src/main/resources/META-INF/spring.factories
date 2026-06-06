@@ -1,0 +1,5 @@
+# Spring SPI discovery file
+# Each key is an interface, each value is a comma-separated list of implementations
+org.hongxi.whatsmars.spring.spi.NotificationService=\
+org.hongxi.whatsmars.spring.spi.EmailNotificationService,\
+org.hongxi.whatsmars.spring.spi.SmsNotificationService
