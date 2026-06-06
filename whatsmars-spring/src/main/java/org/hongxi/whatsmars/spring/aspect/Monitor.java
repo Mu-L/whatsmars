@@ -6,15 +6,17 @@ import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
 /**
- * Created by shenhongxi on 2016/8/10.
+ * Marks a method for monitoring: logs execution time and invocation count.
+ *
+ * <p>When applied to a method, the {@link MonitorAspect} will intercept the call
+ * and log the tag, start time, and elapsed time.</p>
  */
 @Retention(RetentionPolicy.RUNTIME)
-@Target({ElementType.METHOD, ElementType.CONSTRUCTOR})
+@Target(ElementType.METHOD)
 public @interface Monitor {
 
     /**
-     * 标识每一个方法，全局唯一
+     * Unique identifier for this monitored method.
      */
     String tag();
-
 }

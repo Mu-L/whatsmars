@@ -4,16 +4,26 @@ import org.hongxi.whatsmars.spring.aspect.Monitor;
 import org.springframework.stereotype.Service;
 
 /**
- * Created by shenhongxi on 2018/12/15.
+ * Demonstrates various AOP interception scenarios via {@link Monitor} annotation.
  */
 @Service
 public class DemoService {
 
-    @Monitor(tag = "spring.aspect.demo.DemoService.t")
-    public void t() {
-        for (int i = 0; i < 10000; i++) {
-            if (i < 9999) System.out.print(i + ",");
-            else System.out.println(i);
-        }
+    @Monitor(tag = "demo.greet")
+    public String greet(String name) {
+        System.out.println("  [DemoService] greet() executing...");
+        return "Hello, " + name + "!";
+    }
+
+    @Monitor(tag = "demo.compute")
+    public int compute(int a, int b) {
+        System.out.println("  [DemoService] compute() executing...");
+        return a + b;
+    }
+
+    @Monitor(tag = "demo.fail")
+    public void fail() {
+        System.out.println("  [DemoService] fail() about to throw...");
+        throw new RuntimeException("simulated failure");
     }
 }
