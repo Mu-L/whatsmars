@@ -1,7 +1,4 @@
-package org.hongxi.whatsmars.common.serialize;
-
-import org.hongxi.whatsmars.common.util.HttpUtils;
-import org.junit.jupiter.api.Test;
+package org.hongxi.whatsmars.common.util;
 
 import java.io.FileOutputStream;
 import java.io.InputStream;
