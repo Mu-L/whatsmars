@@ -68,11 +68,7 @@ public class DESUtilsTest {
 
     @Test
     public void testLongStringEncryptDecrypt() {
-        StringBuilder sb = new StringBuilder();
-        for (int i = 0; i < 200; i++) {
-            sb.append("DES long string test ");
-        }
-        String plainText = sb.toString();
+        String plainText = "DES long string test ".repeat(200);
 
         String encrypted = DESUtils.encrypt(plainText, KEY);
         String decrypted = DESUtils.decrypt(encrypted, KEY);

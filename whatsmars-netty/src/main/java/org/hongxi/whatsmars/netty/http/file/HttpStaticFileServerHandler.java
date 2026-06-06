@@ -155,7 +155,7 @@ public class HttpStaticFileServerHandler extends SimpleChannelInboundHandler<Ful
         RandomAccessFile raf;
         try {
             raf = new RandomAccessFile(file, "r");
-        } catch (FileNotFoundException ignore) {
+        } catch (FileNotFoundException ignored) {
             sendError(ctx, NOT_FOUND);
             return;
         }

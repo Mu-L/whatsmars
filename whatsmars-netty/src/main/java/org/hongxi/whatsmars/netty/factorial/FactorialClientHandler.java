@@ -48,7 +48,7 @@ public class FactorialClientHandler extends SimpleChannelInboundHandler<BigInteg
             for (;;) {
                 try {
                     return answer.take();
-                } catch (InterruptedException ignore) {
+                } catch (InterruptedException ignored) {
                     interrupted = true;
                 }
             }

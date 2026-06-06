@@ -7,6 +7,14 @@ import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
 
+/**
+ * A thread-safe {@link Set} implementation backed by a {@link ConcurrentHashMap}.
+ *
+ * <p>This class provides the same semantics as {@link java.util.HashSet} but
+ * with full concurrency support for read and write operations.</p>
+ *
+ * @param <E> the type of elements maintained by this set
+ */
 public class ConcurrentHashSet<E> extends AbstractSet<E> implements Set<E>, java.io.Serializable {
 
     private static final long serialVersionUID = -8672117787651310382L;
@@ -16,11 +24,11 @@ public class ConcurrentHashSet<E> extends AbstractSet<E> implements Set<E>, java
     private final ConcurrentMap<E, Object> map;
 
     public ConcurrentHashSet() {
-        map = new ConcurrentHashMap<E, Object>();
+        map = new ConcurrentHashMap<>();
     }
 
     public ConcurrentHashSet(int initialCapacity) {
-        map = new ConcurrentHashMap<E, Object>(initialCapacity);
+        map = new ConcurrentHashMap<>(initialCapacity);
     }
 
     /**
@@ -103,7 +111,7 @@ public class ConcurrentHashSet<E> extends AbstractSet<E> implements Set<E>, java
     }
 
     /**
-     * Removes all of the elements from this set. The set will be empty after
+     * Removes all the elements from this set. The set will be empty after
      * this call returns.
      */
     @Override

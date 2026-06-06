@@ -3,6 +3,9 @@ package org.hongxi.whatsmars.common.util;
 import org.junit.jupiter.api.Test;
 
 import java.nio.charset.StandardCharsets;
+import java.util.Arrays;
+
+import org.apache.commons.codec.binary.Base64;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -42,7 +45,7 @@ public class AESUtilsTest {
     @Test
     public void testEncryptWithKeyBase64AndDecryptWithKeyBase64() {
         // Base64 编码的密钥（原始密钥仍为 16 字节）
-        String base64Key = new org.apache.commons.codec.binary.Base64().encodeToString(KEY_16.getBytes(StandardCharsets.UTF_8));
+        String base64Key = new Base64().encodeToString(KEY_16.getBytes(StandardCharsets.UTF_8));
         String plainText = "Base64 key test";
 
         String encrypted = AESUtils.encryptWithKeyBase64(plainText, base64Key);
@@ -67,8 +70,8 @@ public class AESUtilsTest {
         assertFalse(base64Key.isEmpty());
 
         // 生成的随机密钥可能为 32 字节，AESUtils 只支持 16 字节，截取前 16 字节验证加解密
-        byte[] keyBytes = new org.apache.commons.codec.binary.Base64().decode(base64Key);
-        byte[] key16 = java.util.Arrays.copyOf(keyBytes, 16);
+        byte[] keyBytes = new Base64().decode(base64Key);
+        byte[] key16 = Arrays.copyOf(keyBytes, 16);
         byte[] data = "random key test".getBytes(StandardCharsets.UTF_8);
         byte[] encrypted = AESUtils.encrypt(data, key16);
         byte[] decrypted = AESUtils.decrypt(encrypted, key16);
@@ -110,11 +113,7 @@ public class AESUtilsTest {
     @Test
     public void testLongDataEncryptDecrypt() {
         // 超过一个 AES block (16 bytes) 的数据
-        StringBuilder sb = new StringBuilder();
-        for (int i = 0; i < 100; i++) {
-            sb.append("long data test ");
-        }
-        String plainText = sb.toString();
+        String plainText = "long data test ".repeat(100);
 
         String encrypted = AESUtils.encryptToBase64(plainText, KEY_16);
         String decrypted = AESUtils.decryptFromBase64(encrypted, KEY_16);

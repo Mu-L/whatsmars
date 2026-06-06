@@ -232,6 +232,6 @@ public class LRUCacheTest {
 
         // 验证不会因并发导致异常或数据不一致
         assertTrue(cache.size() <= 100, "缓存大小不应超过最大容量");
-        assertTrue(cache.size() > 0, "缓存不应为空");
+        assertFalse(cache.isEmpty(), "缓存不应为空");
     }
 }

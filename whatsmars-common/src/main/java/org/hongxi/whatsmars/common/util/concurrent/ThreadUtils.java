@@ -146,7 +146,5 @@ public final class ThreadUtils {
      * A constructor to stop this class being constructed.
      */
     private ThreadUtils() {
-        // Unused
-
     }
 }

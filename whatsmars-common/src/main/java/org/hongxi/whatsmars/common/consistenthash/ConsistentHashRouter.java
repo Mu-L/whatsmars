@@ -8,12 +8,12 @@ import java.util.SortedMap;
 import java.util.TreeMap;
 
 /**
- * To hash Node objects to a hash ring with a certain amount of virtual node.
- * Method routeNode will return a Node instance which the object key should be allocated to according to consistent hash
- * algorithm
+ * To hash Node objects to a hash ring with a certain amount of virtual nodes.
+ * Method routeNode will return a Node instance which the object key should be
+ * allocated to according to consistent hash algorithm.
  */
 public class ConsistentHashRouter<T extends Node> {
-    private final SortedMap<Long, VirtualNode<T>> ring = new TreeMap<Long, VirtualNode<T>>();
+    private final SortedMap<Long, VirtualNode<T>> ring = new TreeMap<>();
     private final HashFunction hashFunction;
 
     public ConsistentHashRouter(Collection<T> pNodes, int vNodeCount) {
@@ -21,8 +21,8 @@ public class ConsistentHashRouter<T extends Node> {
     }
 
     /**
-     * @param pNodes collections of physical nodes
-     * @param vNodeCount amounts of virtual nodes
+     * @param pNodes a collection of physical nodes
+     * @param vNodeCount the number of virtual nodes
      * @param hashFunction hash Function to hash Node instances
      */
     public ConsistentHashRouter(Collection<T> pNodes, int vNodeCount, HashFunction hashFunction) {
@@ -38,18 +38,18 @@ public class ConsistentHashRouter<T extends Node> {
     }
 
     /**
-     * add physic node to the hash ring with some virtual nodes
+     * add a physical node to the hash ring with some virtual nodes
      *
      * @param pNode physical node needs added to hash ring
-     * @param vNodeCount the number of virtual node of the physical node. Value should be greater than or equals to 0
+     * @param vNodeCount the number of virtual nodes of the physical node. Value should be greater than or equals to 0
      */
     public void addNode(T pNode, int vNodeCount) {
         if (vNodeCount < 0) {
-            throw new IllegalArgumentException("illegal virtual node counts :" + vNodeCount);
+            throw new IllegalArgumentException("Illegal virtual nodes count :" + vNodeCount);
         }
         int existingReplicas = getExistingReplicas(pNode);
         for (int i = 0; i < vNodeCount; i++) {
-            VirtualNode<T> vNode = new VirtualNode<T>(pNode, i + existingReplicas);
+            VirtualNode<T> vNode = new VirtualNode<>(pNode, i + existingReplicas);
             ring.put(hashFunction.hash(vNode.getKey()), vNode);
         }
     }
@@ -93,14 +93,14 @@ public class ConsistentHashRouter<T extends Node> {
         return replicas;
     }
 
-    //default hash function
+    // default hash function
     private static class MD5Hash implements HashFunction {
         MessageDigest instance;
 
         public MD5Hash() {
             try {
                 instance = MessageDigest.getInstance("MD5");
-            } catch (NoSuchAlgorithmException e) {
+            } catch (NoSuchAlgorithmException ignored) {
             }
         }
 
