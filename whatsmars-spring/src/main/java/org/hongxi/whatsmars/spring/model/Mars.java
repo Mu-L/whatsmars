@@ -1,7 +1,7 @@
 package org.hongxi.whatsmars.spring.model;
 
 /**
- * Created by shenhongxi on 2016/4/7.
+ * Simple POJO representing a planet, used across multiple demo packages.
  */
 public class Mars {
 

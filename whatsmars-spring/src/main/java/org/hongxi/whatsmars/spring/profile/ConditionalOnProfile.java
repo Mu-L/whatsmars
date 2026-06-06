@@ -5,6 +5,12 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Profile;
 import org.springframework.stereotype.Component;
 
+/**
+ * Demonstrates {@code @Profile}: this bean is only activated when
+ * the "prod" profile is active.
+ *
+ * @see PropertyConfiguration
+ */
 @Profile("prod")
 @Component
 public class ConditionalOnProfile implements InitializingBean {

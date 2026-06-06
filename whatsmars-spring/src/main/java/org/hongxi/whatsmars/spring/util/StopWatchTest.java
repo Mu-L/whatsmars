@@ -3,7 +3,8 @@ package org.hongxi.whatsmars.spring.util;
 import org.springframework.util.StopWatch;
 
 /**
- * Created by shenhongxi on 2019/12/16.
+ * Demonstrates Spring's {@link org.springframework.util.StopWatch} utility
+ * for measuring elapsed time across multiple named tasks.
  */
 public class StopWatchTest {
 

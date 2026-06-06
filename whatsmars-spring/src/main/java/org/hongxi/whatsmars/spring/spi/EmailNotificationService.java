@@ -1,5 +1,9 @@
 package org.hongxi.whatsmars.spring.spi;
 
+/**
+ * Email implementation of {@link NotificationService}.
+ * Registered via {@code META-INF/spring.factories}.
+ */
 public class EmailNotificationService implements NotificationService {
 
     @Override

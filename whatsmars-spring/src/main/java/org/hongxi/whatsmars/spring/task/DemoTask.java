@@ -1,7 +1,8 @@
 package org.hongxi.whatsmars.spring.task;
 
 /**
- * Created by shenhongxi on 2018/12/21.
+ * Simple {@link Runnable} task used by the context demo
+ * to demonstrate async execution via {@code ThreadPoolTaskExecutor}.
  */
 public class DemoTask implements Runnable {
     @Override

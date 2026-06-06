@@ -6,6 +6,13 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.core.io.ClassPathResource;
 
+/**
+ * Demonstrates profile-specific property loading via
+ * {@link PropertySourcesPlaceholderConfigurer}.
+ *
+ * <p>Loads {@code application-{profile}.properties} based on the
+ * active profile determined by {@link ProfileUtils}.</p>
+ */
 @Configuration
 public class PropertyConfiguration {
 

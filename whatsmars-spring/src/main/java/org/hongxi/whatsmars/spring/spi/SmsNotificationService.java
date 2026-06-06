@@ -1,5 +1,9 @@
 package org.hongxi.whatsmars.spring.spi;
 
+/**
+ * SMS implementation of {@link NotificationService}.
+ * Registered via {@code META-INF/spring.factories}.
+ */
 public class SmsNotificationService implements NotificationService {
 
     @Override
