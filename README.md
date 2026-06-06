@@ -15,12 +15,12 @@ whatsmars-common | 通用公共模块
 whatsmars-curator | 最好用的zk客户端
 whatsmars-dubbo | 高性能分布式RPC框架
 whatsmars-elasticjob | 分布式调度框架
-whatsmars-elasticsearch | Elasticsearch examples
+whatsmars-elasticsearch | Elasticsearch
 whatsmars-grpc | 跨语言的RPC框架
 whatsmars-mq | 消息中间件RocketMQ,Kafka等
 whatsmars-nacos | 注册与配置中心
 whatsmars-netty | NIO框架首选
-whatsmars-redis | Redis examples
+whatsmars-redis | Redis
 whatsmars-sentinel | 流量控制与熔断降级组件
 whatsmars-shardingsphere | 分布式数据库中间件
 whatsmars-spring | Spring Framework
