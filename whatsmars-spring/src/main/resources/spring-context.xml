@@ -8,27 +8,11 @@
                         http://www.springframework.org/schema/context/spring-context.xsd"
 	default-autowire="byName">
 
-    <context:component-scan base-package="org.hongxi.whatsmars.spring.lifecycle"/>
+    <context:component-scan base-package="org.hongxi.whatsmars.spring.context"/>
 
     <bean id="mars" class="org.hongxi.whatsmars.spring.model.Mars">
         <property name="age" value="45" />
         <property name="cnName" value="火星" />
-    </bean>
-
-    <!-- 线程池建议用这个，不建议用 Executors (队列长度或线程数不可控) -->
-    <bean id="taskExecutor" class="org.springframework.scheduling.concurrent.ThreadPoolTaskExecutor" >
-        <!-- 核心线程数  -->
-        <property name="corePoolSize" value="10" />
-        <!-- 最大线程数 -->
-        <property name="maxPoolSize" value="200" />
-        <!-- 队列最大长度 -->
-        <property name="queueCapacity" value="500" />
-        <!-- 线程池维护线程所允许的空闲时间 -->
-        <property name="keepAliveSeconds" value="5" />
-        <!-- 线程池对拒绝任务(无线程可用)的处理策略 -->
-        <property name="rejectedExecutionHandler">
-            <bean class="java.util.concurrent.ThreadPoolExecutor$DiscardPolicy" />
-        </property>
     </bean>
 
 </beans>
