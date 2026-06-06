@@ -14,7 +14,6 @@ import org.hongxi.whatsmars.grpc.api.helloworld.GreeterGrpc.GreeterStub;
 import org.hongxi.whatsmars.grpc.api.helloworld.HelloReply;
 import org.hongxi.whatsmars.grpc.api.helloworld.HelloRequest;
 
-import javax.annotation.Nullable;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.TimeUnit;
@@ -99,7 +98,7 @@ public class ErrorHandlingClient {
                 response,
                 new FutureCallback<HelloReply>() {
                     @Override
-                    public void onSuccess(@Nullable HelloReply result) {
+                    public void onSuccess(HelloReply result) {
                         // Won't be called, since the server in this example always fails.
                     }
 

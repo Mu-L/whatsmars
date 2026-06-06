@@ -32,7 +32,6 @@ import org.slf4j.LoggerFactory;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.TimeUnit;
-import javax.annotation.Nullable;
 
 /**
  * Shows how to set and read com.google.rpc.Status objects as google.rpc.Status error details.
@@ -159,7 +158,7 @@ public class ErrorDetailsExample {
                 response,
                 new FutureCallback<HelloReply>() {
                     @Override
-                    public void onSuccess(@Nullable HelloReply result) {
+                    public void onSuccess(HelloReply result) {
                         // Won't be called, since the server in this example always fails.
                     }
 

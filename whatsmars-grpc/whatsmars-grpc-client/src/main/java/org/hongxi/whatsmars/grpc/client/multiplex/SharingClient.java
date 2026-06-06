@@ -22,7 +22,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
 import java.util.concurrent.TimeUnit;
-import javax.annotation.Nullable;
 
 
 /**
@@ -213,7 +212,7 @@ public class SharingClient {
 
         // These are needed for visibility from the parent object
         @Override
-        protected boolean set(@Nullable RespT resp) {
+        protected boolean set(RespT resp) {
             return super.set(resp);
         }
 
