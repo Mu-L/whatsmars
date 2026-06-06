@@ -1,4 +1,4 @@
-package org.hongxi.whatsmars.curator.examples;
+package org.hongxi.whatsmars.curator.example;
 
 import org.apache.curator.framework.CuratorFramework;
 import org.apache.curator.framework.CuratorFrameworkFactory;
@@ -27,9 +27,9 @@ import java.util.concurrent.TimeUnit;
  * 3. 节点的监听（Watcher）
  * 4. 使用 CuratorCache 监听节点变化
  */
-public class CuratorFrameworkExamples {
+public class CuratorFrameworkExample {
 
-    private static final Logger logger = LoggerFactory.getLogger(CuratorFrameworkExamples.class);
+    private static final Logger logger = LoggerFactory.getLogger(CuratorFrameworkExample.class);
     private static final String ZK_ADDRESS = "127.0.0.1:2181";
     private static final String BASE_PATH = "/curator/demo";
 

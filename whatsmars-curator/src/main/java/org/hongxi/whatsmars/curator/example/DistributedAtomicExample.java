@@ -1,4 +1,4 @@
-package org.hongxi.whatsmars.curator.examples;
+package org.hongxi.whatsmars.curator.example;
 
 import org.apache.curator.framework.CuratorFramework;
 import org.apache.curator.framework.CuratorFrameworkFactory;
@@ -28,9 +28,9 @@ import java.util.concurrent.TimeUnit;
  * 
  * 这些类使用 ZK 的原子性操作来保证分布式环境下的数据一致性。
  */
-public class DistributedAtomicExamples {
+public class DistributedAtomicExample {
     
-    private static final Logger logger = LoggerFactory.getLogger(DistributedAtomicExamples.class);
+    private static final Logger logger = LoggerFactory.getLogger(DistributedAtomicExample.class);
     private static final String ZK_ADDRESS = "127.0.0.1:2181";
     private static final String ATOMIC_PATH = "/curator/atomic";
     

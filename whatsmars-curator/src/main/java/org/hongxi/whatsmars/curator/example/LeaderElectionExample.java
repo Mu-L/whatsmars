@@ -1,4 +1,4 @@
-package org.hongxi.whatsmars.curator.examples;
+package org.hongxi.whatsmars.curator.example;
 
 import org.apache.curator.framework.CuratorFramework;
 import org.apache.curator.framework.CuratorFrameworkFactory;
@@ -21,9 +21,9 @@ import java.util.concurrent.TimeUnit;
  * LeaderSelector 允许客户端竞争领导权，当获得领导权后可以执行业务逻辑，
  * 然后释放领导权让其他客户端有机会成为领导者。
  */
-public class LeaderElectionExamples {
+public class LeaderElectionExample {
     
-    private static final Logger logger = LoggerFactory.getLogger(LeaderElectionExamples.class);
+    private static final Logger logger = LoggerFactory.getLogger(LeaderElectionExample.class);
     private static final String ZK_ADDRESS = "127.0.0.1:2181";
     private static final String ELECTION_PATH = "/curator/election";
     

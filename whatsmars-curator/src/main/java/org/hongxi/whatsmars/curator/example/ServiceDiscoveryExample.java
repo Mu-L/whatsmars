@@ -1,4 +1,4 @@
-package org.hongxi.whatsmars.curator.examples;
+package org.hongxi.whatsmars.curator.example;
 
 import org.apache.curator.framework.CuratorFramework;
 import org.apache.curator.framework.CuratorFrameworkFactory;
@@ -23,9 +23,9 @@ import java.util.Collection;
  * 
  * 适用于微服务架构中的服务注册与发现场景。
  */
-public class ServiceDiscoveryExamples {
+public class ServiceDiscoveryExample {
     
-    private static final Logger logger = LoggerFactory.getLogger(ServiceDiscoveryExamples.class);
+    private static final Logger logger = LoggerFactory.getLogger(ServiceDiscoveryExample.class);
     private static final String ZK_ADDRESS = "127.0.0.1:2181";
     private static final String DISCOVERY_PATH = "/curator/discovery";
     

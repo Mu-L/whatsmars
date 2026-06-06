@@ -1,4 +1,4 @@
-package org.hongxi.whatsmars.curator.examples;
+package org.hongxi.whatsmars.curator.example;
 
 import org.apache.curator.framework.CuratorFramework;
 import org.apache.curator.framework.CuratorFrameworkFactory;
@@ -26,9 +26,9 @@ import java.util.List;
  * 2. PathChildrenCache - 缓存子节点列表和状态
  * 3. TreeCache - 缓存节点树（NodeCache + PathChildrenCache）
  */
-public class PathCacheExamples {
+public class PathCacheExample {
     
-    private static final Logger logger = LoggerFactory.getLogger(PathCacheExamples.class);
+    private static final Logger logger = LoggerFactory.getLogger(PathCacheExample.class);
     private static final String ZK_ADDRESS = "127.0.0.1:2181";
     private static final String CACHE_PATH = "/curator/cache";
     
