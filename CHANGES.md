@@ -2,7 +2,11 @@
 - Upgrade to Java 17
 - Upgrade Spring Boot to 3.5.14
 - Add module `whatsmars-ai`
+- Add module `whatsmars-grpc`
+- Add module `whatsmars-nacos`
+- Add module `whatsmars-curator`
 - Remove useless modules
+- Overall project optimization
 
 ## 2021.4.1
 - Upgrade to java 11
