@@ -5,6 +5,7 @@
 - Add module `whatsmars-grpc`
 - Add module `whatsmars-nacos`
 - Add module `whatsmars-curator`
+- Add module `whatsmars-scheduling`
 - Remove useless modules
 - Overall project optimization
 
