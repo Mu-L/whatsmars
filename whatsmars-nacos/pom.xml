@@ -20,6 +20,21 @@
             <groupId>com.alibaba.cloud</groupId>
             <artifactId>spring-alibaba-nacos-config</artifactId>
         </dependency>
+
+        <dependency>
+            <groupId>org.hongxi</groupId>
+            <artifactId>whatsmars-common</artifactId>
+        </dependency>
     </dependencies>
+
+    <build>
+        <finalName>${project.artifactId}</finalName>
+        <plugins>
+            <plugin>
+                <groupId>org.springframework.boot</groupId>
+                <artifactId>spring-boot-maven-plugin</artifactId>
+            </plugin>
+        </plugins>
+    </build>
 
 </project>

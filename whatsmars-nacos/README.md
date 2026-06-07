@@ -22,7 +22,9 @@ bin/startup.sh -m standalone
 nacos console 创建配置<br>
 dataId: github.username<br>
 content: javahongxi
-1. 访问 localhost:8761/config/hello
+```shell
+curl http://localhost:8761/config/hello
+```
 1. 修改配置后再访问
 1. 删除配置后观察日志
 
@@ -39,12 +41,81 @@ cloud.agent.provider.name=Alibaba
 cloud.agent.provider.model=Qwen3.7 Plus
 cloud.agent.provider.api-key=xxx123aa
 ```
-1. 访问 localhost:8761/config/agent
-1. 访问 localhost:8761/config/value
-1. 修改配置后再访问
+```shell
+curl http://localhost:8761/config/agent
+```
+```shell
+curl http://localhost:8761/config/value
+```
+修改配置后再访问
 
 ### 演示Nacos原生API
-1. 访问 localhost:8761/nacos/listener?dataId=my.city
-1. 访问 localhost:8761/nacos/publishConfig?dataId=my.city&content=wuhan
-1. 访问 localhost:8761/nacos/getConfig?dataId=my.city
-1. 访问 localhost:8761/nacos/removeConfig?dataId=my.city
+```shell
+curl 'http://localhost:8761/nacos/listener?dataId=my.city'
+curl 'http://localhost:8761/nacos/publishConfig?dataId=my.city&content=wuhan'
+curl 'http://localhost:8761/nacos/getConfig?dataId=my.city'
+curl 'http://localhost:8761/nacos/removeConfig?dataId=my.city'
+```
+
+## 服务注册与发现演示
+同一个Nacos Client实例，仅能向一个服务注册一个实例；<br>
+若同一个Nacos Client实例多次向同一个服务注册实例，后注册的实例将会覆盖先注册的实例。<br>
+我们的演示需要注册多个实例，为此我们启动3个Java进程来测试
+```shell
+java -jar whatsmars-nacos.jar --server.port=8761
+java -jar whatsmars-nacos.jar --server.port=8762
+java -jar whatsmars-nacos.jar --server.port=8763
+```
+1. 注册第一个实例
+```shell
+curl -X POST "http://localhost:8761/nacos/naming/register/simple?serviceName=test-service&ip=192.168.1.100&port=8080"
+```
+2. 注册第二个实例（带元数据）
+```shell
+curl -X POST "http://localhost:8762/nacos/naming/register" \
+  -d "serviceName=test-service" \
+  -d "ip=192.168.1.101" \
+  -d "port=8081" \
+  -d "metadata[version]=2.0.0"
+```
+3. 查看所有实例
+```shell
+curl "http://localhost:8761/nacos/naming/instances/all?serviceName=test-service"
+```
+4. 查看健康实例
+```shell
+curl "http://localhost:8761/nacos/naming/instances/healthy?serviceName=test-service"
+```
+5. 选择一个实例（模拟负载均衡）
+```shell
+curl "http://localhost:8761/nacos/naming/instances/one?serviceName=test-service"
+```
+6. 订阅服务变化
+```shell
+curl -X POST "http://localhost:8761/nacos/naming/subscribe?serviceName=test-service"
+```
+7. 注册第三个实例（触发订阅事件）
+```shell
+curl -X POST "http://localhost:8763/nacos/naming/register/simple?serviceName=test-service&ip=192.168.1.102&port=8082"
+```
+8. 查看所有实例
+```shell
+curl "http://localhost:8761/nacos/naming/instances/all?serviceName=test-service"
+```
+9. 注销一个实例
+```shell
+curl -X DELETE "http://localhost:8761/nacos/naming/deregister?serviceName=test-service&ip=192.168.1.100&port=8080"
+```
+10. 再次查看所有实例（验证注销成功）
+```shell
+curl "http://localhost:8761/nacos/naming/instances/all?serviceName=test-service"
+```
+11. 取消订阅
+```shell
+curl -X DELETE "http://localhost:8761/nacos/naming/unsubscribe?serviceName=test-service"
+```
+12. 注销所有实例
+```shell
+curl -X DELETE "http://localhost:8762/nacos/naming/deregister?serviceName=test-service&ip=192.168.1.101&port=8081"
+curl -X DELETE "http://localhost:8763/nacos/naming/deregister?serviceName=test-service&ip=192.168.1.102&port=8082"
+```
