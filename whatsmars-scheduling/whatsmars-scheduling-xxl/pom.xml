@@ -5,11 +5,12 @@
     <modelVersion>4.0.0</modelVersion>
     <parent>
         <groupId>org.hongxi</groupId>
-        <artifactId>whatsmars-parent</artifactId>
+        <artifactId>whatsmars-scheduling</artifactId>
         <version>2026.5.1</version>
     </parent>
 
-    <artifactId>whatsmars-xxl-job</artifactId>
+    <artifactId>whatsmars-scheduling-xxl</artifactId>
+    <description>xxl-job demo</description>
 
     <dependencies>
         <dependency>
@@ -21,5 +22,14 @@
             <artifactId>xxl-job-core</artifactId>
         </dependency>
     </dependencies>
+
+    <build>
+        <plugins>
+            <plugin>
+                <groupId>org.springframework.boot</groupId>
+                <artifactId>spring-boot-maven-plugin</artifactId>
+            </plugin>
+        </plugins>
+    </build>
 
 </project>

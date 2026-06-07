@@ -1,4 +1,4 @@
-package org.hongxi.whatsmars.xxljob.job;
+package org.hongxi.whatsmars.scheduling.xxl.job;
 
 import com.xxl.job.core.context.XxlJobHelper;
 import com.xxl.job.core.handler.annotation.XxlJob;

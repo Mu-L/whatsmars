@@ -1,4 +1,4 @@
-package org.hongxi.whatsmars.xxljob.config;
+package org.hongxi.whatsmars.scheduling.xxl.config;
 
 import com.xxl.job.core.executor.impl.XxlJobSpringExecutor;
 import org.slf4j.Logger;

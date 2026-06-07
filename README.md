@@ -20,11 +20,11 @@ whatsmars-mq | 消息中间件RocketMQ,Kafka等
 whatsmars-nacos | 注册与配置中心
 whatsmars-netty | NIO框架首选
 whatsmars-redis | Redis
+whatsmars-scheduling | 分布式调度
 whatsmars-sentinel | 流量控制与熔断降级组件
 whatsmars-shardingsphere | 分布式数据库中间件
 whatsmars-spring | Spring Framework
 whatsmars-spring-boot-samples | Spring Boot Samples
-whatsmars-xxl-job | 轻量级分布式任务调度
 
 ### Other projects
 - Spring Cloud 生态研究：[spring-cloud-samples](https://github.com/javahongxi/spring-cloud-samples)
