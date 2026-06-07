@@ -1,6 +1,8 @@
-### 分布式调度
-https://shardingsphere.apache.org/elasticjob/
-
-#### 最佳实践
-- shardingTotalCount不赋值时，即演变为master-slave模式
-- 为提高worker工作效率，很多时候worker只负责异步调用服务或发MQ
+- 启动zookeeper，ZK在elasticjob中承担了以下五大核心作用：
+  - 任务元数据的存储与管理
+  - 实例注册与服务发现
+  - Leader 选举机制
+  - 动态分片与弹性伸缩
+  - 故障转移（Failover）与容错处理
+- mysql创建数据库elasticjob，启动时会自动创建两张表 JOB_EXECUTION_LOG JOB_STATUS_TRACE_LOG
+- 启动本示例，观察日志和表里的数据
