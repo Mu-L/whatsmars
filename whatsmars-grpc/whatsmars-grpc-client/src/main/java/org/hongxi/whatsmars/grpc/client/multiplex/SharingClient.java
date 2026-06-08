@@ -194,7 +194,7 @@ public class SharingClient {
         }
     }
 
-    private class StreamingFuture<RespT> extends AbstractFuture<RespT> {
+    private static class StreamingFuture<RespT> extends AbstractFuture<RespT> {
 
         private StreamObserver<EchoResponse> responseObserver = null;
 
