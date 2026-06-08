@@ -18,9 +18,8 @@
         <module>whatsmars-mq-rocketmq</module>
         <module>whatsmars-mq-rabbitmq</module>
         <module>whatsmars-mq-kafka</module>
-        <module>whatsmars-mq-rocketmq-spring</module>
-        <module>whatsmars-mq-kafka-spring</module>
         <module>whatsmars-mq-pulsar</module>
+        <module>whatsmars-mq-kafka-multi</module>
     </modules>
 
 </project>

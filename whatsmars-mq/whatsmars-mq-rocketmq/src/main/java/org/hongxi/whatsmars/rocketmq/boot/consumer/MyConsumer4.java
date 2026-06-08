@@ -8,12 +8,14 @@ import org.springframework.stereotype.Service;
 /**
  * RocketMQ 消息消费者实现类
  * <p>
- * 用于监听并处理来自 test-topic-1 主题的消息
+ * 用于监听并处理来自 test-topic-4 主题的消息
+ * 配置了独立的 NameServer 地址和实例名称，适用于多集群场景
  */
 @Slf4j
 @Service
-@RocketMQMessageListener(topic = "test-topic-1", consumerGroup = "my-consumer_test-topic-1")
-public class MyConsumer implements RocketMQListener<String> {
+@RocketMQMessageListener(topic = "test-topic-4", consumerGroup = "my-consumer_test-topic-4",
+nameServer = "${bigdata.name-server}", instanceName = "BIG_DATA_CLUSTER")
+public class MyConsumer4 implements RocketMQListener<String> {
     /**
      * 处理接收到的消息
      * <p>

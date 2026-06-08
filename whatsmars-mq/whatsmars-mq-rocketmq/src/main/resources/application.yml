@@ -2,3 +2,6 @@ rocketmq:
   nameServer: 127.0.0.1:9876
   producer:
     group: boot_producer_group
+
+bigdata:
+  nameServer: 127.0.0.1:9876
