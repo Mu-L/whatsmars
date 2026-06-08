@@ -71,6 +71,7 @@ public class ProducerApplication implements CommandLineRunner {
         });
         rocketMQTemplate.convertAndSend("test-topic-2", new OrderPaidEvent("T_001", new BigDecimal("88.00")));
         rocketMQTemplate.syncSendOrderly("test-topic-3", "I'm order message", "1234");
+        rocketMQTemplate.syncSend("test-topic-4", "Hello, AI!");
         log.info("send finished!");
     }
 

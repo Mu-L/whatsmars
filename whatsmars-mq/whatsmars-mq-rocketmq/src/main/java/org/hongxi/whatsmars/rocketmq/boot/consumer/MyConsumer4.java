@@ -14,7 +14,7 @@ import org.springframework.stereotype.Service;
 @Slf4j
 @Service
 @RocketMQMessageListener(topic = "test-topic-4", consumerGroup = "my-consumer_test-topic-4",
-nameServer = "${bigdata.name-server}", instanceName = "BIG_DATA_CLUSTER")
+nameServer = "${bigdata.name-server}", instanceName = "AI_CLUSTER")
 public class MyConsumer4 implements RocketMQListener<String> {
     /**
      * 处理接收到的消息
