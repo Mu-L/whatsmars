@@ -27,6 +27,8 @@ public class Application implements CommandLineRunner {
 
     @Override
     public void run(String... args) throws Exception {
+        userMapper.createIfNotExistsTable();
+        orderMapper.createIfNotExistsTable();
         User user = User.builder().username("javahongxi").nickname("hongxi").gender(1).age(29).build();
         User u = userMapper.findByUsername(user.getUsername());
         if (u != null) {

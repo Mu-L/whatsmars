@@ -4,6 +4,7 @@ import org.apache.ibatis.session.SqlSessionFactory;
 import org.mybatis.spring.SqlSessionFactoryBean;
 import org.mybatis.spring.SqlSessionTemplate;
 import org.mybatis.spring.annotation.MapperScan;
+import org.mybatis.spring.annotation.MapperScans;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.boot.jdbc.DataSourceBuilder;
@@ -22,14 +23,12 @@ import java.util.List;
 /**
  * Created by shenhongxi on 2018/12/9.
  */
+@MapperScans({
+    @MapperScan(basePackages = "org.hongxi.whatsmars.boot.sample.mybatis.dao.user", sqlSessionTemplateRef = "userSqlSessionTemplate"),
+    @MapperScan(basePackages = "org.hongxi.whatsmars.boot.sample.mybatis.dao.trade", sqlSessionTemplateRef = "tradeSqlSessionTemplate")
+})
 @Configuration
 public class MybatisConfiguration {
-
-    @MapperScan(basePackages = "org.hongxi.whatsmars.boot.sample.mybatis.dao.user", sqlSessionTemplateRef = "userSqlSessionTemplate")
-    private class userMapperScan {}
-
-    @MapperScan(basePackages = "org.hongxi.whatsmars.boot.sample.mybatis.dao.trade", sqlSessionTemplateRef = "tradeSqlSessionTemplate")
-    private class tradeMapperScan {}
 
     @Bean("userSqlSessionTemplate")
     public SqlSessionTemplate userSqlSessionTemplate(
