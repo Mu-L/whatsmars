@@ -49,7 +49,6 @@ public class ProducerApplication implements CommandLineRunner {
         for (int i = 0; i < 5; i++) {
             try {
                 rocketMQTemplate.convertAndSend("test-topic-1", "Hello, World!");
-                System.out.println("Send OK!");
             } catch (Exception e) {
                 log.error("Send Failed", e);
             }
