@@ -101,13 +101,13 @@ public class ProducerApplication implements CommandLineRunner {
     private void sendTransMessage() throws ClientException {
         Message<OrderPaidEvent> message = MessageBuilder.withPayload(new OrderPaidEvent("T_004", new BigDecimal("488.00")))
                 .setHeader("OrderId", 1).build();
-        Pair<SendReceipt, Transaction> pair = rocketMQClientTemplate.sendMessageInTransaction(TRANS_TOPIC, message);
+        Pair<SendReceipt, Transaction> pair = rocketMQClientTemplate.sendTransactionMessage(TRANS_TOPIC, message);
         SendReceipt sendReceipt = pair.getSendReceipt();
         log.info("transactionSend to topic {} sendReceipt={}", TRANS_TOPIC, sendReceipt);
         Transaction transaction = pair.getTransaction();
         // executed local transaction
         if (doLocalTransaction(1)) {
-//            transaction.commit();
+            transaction.commit();
         } else {
             transaction.rollback();
         }
