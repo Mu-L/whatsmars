@@ -7,7 +7,7 @@ download [rocketmq-all-5.5.0-bin-release.zip](https://dist.apache.org/repos/dist
 ```
 > nohup sh bin/mqnamesrv &
 > tail -f ~/logs/rocketmqlogs/namesrv.log
-> nohup sh bin/mqbroker -n localhost:9876 --enable-proxy &
+> nohup sh bin/mqbroker -n localhost:9876 &
 > tail -f ~/logs/rocketmqlogs/broker.log
 > export NAMESRV_ADDR=localhost:9876
 > sh bin/tools.sh org.apache.rocketmq.example.quickstart.Producer
