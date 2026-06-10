@@ -1,0 +1,3 @@
+rocketmq:
+  producer:
+    endpoints: localhost:8081

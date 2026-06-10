@@ -14,13 +14,7 @@ import org.springframework.stereotype.Service;
 @Service
 @RocketMQMessageListener(topic = "test-topic-1", consumerGroup = "my-consumer_test-topic-1")
 public class MyConsumer implements RocketMQListener<String> {
-    /**
-     * 处理接收到的消息
-     * <p>
-     * 当接收到消息时，记录消息内容到日志
-     *
-     * @param message 接收到的字符串类型消息内容
-     */
+
     @Override
     public void onMessage(String message) {
         log.info("received message: {}", message);
