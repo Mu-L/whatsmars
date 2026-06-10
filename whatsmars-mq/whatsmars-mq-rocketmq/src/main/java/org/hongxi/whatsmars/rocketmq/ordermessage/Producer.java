@@ -21,8 +21,7 @@ public class Producer {
             String[] tags = new String[] {"TagA", "TagB", "TagC", "TagD", "TagE"};
             for (int i = 0; i < 100; i++) {
                 int orderId = i % 10;
-                Message msg =
-                    new Message("TopicTest", tags[i % tags.length], "KEY" + i,
+                Message msg = new Message("TopicTest", tags[i % tags.length], "KEY" + i,
                         ("Hello RocketMQ " + i).getBytes(RemotingHelper.DEFAULT_CHARSET));
                 // 需要顺序消费的消息发往同一队列，比如同一订单号相关的几条需要顺序消费的消息发往同一队列
                 SendResult sendResult = producer.send(msg, new MessageQueueSelector() {

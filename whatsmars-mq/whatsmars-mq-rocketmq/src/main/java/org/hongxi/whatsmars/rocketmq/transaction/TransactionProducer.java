@@ -14,14 +14,11 @@ import java.util.concurrent.ThreadFactory;
 import java.util.concurrent.ThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
 
-/**
- * Notice: 4.3.2 fixed a bug in 4.3.1 about transaction - DefaultMQProducerImpl line 1156
- */
 public class TransactionProducer {
     public static void main(String[] args) throws MQClientException, InterruptedException {
         TransactionListener transactionListener = new TransactionListenerImpl();
-        TransactionMQProducer producer = new TransactionMQProducer("please_rename_unique_group_name");
-        ExecutorService executorService = new ThreadPoolExecutor(2, 5, 100, TimeUnit.SECONDS, new ArrayBlockingQueue<Runnable>(2000), new ThreadFactory() {
+        TransactionMQProducer producer = new TransactionMQProducer("transaction_producer_group");
+        ExecutorService executorService = new ThreadPoolExecutor(2, 5, 100, TimeUnit.SECONDS, new ArrayBlockingQueue<>(2000), new ThreadFactory() {
             @Override
             public Thread newThread(Runnable r) {
                 Thread thread = new Thread(r);
@@ -37,8 +34,7 @@ public class TransactionProducer {
         String[] tags = new String[] {"TagA", "TagB", "TagC", "TagD", "TagE"};
         for (int i = 0; i < 10; i++) {
             try {
-                Message msg =
-                    new Message("TopicTest1234", tags[i % tags.length], "KEY" + i,
+                Message msg = new Message("TopicTest1234", tags[i % tags.length], "KEY" + i,
                         ("Hello RocketMQ " + i).getBytes(RemotingHelper.DEFAULT_CHARSET));
                 SendResult sendResult = producer.sendMessageInTransaction(msg, null);
                 System.out.printf("%s%n", sendResult);

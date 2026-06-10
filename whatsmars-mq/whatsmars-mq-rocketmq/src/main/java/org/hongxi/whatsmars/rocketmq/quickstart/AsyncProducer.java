@@ -1,4 +1,4 @@
-package org.hongxi.whatsmars.rocketmq.simple;
+package org.hongxi.whatsmars.rocketmq.quickstart;
 
 import org.apache.rocketmq.client.exception.MQClientException;
 import org.apache.rocketmq.client.producer.DefaultMQProducer;
@@ -11,7 +11,6 @@ import java.io.UnsupportedEncodingException;
 
 public class AsyncProducer {
     public static void main(String[] args) throws MQClientException, InterruptedException, UnsupportedEncodingException {
-
         DefaultMQProducer producer = new DefaultMQProducer("async_producer_group");
         producer.setNamesrvAddr("127.0.0.1:9876");
         producer.start();
