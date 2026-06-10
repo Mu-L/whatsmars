@@ -18,6 +18,15 @@ ConsumeMessageThread_%d Receive New Messages: [MessageExt...
 > sh bin/mqshutdown namesrv
 ```
 
+RocketMQ 5.0 要求必须手动创建Topic和消费组，可使用 mqadmin 工具创建Topic和消费组，也可通过控制台创建Topic和消费组。<br>
+```text
+git clone https://github.com/apache/rocketmq-dashboard
+cd rocketmq-dashboard
+mvn spring-boot:run
+# 访问http://localhost:8082
+# 在控制台创建Topic和消费组
+```
+
 ### 架构
 ![RMQ](RMQ.png)
 
