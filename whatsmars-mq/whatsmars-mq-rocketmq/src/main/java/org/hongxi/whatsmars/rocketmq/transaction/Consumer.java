@@ -1,4 +1,4 @@
-package org.hongxi.whatsmars.rocketmq.quickstart;
+package org.hongxi.whatsmars.rocketmq.transaction;
 
 import org.apache.rocketmq.client.consumer.DefaultMQPushConsumer;
 import org.apache.rocketmq.client.consumer.listener.ConsumeConcurrentlyContext;
@@ -11,10 +11,10 @@ import java.util.List;
 
 public class Consumer {
     public static void main(String[] args) throws Exception {
-        DefaultMQPushConsumer consumer = new DefaultMQPushConsumer("quickstart_consumer_group");
+        DefaultMQPushConsumer consumer = new DefaultMQPushConsumer("transaction_message_consumer_group");
         consumer.setNamesrvAddr("127.0.0.1:9876");
         consumer.setConsumeFromWhere(ConsumeFromWhere.CONSUME_FROM_FIRST_OFFSET);
-        consumer.subscribe("TestTopic", "*");
+        consumer.subscribe("TestTopic4", "*");
 
         consumer.registerMessageListener(new MessageListenerConcurrently() {
             @Override

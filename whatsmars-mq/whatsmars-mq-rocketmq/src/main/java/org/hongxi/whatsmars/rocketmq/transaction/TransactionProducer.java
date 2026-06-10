@@ -1,13 +1,10 @@
 package org.hongxi.whatsmars.rocketmq.transaction;
 
-import org.apache.rocketmq.client.exception.MQClientException;
 import org.apache.rocketmq.client.producer.SendResult;
-import org.apache.rocketmq.client.producer.TransactionListener;
 import org.apache.rocketmq.client.producer.TransactionMQProducer;
 import org.apache.rocketmq.common.message.Message;
-import org.apache.rocketmq.remoting.common.RemotingHelper;
 
-import java.io.UnsupportedEncodingException;
+import java.nio.charset.StandardCharsets;
 import java.util.concurrent.ArrayBlockingQueue;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.ThreadFactory;
@@ -15,34 +12,27 @@ import java.util.concurrent.ThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
 
 public class TransactionProducer {
-    public static void main(String[] args) throws MQClientException, InterruptedException {
-        TransactionListener transactionListener = new TransactionListenerImpl();
-        TransactionMQProducer producer = new TransactionMQProducer("transaction_producer_group");
-        ExecutorService executorService = new ThreadPoolExecutor(2, 5, 100, TimeUnit.SECONDS, new ArrayBlockingQueue<>(2000), new ThreadFactory() {
+    public static void main(String[] args) throws Exception {
+        ExecutorService executorService = new ThreadPoolExecutor(2, 5, 100, TimeUnit.SECONDS,
+                new ArrayBlockingQueue<>(2000), new ThreadFactory() {
             @Override
             public Thread newThread(Runnable r) {
                 Thread thread = new Thread(r);
-                thread.setName("client-transaction-msg-check-thread");
+                thread.setName("transaction-check-thread");
                 return thread;
             }
         });
 
+        TransactionMQProducer producer = new TransactionMQProducer("transaction_message_producer_group");
         producer.setExecutorService(executorService);
-        producer.setTransactionListener(transactionListener);
+        producer.setTransactionListener(new TransactionListenerImpl());
         producer.start();
 
-        String[] tags = new String[] {"TagA", "TagB", "TagC", "TagD", "TagE"};
         for (int i = 0; i < 10; i++) {
-            try {
-                Message msg = new Message("TopicTest1234", tags[i % tags.length], "KEY" + i,
-                        ("Hello RocketMQ " + i).getBytes(RemotingHelper.DEFAULT_CHARSET));
-                SendResult sendResult = producer.sendMessageInTransaction(msg, null);
-                System.out.printf("%s%n", sendResult);
-
-                Thread.sleep(10);
-            } catch (MQClientException | UnsupportedEncodingException e) {
-                e.printStackTrace();
-            }
+            Message message = new Message("TestTopic4", ("I'm trans message " + i).getBytes(StandardCharsets.UTF_8));
+            // 第二个参数可传与本地事务有关的数据，如orderId
+            SendResult sendResult = producer.sendMessageInTransaction(message, null);
+            System.out.println(sendResult);
         }
 
         for (int i = 0; i < 100000; i++) {
