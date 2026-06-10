@@ -9,7 +9,6 @@ import org.apache.rocketmq.client.apis.producer.SendReceipt;
 import org.apache.rocketmq.client.apis.producer.Transaction;
 import org.apache.rocketmq.client.apis.producer.TransactionChecker;
 import org.apache.rocketmq.client.apis.producer.TransactionResolution;
-import org.apache.rocketmq.client.java.example.ProducerSingleton;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -22,9 +21,9 @@ public class ProducerTransactionMessageExample {
     public static void main(String[] args) throws ClientException {
         final ClientServiceProvider provider = ClientServiceProvider.loadService();
 
-        String topic = "yourTransactionTopic";
+        String topic = "example-trans-topic";
         TransactionChecker checker = messageView -> {
-            log.info("Receive transactional message check, message={}", messageView);
+            log.info("Received transactional message check, message={}", messageView);
             // Return the transaction resolution according to your business logic.
             return TransactionResolution.COMMIT;
         };
@@ -35,21 +34,21 @@ public class ProducerTransactionMessageExample {
         final Transaction transaction = producer.beginTransaction();
         // Define your message body.
         byte[] body = "This is a transaction message for Apache RocketMQ".getBytes(StandardCharsets.UTF_8);
-        String tag = "yourMessageTagA";
+        String tag = "TagA";
         final Message message = provider.newMessageBuilder()
             // Set topic for the current message.
             .setTopic(topic)
             // Message secondary classifier of message besides topic.
             .setTag(tag)
             // Key(s) of the message, another way to mark message besides message id.
-            .setKeys("yourMessageKey-565ef26f5727")
+            .setKeys("565ef26f5727")
             .setBody(body)
             .build();
         try {
             final SendReceipt sendReceipt = producer.send(message, transaction);
             log.info("Send transaction message successfully, messageId={}", sendReceipt.getMessageId());
-        } catch (Throwable t) {
-            log.error("Failed to send message", t);
+        } catch (Exception e) {
+            log.error("Failed to send message", e);
             return;
         }
         // Commit the transaction.

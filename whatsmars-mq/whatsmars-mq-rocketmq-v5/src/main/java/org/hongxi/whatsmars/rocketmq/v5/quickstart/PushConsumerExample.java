@@ -5,8 +5,6 @@ import java.util.Collections;
 import org.apache.rocketmq.client.apis.ClientConfiguration;
 import org.apache.rocketmq.client.apis.ClientException;
 import org.apache.rocketmq.client.apis.ClientServiceProvider;
-import org.apache.rocketmq.client.apis.SessionCredentialsProvider;
-import org.apache.rocketmq.client.apis.StaticSessionCredentialsProvider;
 import org.apache.rocketmq.client.apis.consumer.ConsumeResult;
 import org.apache.rocketmq.client.apis.consumer.FilterExpression;
 import org.apache.rocketmq.client.apis.consumer.FilterExpressionType;
@@ -23,24 +21,14 @@ public class PushConsumerExample {
     public static void main(String[] args) throws ClientException, InterruptedException, IOException {
         final ClientServiceProvider provider = ClientServiceProvider.loadService();
 
-        // Credential provider is optional for client configuration.
-        String accessKey = "yourAccessKey";
-        String secretKey = "yourSecretKey";
-        SessionCredentialsProvider sessionCredentialsProvider =
-            new StaticSessionCredentialsProvider(accessKey, secretKey);
-
         String endpoints = "localhost:8081";
         ClientConfiguration clientConfiguration = ClientConfiguration.newBuilder()
             .setEndpoints(endpoints)
-            // On some Windows platforms, you may encounter SSL compatibility issues. Try turning off the SSL option in
-            // client configuration to solve the problem please if SSL is not essential.
-            // .enableSsl(false)
-            .setCredentialProvider(sessionCredentialsProvider)
             .build();
-        String tag = "yourMessageTagA";
+        String tag = "TagA";
         FilterExpression filterExpression = new FilterExpression(tag, FilterExpressionType.TAG);
-        String consumerGroup = "yourConsumerGroup";
-        String topic = "yourTopic";
+        String topic = "example-normal-topic";
+        String consumerGroup = "my-push-consumer_example-normal-topic";
         // In most case, you don't need to create too many consumers, singleton pattern is recommended.
         PushConsumer pushConsumer = provider.newPushConsumerBuilder()
             .setClientConfiguration(clientConfiguration)

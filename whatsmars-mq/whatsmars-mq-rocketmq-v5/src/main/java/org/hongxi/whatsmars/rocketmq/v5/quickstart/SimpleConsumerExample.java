@@ -6,8 +6,6 @@ import java.util.List;
 import org.apache.rocketmq.client.apis.ClientConfiguration;
 import org.apache.rocketmq.client.apis.ClientException;
 import org.apache.rocketmq.client.apis.ClientServiceProvider;
-import org.apache.rocketmq.client.apis.SessionCredentialsProvider;
-import org.apache.rocketmq.client.apis.StaticSessionCredentialsProvider;
 import org.apache.rocketmq.client.apis.consumer.FilterExpression;
 import org.apache.rocketmq.client.apis.consumer.FilterExpressionType;
 import org.apache.rocketmq.client.apis.consumer.SimpleConsumer;
@@ -25,24 +23,14 @@ public class SimpleConsumerExample {
     public static void main(String[] args) throws ClientException {
         final ClientServiceProvider provider = ClientServiceProvider.loadService();
 
-        // Credential provider is optional for client configuration.
-        String accessKey = "yourAccessKey";
-        String secretKey = "yourSecretKey";
-        SessionCredentialsProvider sessionCredentialsProvider =
-            new StaticSessionCredentialsProvider(accessKey, secretKey);
-
-        String endpoints = "foobar.com:8080";
+        String endpoints = "localhost:8081";
         ClientConfiguration clientConfiguration = ClientConfiguration.newBuilder()
             .setEndpoints(endpoints)
-            // On some Windows platforms, you may encounter SSL compatibility issues. Try turning off the SSL option in
-            // client configuration to solve the problem please if SSL is not essential.
-            // .enableSsl(false)
-            .setCredentialProvider(sessionCredentialsProvider)
             .build();
-        String consumerGroup = "yourConsumerGroup";
+        String topic = "example-normal-topic";
+        String tag = "TagA";
+        String consumerGroup = "my-simple-consumer_example-normal-topic";
         Duration awaitDuration = Duration.ofSeconds(30);
-        String tag = "yourMessageTagA";
-        String topic = "yourTopic";
         FilterExpression filterExpression = new FilterExpression(tag, FilterExpressionType.TAG);
         // In most case, you don't need to create too many consumers, singleton pattern is recommended.
         SimpleConsumer consumer = provider.newSimpleConsumerBuilder()
@@ -69,8 +57,8 @@ public class SimpleConsumerExample {
                 try {
                     consumer.ack(message);
                     log.info("Message is acknowledged successfully, messageId={}", messageId);
-                } catch (Throwable t) {
-                    log.error("Message is failed to be acknowledged, messageId={}", messageId, t);
+                } catch (Exception e) {
+                    log.error("Message is failed to be acknowledged, messageId={}", messageId, e);
                 }
             }
         } while (true);

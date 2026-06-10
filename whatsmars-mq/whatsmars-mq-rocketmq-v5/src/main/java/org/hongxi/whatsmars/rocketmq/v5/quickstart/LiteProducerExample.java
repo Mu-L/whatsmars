@@ -6,7 +6,6 @@ import org.apache.rocketmq.client.apis.ClientServiceProvider;
 import org.apache.rocketmq.client.apis.message.Message;
 import org.apache.rocketmq.client.apis.producer.Producer;
 import org.apache.rocketmq.client.apis.producer.SendReceipt;
-import org.apache.rocketmq.client.java.example.ProducerSingleton;
 import org.apache.rocketmq.client.java.exception.LiteTopicQuotaExceededException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -20,7 +19,7 @@ public class LiteProducerExample {
     public static void main(String[] args) throws ClientException {
         final ClientServiceProvider provider = ClientServiceProvider.loadService();
 
-        String topic = "yourParentTopic";
+        String topic = "example-lite-topic";
         final Producer producer = ProducerSingleton.getInstance(topic);
         // Define your message body.
         byte[] body = "This is a lite message for Apache RocketMQ".getBytes(StandardCharsets.UTF_8);
@@ -28,7 +27,7 @@ public class LiteProducerExample {
             // Set topic for the current message.
             .setTopic(topic)
             // Key(s) of the message, another way to mark message besides message id.
-            .setKeys("yourMessageKey-3ee439f945d7")
+            .setKeys("3ee439f945d7")
             // Set your lite topic
             .setLiteTopic("lite-topic-1")
             .setBody(body)
@@ -40,8 +39,8 @@ public class LiteProducerExample {
             // Lite topic quota exceeded.
             // Evaluate and increase the lite topic resource limit.
             log.error("Lite topic quota exceeded", e);
-        } catch (Throwable t) {
-            log.error("Failed to send message", t);
+        } catch (Exception e) {
+            log.error("Failed to send message", e);
         }
         // Close the producer when you don't need it anymore.
         // You could close it manually or add this into the JVM shutdown hook.

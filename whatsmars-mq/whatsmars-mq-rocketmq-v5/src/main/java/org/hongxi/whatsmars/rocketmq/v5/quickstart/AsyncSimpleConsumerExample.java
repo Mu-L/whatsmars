@@ -11,8 +11,6 @@ import java.util.stream.Collectors;
 import org.apache.rocketmq.client.apis.ClientConfiguration;
 import org.apache.rocketmq.client.apis.ClientException;
 import org.apache.rocketmq.client.apis.ClientServiceProvider;
-import org.apache.rocketmq.client.apis.SessionCredentialsProvider;
-import org.apache.rocketmq.client.apis.StaticSessionCredentialsProvider;
 import org.apache.rocketmq.client.apis.consumer.FilterExpression;
 import org.apache.rocketmq.client.apis.consumer.FilterExpressionType;
 import org.apache.rocketmq.client.apis.consumer.SimpleConsumer;
@@ -31,24 +29,14 @@ public class AsyncSimpleConsumerExample {
     public static void main(String[] args) throws ClientException {
         final ClientServiceProvider provider = ClientServiceProvider.loadService();
 
-        // Credential provider is optional for client configuration.
-        String accessKey = "yourAccessKey";
-        String secretKey = "yourSecretKey";
-        SessionCredentialsProvider sessionCredentialsProvider =
-            new StaticSessionCredentialsProvider(accessKey, secretKey);
-
-        String endpoints = "foobar.com:8080";
+        String endpoints = "localhost:8081";
         ClientConfiguration clientConfiguration = ClientConfiguration.newBuilder()
             .setEndpoints(endpoints)
-            // On some Windows platforms, you may encounter SSL compatibility issues. Try turning off the SSL option in
-            // client configuration to solve the problem please if SSL is not essential.
-            // .enableSsl(false)
-            .setCredentialProvider(sessionCredentialsProvider)
             .build();
-        String consumerGroup = "yourConsumerGroup";
+        String topic = "example-normal-topic";
+        String tag = "TagA";
+        String consumerGroup = "my-async-simple-consumer_example-normal-topic";
         Duration awaitDuration = Duration.ofSeconds(30);
-        String tag = "yourMessageTagA";
-        String topic = "yourTopic";
         FilterExpression filterExpression = new FilterExpression(tag, FilterExpressionType.TAG);
         // In most case, you don't need to create too many consumers, singleton pattern is recommended.
         SimpleConsumer consumer = provider.newSimpleConsumerBuilder()
@@ -70,10 +58,9 @@ public class AsyncSimpleConsumerExample {
         ExecutorService ackCallbackExecutor = Executors.newCachedThreadPool();
         // Receive message.
         do {
-            final CompletableFuture<List<MessageView>> future0 = consumer.receiveAsync(maxMessageNum,
-                invisibleDuration);
+            final CompletableFuture<List<MessageView>> future0 = consumer.receiveAsync(maxMessageNum, invisibleDuration);
             future0.whenCompleteAsync(((messages, throwable) -> {
-                if (null != throwable) {
+                if (throwable != null) {
                     log.error("Failed to receive message from remote", throwable);
                     // Return early.
                     return;
@@ -86,7 +73,7 @@ public class AsyncSimpleConsumerExample {
                     final MessageId messageId = entry.getKey().getMessageId();
                     final CompletableFuture<Void> future = entry.getValue();
                     future.whenCompleteAsync((v, t) -> {
-                        if (null != t) {
+                        if (t != null) {
                             log.error("Message is failed to be acknowledged, messageId={}", messageId, t);
                             // Return early.
                             return;

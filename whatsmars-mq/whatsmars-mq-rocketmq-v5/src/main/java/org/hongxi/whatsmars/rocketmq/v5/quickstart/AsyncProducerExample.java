@@ -9,7 +9,6 @@ import org.apache.rocketmq.client.apis.ClientServiceProvider;
 import org.apache.rocketmq.client.apis.message.Message;
 import org.apache.rocketmq.client.apis.producer.Producer;
 import org.apache.rocketmq.client.apis.producer.SendReceipt;
-import org.apache.rocketmq.client.java.example.ProducerSingleton;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -22,25 +21,25 @@ public class AsyncProducerExample {
     public static void main(String[] args) throws ClientException, InterruptedException {
         final ClientServiceProvider provider = ClientServiceProvider.loadService();
 
-        String topic = "yourTopic";
+        String topic = "example-normal-topic";
         final Producer producer = ProducerSingleton.getInstance(topic);
         // Define your message body.
         byte[] body = "This is a normal message for Apache RocketMQ".getBytes(StandardCharsets.UTF_8);
-        String tag = "yourMessageTagA";
+        String tag = "TagA";
         final Message message = provider.newMessageBuilder()
             // Set topic for the current message.
             .setTopic(topic)
             // Message secondary classifier of message besides topic.
             .setTag(tag)
             // Key(s) of the message, another way to mark message besides message id.
-            .setKeys("yourMessageKey-0e094a5f9d85")
+            .setKeys("0e094a5f9d85")
             .setBody(body)
             .build();
         // Set individual thread pool for send callback.
         final CompletableFuture<SendReceipt> future = producer.sendAsync(message);
         ExecutorService sendCallbackExecutor = Executors.newCachedThreadPool();
         future.whenCompleteAsync((sendReceipt, throwable) -> {
-            if (null != throwable) {
+            if (throwable != null) {
                 log.error("Failed to send message", throwable);
                 // Return early.
                 return;
