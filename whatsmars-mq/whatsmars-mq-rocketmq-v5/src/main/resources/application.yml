@@ -1,3 +1,6 @@
 rocketmq:
   producer:
     endpoints: localhost:8081
+  push-consumer:
+    endpoints: localhost:8081
+    tag: '*'

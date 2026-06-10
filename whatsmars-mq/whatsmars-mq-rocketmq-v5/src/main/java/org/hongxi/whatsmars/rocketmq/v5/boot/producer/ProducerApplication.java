@@ -32,7 +32,7 @@ public class ProducerApplication implements CommandLineRunner {
 
     private static final String NORMAL_TOPIC = "demo-normal-topic";
     private static final String FIFO_TOPIC = "demo-fifo-topic";
-    private static final String DELAY_TOPIC = "demo-deley-topic";
+    private static final String DELAY_TOPIC = "demo-delay-topic";
     private static final String TRANS_TOPIC = "demo-trans-topic";
 
     @Autowired
@@ -107,7 +107,7 @@ public class ProducerApplication implements CommandLineRunner {
         Transaction transaction = pair.getTransaction();
         // executed local transaction
         if (doLocalTransaction(1)) {
-            transaction.commit();
+//            transaction.commit();
         } else {
             transaction.rollback();
         }

@@ -61,9 +61,6 @@ public class ProducerApplication implements CommandLineRunner {
         rocketMQTemplate.convertAndSend("test-topic-1", "I'm spring message");
         rocketMQTemplate.convertAndSend("test-topic-2", new OrderPaidEvent("T_001", new BigDecimal("88.00")));
 
-        // 测试多集群
-        rocketMQTemplate.syncSend("test-topic-5", "Hello, AI!");
-
         log.info("send finished!");
     }
 
