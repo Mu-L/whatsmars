@@ -7,4 +7,4 @@ https://www.elastic.co/cn/downloads/past-releases/elasticsearch-8-18-8
 要求极高的请求仍走关系型数据库，这种情况下完全不用再做关系型数据库读写分离。
 
 ### 日志采集与搜索 ELK
-Data -> Logstash -> Kafka -> Logstash -> Elasticsearch -> Kibana
+应用日志 → Filebeat采集 → Kafka缓冲 → Logstash清洗 → ES存储 → Kibana搜索
