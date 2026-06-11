@@ -3,6 +3,7 @@ package org.hongxi.whatsmars.rocketmq.boot.producer;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.rocketmq.client.producer.SendCallback;
 import org.apache.rocketmq.client.producer.SendResult;
+import org.apache.rocketmq.client.producer.TransactionSendResult;
 import org.apache.rocketmq.spring.core.RocketMQTemplate;
 import org.hongxi.whatsmars.rocketmq.boot.OrderPaidEvent;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -60,6 +61,14 @@ public class ProducerApplication implements CommandLineRunner {
         rocketMQTemplate.send("test-topic-1", MessageBuilder.withPayload("I'm spring message").build());
         rocketMQTemplate.convertAndSend("test-topic-1", "I'm spring message");
         rocketMQTemplate.convertAndSend("test-topic-2", new OrderPaidEvent("T_001", new BigDecimal("88.00")));
+
+        String orderId = "3519411001923440";
+        Message<String> transactionMessage = MessageBuilder.withPayload("I'm transactional message")
+                .setHeader("orderId", orderId).build();
+        // 第三个参数可传与本地事务有关的数据，如orderId
+        TransactionSendResult transactionSendResult = rocketMQTemplate.sendMessageInTransaction(
+                "test-topic-5", transactionMessage, orderId);
+        log.info("transactionSend to topic {} sendResult={}", "test-topic-5", transactionSendResult);
 
         log.info("send finished!");
     }

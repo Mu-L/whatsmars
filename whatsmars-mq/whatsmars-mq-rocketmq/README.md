@@ -36,6 +36,7 @@ mvn spring-boot:run
 | test-topic-2 | 普通消息 | my-consumer_test-topic-2 |
 | test-topic-3 | 顺序消息 | my-consumer_test-topic-3 |
 | test-topic-4 | 延迟消息 | my-consumer_test-topic-4 |
+| test-topic-5 | 事务消息 | my-consumer_test-topic-5 |
 
 #### Run Consumer and Producer
 ```shell

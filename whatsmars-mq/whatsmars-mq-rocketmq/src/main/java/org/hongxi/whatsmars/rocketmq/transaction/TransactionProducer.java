@@ -31,7 +31,7 @@ public class TransactionProducer {
         for (int i = 0; i < 10; i++) {
             Message message = new Message("TestTopic4", ("I'm trans message " + i).getBytes(StandardCharsets.UTF_8));
             // 第二个参数可传与本地事务有关的数据，如orderId
-            SendResult sendResult = producer.sendMessageInTransaction(message, null);
+            SendResult sendResult = producer.sendMessageInTransaction(message, "3519411001923440");
             System.out.println(sendResult);
         }
 

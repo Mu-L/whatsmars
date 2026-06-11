@@ -99,31 +99,33 @@ public class ProducerApplication implements CommandLineRunner {
     }
 
     private void sendTransMessage() throws ClientException {
+        String orderId = "3519411001923440";
         Message<OrderPaidEvent> message = MessageBuilder.withPayload(new OrderPaidEvent("T_004", new BigDecimal("488.00")))
-                .setHeader("OrderId", 1).build();
+                .setHeader("orderId", orderId).build();
         Pair<SendReceipt, Transaction> pair = rocketMQClientTemplate.sendTransactionMessage(TRANS_TOPIC, message);
         SendReceipt sendReceipt = pair.getSendReceipt();
         log.info("transactionSend to topic {} sendReceipt={}", TRANS_TOPIC, sendReceipt);
         Transaction transaction = pair.getTransaction();
         // executed local transaction
-        if (doLocalTransaction(1)) {
+        if (doLocalTransaction(orderId)) {
             transaction.commit();
         } else {
             transaction.rollback();
         }
     }
 
-    private boolean doLocalTransaction(int number) {
+    private boolean doLocalTransaction(String orderId) {
         log.info("execute local transaction");
-        return number > 0;
+        return orderId != null;
     }
 
     @RocketMQTransactionListener
     static class TransactionListenerImpl implements RocketMQTransactionChecker {
         @Override
         public TransactionResolution check(MessageView messageView) {
-            if (Objects.nonNull(messageView.getProperties().get("OrderId"))) {
-                log.info("Received transactional message check, message={}", messageView);
+            log.info("Received transactional message check, message={}", messageView);
+            if (Objects.nonNull(messageView.getProperties().get("orderId"))) {
+                log.info("transactional message check success, messageId={}", messageView.getMessageId());
                 return TransactionResolution.COMMIT;
             }
             log.info("rollback transaction");
