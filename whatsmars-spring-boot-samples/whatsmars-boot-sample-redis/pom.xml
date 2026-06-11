@@ -10,9 +10,7 @@
     <modelVersion>4.0.0</modelVersion>
 
     <artifactId>whatsmars-boot-sample-redis</artifactId>
-
-    <packaging>jar</packaging>
-    <description>Spring Boot Redis Sample</description>
+    <description>Spring Boot Data Redis Sample</description>
 
     <dependencies>
         <dependency>
@@ -20,10 +18,9 @@
             <artifactId>spring-boot-starter-data-redis</artifactId>
         </dependency>
         <dependency>
-            <groupId>org.apache.commons</groupId>
-            <artifactId>commons-pool2</artifactId>
+            <groupId>com.fasterxml.jackson.core</groupId>
+            <artifactId>jackson-databind</artifactId>
         </dependency>
     </dependencies>
-
 
 </project>
