@@ -11,10 +11,6 @@
 
     <artifactId>whatsmars-mq-rocketmq-v5</artifactId>
 
-    <properties>
-        <start-class>org.hongxi.whatsmars.rocketmq.v5.boot.producer.ProducerApplication</start-class>
-    </properties>
-
     <dependencies>
         <dependency>
             <groupId>org.apache.rocketmq</groupId>
@@ -30,5 +26,23 @@
             </plugin>
         </plugins>
     </build>
+
+    <profiles>
+        <profile>
+            <id>producer</id>
+            <activation>
+                <activeByDefault>true</activeByDefault>
+            </activation>
+            <properties>
+                <start-class>org.hongxi.whatsmars.rocketmq.v5.boot.producer.ProducerApplication</start-class>
+            </properties>
+        </profile>
+        <profile>
+            <id>consumer</id>
+            <properties>
+                <start-class>org.hongxi.whatsmars.rocketmq.v5.boot.consumer.ConsumerApplication</start-class>
+            </properties>
+        </profile>
+    </profiles>
 
 </project>

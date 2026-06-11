@@ -10,13 +10,6 @@
     <modelVersion>4.0.0</modelVersion>
 
     <artifactId>whatsmars-mq-rocketmq</artifactId>
-    <packaging>jar</packaging>
-
-    <description>RocketMQ demo</description>
-
-    <properties>
-        <start-class>org.hongxi.whatsmars.rocketmq.boot.producer.ProducerApplication</start-class>
-    </properties>
 
     <dependencies>
         <dependency>
@@ -34,5 +27,22 @@
         </plugins>
     </build>
 
+    <profiles>
+        <profile>
+            <id>producer</id>
+            <activation>
+                <activeByDefault>true</activeByDefault>
+            </activation>
+            <properties>
+                <start-class>org.hongxi.whatsmars.rocketmq.boot.producer.ProducerApplication</start-class>
+            </properties>
+        </profile>
+        <profile>
+            <id>consumer</id>
+            <properties>
+                <start-class>org.hongxi.whatsmars.rocketmq.boot.consumer.ConsumerApplication</start-class>
+            </properties>
+        </profile>
+    </profiles>
 
 </project>
