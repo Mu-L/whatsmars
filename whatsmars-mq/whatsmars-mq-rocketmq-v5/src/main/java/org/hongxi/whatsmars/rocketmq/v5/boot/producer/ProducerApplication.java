@@ -119,6 +119,15 @@ public class ProducerApplication implements CommandLineRunner {
         return orderId != null;
     }
 
+    /**
+     * 该注解的属性 rocketMQTemplateBeanName 指定了使用的 RocketMQClientTemplate 实例
+     * 这说明了在5.0中，事务检查器绑定了 Producer 实例，而 Broker 拥有 Producer 信息
+     * 因此 Broker 知道该回调哪个事务检查器。
+     * 在4.0中，事务检查器是通过 producer group 来关联 Producer 的。
+     *
+     * 理论上，一个 RocketMQClientTemplate 可以用于多个事务 Topic
+     * 但那样需要在同一个事务检查器里针各 Topic 写各自的 check 逻辑
+     */
     @RocketMQTransactionListener
     static class TransactionListenerImpl implements RocketMQTransactionChecker {
         @Override
