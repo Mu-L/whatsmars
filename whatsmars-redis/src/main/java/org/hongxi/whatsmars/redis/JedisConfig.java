@@ -1,7 +1,6 @@
 package org.hongxi.whatsmars.redis;
 
 import org.springframework.context.annotation.Bean;
-import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
 import redis.clients.jedis.JedisPool;
 import redis.clients.jedis.JedisPoolConfig;
@@ -10,7 +9,6 @@ import redis.clients.jedis.JedisPoolConfig;
  * Jedis 连接池配置
  */
 @Configuration
-@ComponentScan("org.hongxi.whatsmars.redis.sample")
 public class JedisConfig {
 
     @Bean(destroyMethod = "close")

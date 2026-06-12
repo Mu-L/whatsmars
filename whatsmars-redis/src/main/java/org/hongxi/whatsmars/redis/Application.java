@@ -1,9 +1,12 @@
 package org.hongxi.whatsmars.redis;
 
+import lombok.extern.slf4j.Slf4j;
 import org.hongxi.whatsmars.redis.sample.*;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.springframework.context.annotation.AnnotationConfigApplicationContext;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.CommandLineRunner;
+import org.springframework.boot.SpringApplication;
+import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.context.annotation.Bean;
 
 /**
  * Redis 示例入口
@@ -16,30 +19,46 @@ import org.springframework.context.annotation.AnnotationConfigApplicationContext
  * 5. 过期策略与淘汰策略演示
  * 6. Lua 脚本执行示例
  * 7. 位图（Bitmap）与 HyperLogLog 使用示例
- *
- * 启动参数（可选）：
- *   -Dredis.host=xxx -Dredis.port=6379 -Dredis.password=xxx
  */
+@Slf4j
+@SpringBootApplication
 public class Application {
 
-    private static final Logger log = LoggerFactory.getLogger(Application.class);
+    @Autowired
+    private BasicDataTypeExample basicDataTypeExample;
+    @Autowired
+    private DistributedLockExample distributedLockExample;
+    @Autowired
+    private PubSubExample pubSubExample;
+    @Autowired
+    private PipelineExample pipelineExample;
+    @Autowired
+    private ExpirationExample expirationExample;
+    @Autowired
+    private LuaScriptExample luaScriptExample;
+    @Autowired
+    private BitmapAndHyperLogLogExample bitmapAndHyperLogLogExample;
 
     public static void main(String[] args) {
+        SpringApplication.run(Application.class, args);
+    }
 
-        try (AnnotationConfigApplicationContext context = new AnnotationConfigApplicationContext(JedisConfig.class)) {
-            log.info("========== 开始运行 Redis 示例 ==========\n");
-
-            context.getBean(BasicDataTypeExample.class).runAll();
-            context.getBean(DistributedLockExample.class).runAll();
-            context.getBean(PubSubExample.class).runAll();
-            context.getBean(PipelineExample.class).runAll();
-            context.getBean(ExpirationExample.class).runAll();
-            context.getBean(LuaScriptExample.class).runAll();
-            context.getBean(BitmapAndHyperLogLogExample.class).runAll();
-
-            log.info("========== 所有 Redis 示例运行完毕 ==========");
-        } catch (Exception e) {
-            log.error("运行失败", e);
-        }
+    @Bean
+    CommandLineRunner runner() {
+        return args -> {
+            try {
+                log.info("========== 运行 Redis 示例 ==========");
+                basicDataTypeExample.runAll();
+                distributedLockExample.runAll();
+                pubSubExample.runAll();
+                pipelineExample.runAll();
+                expirationExample.runAll();
+                luaScriptExample.runAll();
+                bitmapAndHyperLogLogExample.runAll();
+                log.info("========== 所有 Redis 示例运行完毕 ==========");
+            } catch (Exception e) {
+                log.error("运行失败", e);
+            }
+        };
     }
 }
