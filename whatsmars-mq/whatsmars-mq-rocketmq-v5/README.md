@@ -2,7 +2,7 @@
 Apache RocketMQ 是一款面向万亿级消息规模的 AI 原生异步通信引擎。诞生于阿里巴巴高并发电商场景，经过数千家企业的生产验证，
 RocketMQ 已从高性能消息队列演进为统一消息平台，横跨传统业务消息、事件流处理和新兴的 AI 原生通信三大范式。
 
-RocketMQ 5.0 严格定义了消息类型，即Normal、FIFO、Delay、Transaction，在Broker开启`enableTopicMessageTypeCheck=true`的情况下，生产或消费的消息类型必须与
+RocketMQ 5.0 严格定义了消息类型，即NORMAL、FIFO、DELAY、TRANSACTION，在Broker开启`enableTopicMessageTypeCheck=true`的情况下，生产或消费的消息类型必须与
 Topic指定的消息类型一致，否则Broker会拒绝请求并返回“类型不匹配”错误。
 
 ### Quick Start
@@ -27,6 +27,19 @@ mvn spring-boot:run
 # 在控制台创建Topic和消费组
 ```
 
+用命令创建Topic和消费组也很方便，命令如下：
+```shell
+bin/mqadmin updateTopic -n localhost:9876 -c DefaultCluster -t demo-normal-topic -a +message.type=NORMAL
+bin/mqadmin updateSubGroup -n localhost:9876 -c DefaultCluster -g my-consumer_demo-normal-topic
+bin/mqadmin updateTopic -n localhost:9876 -c DefaultCluster -t demo-fifo-topic -a +message.type=FIFO
+bin/mqadmin updateSubGroup -n localhost:9876 -c DefaultCluster -g my-consumer_demo-fifo-topic -o true
+bin/mqadmin updateTopic -n localhost:9876 -c DefaultCluster -t demo-delay-topic -a +message.type=DELAY
+bin/mqadmin updateSubGroup -n localhost:9876 -c DefaultCluster -g my-consumer_demo-delay-topic
+bin/mqadmin updateTopic -n localhost:9876 -c DefaultCluster -t demo-trans-topic -a +message.type=TRANSACTION
+bin/mqadmin updateSubGroup -n localhost:9876 -c DefaultCluster -g my-consumer_demo-trans-topic
+```
+`-o true`表示顺序消费
+
 本模块boot示例需要创建的Topic和消费组如下
 
 | Topic | 消息类型 | Consumer Group                     |
@@ -42,6 +55,34 @@ mvn spring-boot:run -Pconsumer
 ```
 ```shell
 mvn spring-boot:run -Pproducer
+```
+
+### Lite Topic
+RocketMQ 5.5.0 引入了 Lite Topic，面向 AI Agent、异步任务和海量轻量会话场景，支持百万级轻量会话通道共存，
+并在轻量通道管理、消费状态持久化和事件驱动分发等方面进行了针对性设计。
+
+1. 追加 Lite Topic 配置到 broker.conf
+```shell
+cat >> conf/broker.conf << EOF
+enableLmq=true
+enableMultiDispatch=true
+storeType=defaultRocksDB
+EOF
+```
+2. 启动 nameserver, broker, proxy
+Local模式部署暂不支持Lite Topic，需要单独部署Proxy
+```shell
+bin/mqproxy -n localhost:9876
+```
+3. 创建Topic和订阅组
+```shell
+bin/mqadmin updateTopic -n localhost:9876 -c DefaultCluster -t example-lite-topic -a +message.type=LITE
+bin/mqadmin updateSubGroup -n localhost:9876 -c DefaultCluster -g my-lite-push-consumer_example-lite-topic -o true --attributes +lite.bind.topic=example-lite-topic
+```
+4. 运行Producer和Consumer
+```text
+org.hongxi.whatsmars.rocketmq.v5.quickstart.LiteProducerExample
+org.hongxi.whatsmars.rocketmq.v5.quickstart.LitePushConsumerExample
 ```
 
 ### 架构
