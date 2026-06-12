@@ -12,7 +12,7 @@ import org.hongxi.whatsmars.dubbo.demo.api.DemoService;
 
 public class Application {
 
-    private static final String ZOOKEEPER_URL = "zookeeper://127.0.0.1:2181";
+    private static final String NACOS_URL = "nacos://127.0.0.1:8848?username=nacos&password=7fDJZBbiLzO2";
 
     public static void main(String[] args) {
         startWithBootstrap();
@@ -24,14 +24,14 @@ public class Application {
         service.setRef(new DemoServiceImpl());
 
         ConfigCenterConfig configCenterConfig = new ConfigCenterConfig();
-        configCenterConfig.setAddress(ZOOKEEPER_URL);
+        configCenterConfig.setAddress(NACOS_URL);
 
         DubboBootstrap bootstrap = DubboBootstrap.getInstance();
         bootstrap.application(new ApplicationConfig("dubbo-demo-provider"))
                 .configCenter(configCenterConfig)
-                .registry(new RegistryConfig(ZOOKEEPER_URL))
-                .metadataReport(new MetadataReportConfig(ZOOKEEPER_URL))
-                .protocol(new ProtocolConfig(CommonConstants.DUBBO, -1))
+                .registry(new RegistryConfig(NACOS_URL))
+                .metadataReport(new MetadataReportConfig(NACOS_URL))
+                .protocol(new ProtocolConfig(CommonConstants.TRIPLE, -1))
                 .service(service)
                 .start()
                 .await();

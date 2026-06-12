@@ -10,12 +10,11 @@ dubbo:
     name: tri
     port: -1
   registry:
-    id: zk-registry
-    address: zookeeper://127.0.0.1:2181
+    address: nacos://127.0.0.1:8848?username=nacos&password=7fDJZBbiLzO2
   config-center:
-    address: zookeeper://127.0.0.1:2181
+    address: nacos://127.0.0.1:8848?username=nacos&password=7fDJZBbiLzO2
   metadata-report:
-    address: zookeeper://127.0.0.1:2181
+    address: nacos://127.0.0.1:8848?username=nacos&password=7fDJZBbiLzO2
   tracing:
     enabled: true
 

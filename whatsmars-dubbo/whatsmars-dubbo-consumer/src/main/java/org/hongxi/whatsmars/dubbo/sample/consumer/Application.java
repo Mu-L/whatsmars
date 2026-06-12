@@ -17,7 +17,7 @@ import org.slf4j.LoggerFactory;
 public class Application {
     private static final Logger logger = LoggerFactory.getLogger(Application.class);
 
-    private static final String ZOOKEEPER_URL = "zookeeper://127.0.0.1:2181";
+    private static final String NACOS_URL = "nacos://127.0.0.1:8848?username=nacos&password=7fDJZBbiLzO2";
 
     public static void main(String[] args) {
         runWithBootstrap();
@@ -29,13 +29,13 @@ public class Application {
         reference.setGeneric("true");
 
         ConfigCenterConfig configCenterConfig = new ConfigCenterConfig();
-        configCenterConfig.setAddress(ZOOKEEPER_URL);
+        configCenterConfig.setAddress(NACOS_URL);
 
         DubboBootstrap bootstrap = DubboBootstrap.getInstance();
         bootstrap.application(new ApplicationConfig("dubbo-demo-consumer"))
                 .configCenter(configCenterConfig)
-                .registry(new RegistryConfig(ZOOKEEPER_URL))
-                .metadataReport(new MetadataReportConfig(ZOOKEEPER_URL))
+                .registry(new RegistryConfig(NACOS_URL))
+                .metadataReport(new MetadataReportConfig(NACOS_URL))
                 .protocol(new ProtocolConfig(CommonConstants.TRIPLE, -1))
                 .reference(reference)
                 .start();
