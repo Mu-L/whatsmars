@@ -1,7 +1,8 @@
 package org.hongxi.whatsmars.redis;
 
-import lombok.extern.slf4j.Slf4j;
 import org.hongxi.whatsmars.redis.sample.*;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
@@ -20,9 +21,9 @@ import org.springframework.context.annotation.Bean;
  * 6. Lua 脚本执行示例
  * 7. 位图（Bitmap）与 HyperLogLog 使用示例
  */
-@Slf4j
 @SpringBootApplication
 public class Application {
+    private static final Logger log = LoggerFactory.getLogger(Application.class);
 
     @Autowired
     private BasicDataTypeExample basicDataTypeExample;
