@@ -24,7 +24,7 @@ import java.net.URISyntaxException;
 @RequestMapping("/httpclient")
 public class ApacheHttpClientTestController {
 
-    @Value("${server.port}")
+    @Value("${server.port:8080}")
     private Integer port;
 
     @RequestMapping("/back")

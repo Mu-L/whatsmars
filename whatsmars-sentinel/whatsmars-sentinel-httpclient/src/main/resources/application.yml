@@ -1,5 +1,3 @@
 spring:
   application:
     name: sentinel-demo-apache-httpclient
-server:
-  port: 8080
