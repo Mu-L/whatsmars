@@ -9,7 +9,7 @@
     </parent>
     <modelVersion>4.0.0</modelVersion>
 
-    <artifactId>whatsmars-dubbo-consumer-boot</artifactId>
+    <artifactId>whatsmars-dubbo-consumer</artifactId>
     <packaging>jar</packaging>
 
     <description>dubbo starter demo - consumer</description>

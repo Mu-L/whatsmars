@@ -9,7 +9,7 @@
         <version>2026.6.1-SNAPSHOT</version>
     </parent>
 
-    <artifactId>whatsmars-dubbo-idl-provider-boot</artifactId>
+    <artifactId>whatsmars-dubbo-idl-provider</artifactId>
 
     <dependencies>
         <dependency>
