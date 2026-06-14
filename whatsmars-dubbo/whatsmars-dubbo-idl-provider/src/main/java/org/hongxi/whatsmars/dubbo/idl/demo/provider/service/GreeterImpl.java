@@ -3,9 +3,9 @@ package org.hongxi.whatsmars.dubbo.idl.demo.provider.service;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.dubbo.config.annotation.DubboService;
 import org.apache.dubbo.rpc.RpcContext;
-import org.hongxi.whatsmars.dubbo.idl.greeter.DubboGreeterTriple;
-import org.hongxi.whatsmars.dubbo.idl.greeter.GreeterReply;
-import org.hongxi.whatsmars.dubbo.idl.greeter.GreeterRequest;
+import org.hongxi.whatsmars.dubbo.idl.unary.DubboGreeterTriple;
+import org.hongxi.whatsmars.dubbo.idl.unary.GreeterReply;
+import org.hongxi.whatsmars.dubbo.idl.unary.GreeterRequest;
 
 @Slf4j
 @DubboService
