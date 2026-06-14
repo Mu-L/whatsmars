@@ -20,6 +20,7 @@
         <module>whatsmars-dubbo-idl</module>
         <module>whatsmars-dubbo-idl-provider</module>
         <module>whatsmars-dubbo-idl-consumer</module>
+        <module>whatsmars-dubbo-consumer-grpc</module>
     </modules>
 
 

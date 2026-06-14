@@ -1,6 +1,6 @@
 spring:
   application:
-    name: dubbo-idl-spring-demo-provider
+    name: dubbo-idl-demo-provider
 
 dubbo:
   application:

@@ -1,6 +1,6 @@
 spring:
   application:
-    name: dubbo-spring-demo-consumer
+    name: dubbo-demo-consumer
 
 dubbo:
   application:

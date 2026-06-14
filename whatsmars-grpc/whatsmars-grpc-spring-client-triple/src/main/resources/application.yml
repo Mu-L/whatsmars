@@ -1,0 +1,7 @@
+spring:
+  application:
+    name: grpc-client-triple
+  grpc:
+    client:
+      default-channel:
+        address: static://localhost:50051
