@@ -19,6 +19,9 @@
         <module>whatsmars-dubbo-consumer-boot</module>
         <module>whatsmars-dubbo-provider</module>
         <module>whatsmars-dubbo-consumer</module>
+        <module>whatsmars-dubbo-idl</module>
+        <module>whatsmars-dubbo-idl-provider-boot</module>
+        <module>whatsmars-dubbo-idl-consumer-boot</module>
     </modules>
 
 

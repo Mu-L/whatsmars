@@ -14,5 +14,13 @@
 
     <description>Dubbo服务接口定义</description>
 
+    <dependencies>
+        <dependency>
+            <groupId>org.apache.dubbo</groupId>
+            <artifactId>dubbo-common</artifactId>
+            <version>${dubbo.version}</version>
+            <optional>true</optional>
+        </dependency>
+    </dependencies>
 
 </project>

@@ -1,0 +1,19 @@
+syntax = "proto3";
+
+option java_multiple_files = true;
+
+package org.hongxi.whatsmars.dubbo.idl.streaming;
+
+message GreeterRequest {
+  string name = 1;
+}
+
+message GreeterReply {
+  string message = 1;
+}
+
+service StreamingGreeter{
+  rpc biStream(stream GreeterRequest) returns (stream GreeterReply);
+
+  rpc serverStream(GreeterRequest) returns (stream GreeterReply);
+}

@@ -1,0 +1,20 @@
+spring:
+  application:
+    name: dubbo-idl-spring-demo-consumer
+
+dubbo:
+  application:
+    name: ${spring.application.name}
+    qos-port: 33334
+  protocol:
+    name: tri
+    port: -1
+  registry:
+    address: nacos://127.0.0.1:8848?username=nacos&password=7fDJZBbiLzO2
+  config-center:
+    address: nacos://127.0.0.1:8848?username=nacos&password=7fDJZBbiLzO2
+  metadata-report:
+    address: nacos://127.0.0.1:8848?username=nacos&password=7fDJZBbiLzO2
+  tracing:
+    enabled: true
+
