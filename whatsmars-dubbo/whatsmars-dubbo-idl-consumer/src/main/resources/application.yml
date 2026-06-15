@@ -11,6 +11,7 @@ dubbo:
     port: -1
   registry:
     address: nacos://127.0.0.1:8848?username=nacos&password=7fDJZBbiLzO2
+    register-mode: instance
   config-center:
     address: nacos://127.0.0.1:8848?username=nacos&password=7fDJZBbiLzO2
   metadata-report:
