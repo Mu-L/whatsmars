@@ -11,6 +11,8 @@ public interface DemoService {
 
 	String sayHello(String name);
 
+	String helloContext(String name);
+
 	User echo(User user);
 
 	default CompletableFuture<String> sayHelloAsync(String name) {

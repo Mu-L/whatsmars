@@ -3,6 +3,7 @@ package org.hongxi.whatsmars.dubbo.demo.consumer.controller;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.dubbo.common.stream.StreamObserver;
 import org.apache.dubbo.config.annotation.DubboReference;
+import org.apache.dubbo.rpc.RpcContext;
 import org.hongxi.whatsmars.dubbo.demo.api.DemoService;
 import org.hongxi.whatsmars.dubbo.demo.api.StreamingDemoService;
 import org.hongxi.whatsmars.dubbo.demo.api.vo.User;
@@ -25,6 +26,15 @@ public class ConsumerController {
     public String hello(String name) {
         log.info("Calling dubbo provider, {}", name);
         return demoService.sayHello(name);
+    }
+
+    @GetMapping("/hello/context")
+    public String helloContext(String name) {
+        log.info("Calling dubbo provider, {}", name);
+        RpcContext.getClientAttachment().setAttachment("lang", "zh");
+        String result = demoService.helloContext(name);
+        log.info("mode: {}", RpcContext.getServerContext().getAttachment("mode"));
+        return result;
     }
 
     @GetMapping("/hello/async")

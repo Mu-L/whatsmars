@@ -23,6 +23,15 @@ public class DemoServiceImpl implements DemoService {
         return "Hello, " + name;
     }
 
+    @Override
+    public String helloContext(String name) {
+        logger.info("Hello {}, request from consumer: {}, lang: {}",
+                name, RpcContext.getServiceContext().getRemoteAddress(),
+                RpcContext.getServerAttachment().getAttachment("lang"));
+        RpcContext.getServerContext().setAttachment("mode", "Qwen3.7 Max");
+        return "Hello, " + name;
+    }
+
     /**
      * 测试是否支持 Java 17 的 record
      */
