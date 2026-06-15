@@ -1,11 +1,10 @@
 package org.hongxi.whatsmars.dubbo.demo.consumer.controller;
 
 import lombok.extern.slf4j.Slf4j;
-import org.apache.dubbo.common.stream.StreamObserver;
 import org.apache.dubbo.config.annotation.DubboReference;
 import org.apache.dubbo.rpc.RpcContext;
+import org.hongxi.whatsmars.dubbo.demo.api.AsyncDemoService;
 import org.hongxi.whatsmars.dubbo.demo.api.DemoService;
-import org.hongxi.whatsmars.dubbo.demo.api.StreamingDemoService;
 import org.hongxi.whatsmars.dubbo.demo.api.vo.User;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -19,8 +18,9 @@ public class ConsumerController {
 
     @DubboReference
     private DemoService demoService;
-    @DubboReference
-    private StreamingDemoService streamingDemoService;
+
+    @DubboReference(async = true)
+    private AsyncDemoService asyncDemoService;
 
     @GetMapping("/hello")
     public String hello(String name) {
@@ -38,7 +38,7 @@ public class ConsumerController {
     }
 
     @GetMapping("/hello/async")
-    public String asyncHello(String name) {
+    public String helloAsync(String name) {
         log.info("Async calling dubbo provider, {}", name);
         CompletableFuture<String> future = demoService.sayHelloAsync(name);
         try {
@@ -53,50 +53,29 @@ public class ConsumerController {
         return demoService.echo(new User("lily", 20));
     }
 
-    @GetMapping("/stream")
-    public String sayHelloStream(String name) {
-        log.info("Calling dubbo provider, {}", name);
-        StreamObserver<String> request = streamingDemoService.sayHelloStream(new StreamObserver<>() {
-            @Override
-            public void onNext(String data) {
-                log.info("data: {}", data);
-            }
+    @GetMapping("/async/hello")
+    public String asyncHello(String name) {
+        asyncDemoService.sayHello(name);
+        CompletableFuture<String> f = RpcContext.getServerContext().getCompletableFuture();
+        whenComplete(f);
 
-            @Override
-            public void onError(Throwable throwable) {
-                log.error("onError", throwable);
-            }
+        CompletableFuture<String> f2 = RpcContext.getServerContext()
+                .asyncCall(() -> asyncDemoService.sayHello(name));
+        whenComplete(f2);
 
-            @Override
-            public void onCompleted() {
-                log.info("onCompleted");
-            }
-        });
-        for (int i = 0; i < 10; i++) {
-            request.onNext(name + "-" + i);
-        }
-        request.onCompleted();
+        CompletableFuture<String> f3 = asyncDemoService.sayHelloAsync(name);
+        whenComplete(f3);
+
         return "OK";
     }
 
-    @GetMapping("/stream/server")
-    public String sayHelloServerStream(String name) {
-        streamingDemoService.sayHelloServerStream(name, new StreamObserver<>() {
-            @Override
-            public void onNext(String data) {
-                log.info("data: {}", data);
-            }
-
-            @Override
-            public void onError(Throwable throwable) {
-                log.error("onError", throwable);
-            }
-
-            @Override
-            public void onCompleted() {
-                log.info("onCompleted");
+    private void whenComplete(CompletableFuture<?> future) {
+        future.whenComplete((v, t) -> {
+            if (t != null) {
+                log.error("Error", t);
+            } else {
+                log.info("Result: {}", v);
             }
         });
-        return "OK";
     }
 }
