@@ -1,4 +1,4 @@
-package org.hongxi.whatsmars.dubbo.demo.consumer;
+package org.hongxi.whatsmars.dubbo.demo.consumer.controller;
 
 import lombok.extern.slf4j.Slf4j;
 import org.apache.dubbo.common.stream.StreamObserver;
