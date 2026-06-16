@@ -6,3 +6,8 @@ spring:
       chat:
         options:
           model: qwen-plus
+      embedding:
+        options:
+          # 通义千问的嵌入模型
+          model: text-embedding-v3
+          # 或者使用 text-embedding-v2

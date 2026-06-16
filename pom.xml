@@ -53,7 +53,7 @@
         <grpc.version>1.81.0</grpc.version>
         <guava.version>33.6.0-jre</guava.version>
         <hessian-lite.version>4.0.4</hessian-lite.version>
-        <langchain4j.beta.version>1.14.1-beta24</langchain4j.beta.version>
+        <langchain4j.beta.version>1.16.3-beta26</langchain4j.beta.version>
         <msgpack.version>0.9.12</msgpack.version>
         <mybatis-spring.version>3.0.5</mybatis-spring.version>
         <mybatis-plus.version>3.5.15</mybatis-plus.version>
@@ -280,6 +280,11 @@
             <dependency>
                 <groupId>dev.langchain4j</groupId>
                 <artifactId>langchain4j-open-ai-spring-boot-starter</artifactId>
+                <version>${langchain4j.beta.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>dev.langchain4j</groupId>
+                <artifactId>langchain4j-reactor</artifactId>
                 <version>${langchain4j.beta.version}</version>
             </dependency>
 
