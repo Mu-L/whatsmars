@@ -97,8 +97,8 @@ String response = chatClient.prompt()
 
 ```java
 List<Message> history = new ArrayList<>();
-history.add(Message.builder().role(Role.USER).text("你好").build());
-history.add(Message.builder().role(Role.ASSISTANT).text("你好！有什么可以帮助你的？").build());
+history.add(UserMessage.builder().text("你好").build());
+history.add(AssistantMessage.builder().content("你好！有什么可以帮助你的？").build());
 
 String response = chatClient.prompt()
     .messages(history)
@@ -208,6 +208,25 @@ AI 会自动识别需要调用 `getWeather("北京")` 获取天气信息。
 结合向量数据库实现知识库问答，解决大模型知识时效性问题。
 
 #### 6.1 内存向量存储（开发测试用）
+
+**配置 (application.yml)：**
+
+```yaml
+spring:
+  ai:
+    openai:
+      api-key: ${OPENAI_API_KEY}
+      base-url: https://dashscope.aliyuncs.com/compatible-mode
+      chat:
+        options:
+          model: qwen3.7-plus
+      embedding:
+        options:
+          # Qwen 的嵌入模型
+          model: text-embedding-v3
+```
+
+**使用：**
 
 ```java
 @RestController
