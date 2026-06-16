@@ -3,8 +3,12 @@ package org.hongxi.whatsmars.ai.openai.example;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.ai.chat.client.ChatClient;
+import org.springframework.ai.chat.messages.AssistantMessage;
+import org.springframework.ai.chat.messages.Message;
+import org.springframework.ai.chat.messages.UserMessage;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -103,8 +107,12 @@ public class AdvancedChatController {
         
         log.info("多轮对话 - 当前消息: {}", currentMessage);
 
-        // 简化版本：仅使用当前消息，完整的多轮对话需要更复杂的实现
+        // 简化测试，使用固定上下文
+        List<Message> history = new ArrayList<>();
+        history.add(UserMessage.builder().text("你好").build());
+        history.add(AssistantMessage.builder().content("你好！有什么可以帮助你的？").build());
         String response = chatClient.prompt()
+                .messages(history)
                 .user(currentMessage)
                 .call()
                 .content();
