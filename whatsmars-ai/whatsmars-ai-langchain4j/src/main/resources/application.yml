@@ -2,7 +2,7 @@ langchain4j:
   open-ai:
     # 同步聊天模型配置（用于非流式接口）
     chat-model:
-      # 通义千问的 OpenAI 兼容接口地址
+      # Qwen 的 OpenAI 兼容接口地址
       base-url: https://dashscope.aliyuncs.com/compatible-mode/v1
       api-key: ${OPENAI_API_KEY}
       # 指定模型，如 qwen-plus, qwen-max 等
@@ -15,7 +15,7 @@ langchain4j:
     
     # 流式聊天模型配置（用于 TokenStream 流式接口）
     streaming-chat-model:
-      # 通义千问的 OpenAI 兼容接口地址
+      # Qwen 的 OpenAI 兼容接口地址
       base-url: https://dashscope.aliyuncs.com/compatible-mode/v1
       api-key: ${OPENAI_API_KEY}
       # 指定模型，如 qwen-plus, qwen-max 等
