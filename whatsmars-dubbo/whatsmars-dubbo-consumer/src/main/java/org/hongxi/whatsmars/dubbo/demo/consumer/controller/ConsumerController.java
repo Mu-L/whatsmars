@@ -6,25 +6,27 @@ import org.apache.dubbo.rpc.RpcContext;
 import org.hongxi.whatsmars.dubbo.demo.api.AsyncDemoService;
 import org.hongxi.whatsmars.dubbo.demo.api.DemoService;
 import org.hongxi.whatsmars.dubbo.demo.api.vo.User;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.scheduling.concurrent.ThreadPoolTaskExecutor;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import java.util.concurrent.CompletableFuture;
-import java.util.concurrent.ExecutionException;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
+import java.util.concurrent.*;
 
 @Slf4j
 @RestController
 public class ConsumerController {
-
-    private final ExecutorService executorService = Executors.newFixedThreadPool(5);
 
     @DubboReference
     private DemoService demoService;
 
     @DubboReference(async = true)
     private AsyncDemoService asyncDemoService;
+
+    @Autowired
+    @Qualifier("commonExecutor")
+    private ThreadPoolTaskExecutor executor;
 
     @GetMapping("/hello")
     public String hello(String name) {
@@ -84,7 +86,7 @@ public class ConsumerController {
     public String helloConcurrent(String name) {
         log.info("Start to call remote.");
         for (int i = 0; i < 5; i++) {
-            executorService.submit(() -> {
+            executor.submit(() -> {
                 try {
                     String result = demoService.slowHello(name);
                     log.info("Call Dubbo Remote Return ======> {}", result);

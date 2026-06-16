@@ -3,17 +3,19 @@ package org.hongxi.whatsmars.dubbo.demo.provider.service;
 import org.apache.commons.io.ThreadUtils;
 import org.apache.dubbo.config.annotation.DubboService;
 import org.hongxi.whatsmars.dubbo.demo.api.AsyncDemoService;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.scheduling.concurrent.ThreadPoolTaskExecutor;
 
 import java.time.Duration;
-import java.util.concurrent.CompletableFuture;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
-import java.util.concurrent.ThreadLocalRandom;
+import java.util.concurrent.*;
 
 @DubboService
 public class AsyncDemoServiceImpl implements AsyncDemoService {
 
-    private final ExecutorService executorService = Executors.newFixedThreadPool(10);
+    @Autowired
+    @Qualifier("commonExecutor")
+    private ThreadPoolTaskExecutor executor;
 
     @Override
     public String sayHello(String name) {
@@ -38,6 +40,6 @@ public class AsyncDemoServiceImpl implements AsyncDemoService {
                 Thread.currentThread().interrupt();
             }
             return null;
-        }, executorService);
+        }, executor);
     }
 }
