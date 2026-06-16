@@ -1,11 +1,15 @@
 package org.hongxi.whatsmars.dubbo.demo.provider.service;
 
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.io.ThreadUtils;
 import org.apache.dubbo.config.annotation.DubboService;
 import org.apache.dubbo.rpc.RpcContext;
 
 import org.hongxi.whatsmars.dubbo.demo.api.DemoService;
 import org.hongxi.whatsmars.dubbo.demo.api.vo.User;
+
+import java.time.Duration;
+import java.util.concurrent.ThreadLocalRandom;
 
 /**
  * Created by shenhongxi on 2017/12/4.
@@ -27,6 +31,18 @@ public class DemoServiceImpl implements DemoService {
                 name, RpcContext.getServiceContext().getRemoteAddress(),
                 RpcContext.getServerAttachment().getAttachment("lang"));
         RpcContext.getServerContext().setAttachment("mode", "Qwen3.7 Max");
+        return "Hello, " + name;
+    }
+
+    @Override
+    public String slowHello(String name) {
+        long time = ThreadLocalRandom.current().nextLong(1000);
+        try {
+            ThreadUtils.sleep(Duration.ofMillis(time));
+            return "Hello, " + name + ", sleep " + time;
+        } catch (InterruptedException e) {
+            Thread.currentThread().interrupt();
+        }
         return "Hello, " + name;
     }
 

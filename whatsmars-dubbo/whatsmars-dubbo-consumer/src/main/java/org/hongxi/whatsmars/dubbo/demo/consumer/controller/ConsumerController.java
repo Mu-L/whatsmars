@@ -11,10 +11,14 @@ import org.springframework.web.bind.annotation.RestController;
 
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ExecutionException;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 
 @Slf4j
 @RestController
 public class ConsumerController {
+
+    private final ExecutorService executorService = Executors.newFixedThreadPool(5);
 
     @DubboReference
     private DemoService demoService;
@@ -46,6 +50,56 @@ public class ConsumerController {
         } catch (InterruptedException | ExecutionException e) {
             throw new RuntimeException(e);
         }
+    }
+
+    /**
+     * 测试 Provider 端限流
+     * @param name
+     * @return
+     */
+    @GetMapping("/hello/loop")
+    public String helloLoop(String name) {
+        log.info("Start to call remote.");
+        for (int i = 0; i < 20; i++) {
+            try {
+                String result = demoService.sayHello(name);
+                log.info("Call Count:{} Dubbo Remote Return ======> {}", i, result);
+            } catch (RuntimeException ex) {
+                if (ex.getMessage().contains("SentinelBlockException: FlowException")) {
+                    log.info("Call Count:{} Blocked", i);
+                } else {
+                    log.error("Call Count:{} Request Failed.", i, ex);
+                }
+            }
+        }
+        return "Finished";
+    }
+
+    /**
+     * 测试 Consumer 端限流、降级
+     * @param name
+     * @return
+     */
+    @GetMapping("/hello/concurrent")
+    public String helloConcurrent(String name) {
+        log.info("Start to call remote.");
+        for (int i = 0; i < 5; i++) {
+            executorService.submit(() -> {
+                try {
+                    String result = demoService.slowHello(name);
+                    log.info("Call Dubbo Remote Return ======> {}", result);
+                } catch (RuntimeException e) {
+                    if (e.getMessage().contains("SentinelBlockException: FlowException")) {
+                        log.info("Call Blocked (Flow)");
+                    } else if (e.getMessage().contains("SentinelBlockException: DegradeException")) {
+                        log.info("Call Blocked (Degrade)");
+                    } else {
+                        log.error("Call Request Failed.", e);
+                    }
+                }
+            });
+        }
+        return "Started";
     }
 
     @GetMapping("/echo")

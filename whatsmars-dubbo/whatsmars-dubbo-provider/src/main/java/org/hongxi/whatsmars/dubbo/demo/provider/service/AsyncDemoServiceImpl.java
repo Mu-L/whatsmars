@@ -1,8 +1,10 @@
 package org.hongxi.whatsmars.dubbo.demo.provider.service;
 
+import org.apache.commons.io.ThreadUtils;
 import org.apache.dubbo.config.annotation.DubboService;
 import org.hongxi.whatsmars.dubbo.demo.api.AsyncDemoService;
 
+import java.time.Duration;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
@@ -17,7 +19,7 @@ public class AsyncDemoServiceImpl implements AsyncDemoService {
     public String sayHello(String name) {
         try {
             long time = ThreadLocalRandom.current().nextLong(1000);
-            Thread.sleep(time);
+            ThreadUtils.sleep(Duration.ofMillis(time));
             return "AsyncDemoService#sayHello, param: " + name + ", sleep " + time;
         } catch (InterruptedException e) {
             Thread.currentThread().interrupt();
@@ -30,7 +32,7 @@ public class AsyncDemoServiceImpl implements AsyncDemoService {
         return CompletableFuture.supplyAsync(() -> {
             try {
                 long time = ThreadLocalRandom.current().nextLong(1000);
-                Thread.sleep(time);
+                ThreadUtils.sleep(Duration.ofMillis(time));
                 return "AsyncDemoService#sayHelloAsync, param: " + name + ", sleep " + time;
             } catch (InterruptedException e) {
                 Thread.currentThread().interrupt();

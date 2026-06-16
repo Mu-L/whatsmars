@@ -13,6 +13,8 @@ public interface DemoService {
 
 	String helloContext(String name);
 
+	String slowHello(String name);
+
 	User echo(User user);
 
 	default CompletableFuture<String> sayHelloAsync(String name) {
