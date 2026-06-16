@@ -63,6 +63,10 @@ public class RagController {
 
     /**
      * 添加文档到知识库
+     * <p>
+     *     测试示例：
+     *     Nacos 是一个易于构建 AI Agent 应用的动态服务发现、配置管理和 AI 智能体管理平台
+     * </p>
      *
      * @param content 文档内容
      * @return 操作结果
@@ -86,6 +90,9 @@ public class RagController {
      * 1. 根据用户问题检索相关文档
      * 2. 将检索结果作为上下文提供给 AI
      * 3. AI 基于上下文回答问题
+     *
+     * 测试示例：
+     *     国内最流行的RPC框架是哪一款
      * </p>
      *
      * @param question 用户问题
@@ -102,7 +109,7 @@ public class RagController {
 
         // 步骤 2: 构建上下文
         String context = relevantDocs.stream()
-                .map(doc -> doc.getText())
+                .map(Document::getText)
                 .collect(Collectors.joining("\n\n"));
 
         // 步骤 3: 使用 RAG 模式提问

@@ -12,7 +12,7 @@ import dev.langchain4j.service.spring.AiService;
  * @author hongxi
  */
 @AiService
-public interface Assistant {
+public interface SimpleAssistant {
 
     /**
      * 进行单轮对话

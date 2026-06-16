@@ -13,12 +13,12 @@ import org.springframework.web.bind.annotation.RestController;
  * @author hongxi
  */
 @RestController
-public class AiServiceController {
+public class SimpleController {
 
-    private static final Logger log = LoggerFactory.getLogger(AiServiceController.class);
+    private static final Logger log = LoggerFactory.getLogger(SimpleController.class);
 
     @Autowired
-    private Assistant assistant;
+    private SimpleAssistant assistant;
 
     /**
      * 简单的聊天接口
