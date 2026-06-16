@@ -5,9 +5,23 @@ spring:
       base-url: https://dashscope.aliyuncs.com/compatible-mode
       chat:
         options:
-          model: qwen-plus
+          model: qwen3.7-plus
       embedding:
         options:
           # 通义千问的嵌入模型
           model: text-embedding-v3
           # 或者使用 text-embedding-v2
+    vectorstore:
+      redis:
+        # Redis 向量索引名称
+        index-name: spring-ai-vector-index
+        # 向量维度（text-embedding-v3 默认 1024 维）
+        dimensions: 1024
+        # 初始化 schema（首次启动时设为 true）
+        initialize-schema: true
+        # 相似度算法：COSINE, L2, IP
+        distance-type: COSINE
+  
+  redis:
+    host: localhost
+    port: 6379
