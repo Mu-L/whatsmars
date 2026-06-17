@@ -1,7 +1,8 @@
-package org.hongxi.whatsmars.ai.openai.example;
+package org.hongxi.whatsmars.ai.openai.example.controller;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import org.hongxi.whatsmars.ai.openai.example.vo.UserInfo;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.ai.chat.client.ChatClient;

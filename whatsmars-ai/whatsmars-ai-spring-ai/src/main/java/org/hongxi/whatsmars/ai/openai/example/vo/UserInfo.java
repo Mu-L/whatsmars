@@ -1,4 +1,4 @@
-package org.hongxi.whatsmars.ai.openai.example;
+package org.hongxi.whatsmars.ai.openai.example.vo;
 
 import java.util.List;
 

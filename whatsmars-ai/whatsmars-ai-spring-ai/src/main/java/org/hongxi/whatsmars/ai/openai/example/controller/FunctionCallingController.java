@@ -1,4 +1,4 @@
-package org.hongxi.whatsmars.ai.openai.example;
+package org.hongxi.whatsmars.ai.openai.example.controller;
 
 import org.hongxi.whatsmars.ai.openai.example.tool.TimeTools;
 import org.hongxi.whatsmars.ai.openai.example.tool.UserTools;

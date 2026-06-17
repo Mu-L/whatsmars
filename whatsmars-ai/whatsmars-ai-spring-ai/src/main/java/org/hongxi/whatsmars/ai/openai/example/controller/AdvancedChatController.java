@@ -1,4 +1,4 @@
-package org.hongxi.whatsmars.ai.openai.example;
+package org.hongxi.whatsmars.ai.openai.example.controller;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
