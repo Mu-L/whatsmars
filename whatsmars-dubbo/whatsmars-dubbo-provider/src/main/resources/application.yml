@@ -19,3 +19,11 @@ dubbo:
   tracing:
     enabled: true
 
+sentinel:
+  nacos:
+    server-addr: 127.0.0.1:8848
+    username: nacos
+    password: 7fDJZBbiLzO2
+    flow:
+      group-id: SENTINEL_GROUP
+      data-id: dubbo.demo.provider.flow.rules

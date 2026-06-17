@@ -1,21 +1,19 @@
-package org.hongxi.whatsmars.dubbo.demo.provider.runner;
+package org.hongxi.whatsmars.dubbo.demo.provider;
 
 import com.alibaba.csp.sentinel.slots.block.RuleConstant;
 import com.alibaba.csp.sentinel.slots.block.flow.FlowRule;
-import com.alibaba.csp.sentinel.slots.block.flow.FlowRuleManager;
+import com.alibaba.fastjson2.JSON;
+import com.alibaba.fastjson2.JSONWriter;
+import com.alibaba.fastjson2.TypeReference;
 import org.hongxi.whatsmars.dubbo.demo.api.DemoService;
-import org.springframework.boot.CommandLineRunner;
-import org.springframework.stereotype.Component;
+import org.junit.jupiter.api.Test;
 
 import java.util.List;
 
-/**
- * QPS 限流
- */
-@Component
-public class SentinelRulesRunner implements CommandLineRunner {
-    @Override
-    public void run(String... args) throws Exception {
+public class SentinelRulesTest {
+
+    @Test
+    public void t() {
         FlowRule flowRule = new FlowRule();
         flowRule.setResource(DemoService.class.getName());
         flowRule.setGrade(RuleConstant.FLOW_GRADE_QPS);
@@ -27,6 +25,13 @@ public class SentinelRulesRunner implements CommandLineRunner {
         methodFlowRule.setGrade(RuleConstant.FLOW_GRADE_QPS);
         methodFlowRule.setCount(10);
         methodFlowRule.setLimitApp("dubbo-demo-consumer");
-        FlowRuleManager.loadRules(List.of(flowRule, methodFlowRule));
+
+        String flowRules = JSON.toJSONString(List.of(flowRule, methodFlowRule), JSONWriter.Feature.PrettyFormat);
+
+        System.out.println(flowRules);
+
+        List<FlowRule> flowRules2 = JSON.parseObject(flowRules, new TypeReference<>() {});
+
+        assert flowRules2.size() == 2;
     }
 }

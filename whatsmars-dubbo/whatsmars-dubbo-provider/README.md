@@ -1,0 +1,30 @@
+## Sentinel Nocos 配置示例 (Provider)
+限流规则
+```json
+[
+  {
+    "clusterMode":false,
+    "controlBehavior":0,
+    "count":1000.0,
+    "grade":1,
+    "limitApp":"default",
+    "maxQueueingTimeMs":500,
+    "regex":false,
+    "resource":"org.hongxi.whatsmars.dubbo.demo.api.DemoService",
+    "strategy":0,
+    "warmUpPeriodSec":10
+  },
+  {
+    "clusterMode":false,
+    "controlBehavior":0,
+    "count":10.0,
+    "grade":1,
+    "limitApp":"dubbo-demo-consumer",
+    "maxQueueingTimeMs":500,
+    "regex":false,
+    "resource":"org.hongxi.whatsmars.dubbo.demo.api.DemoService:sayHello(java.lang.String)",
+    "strategy":0,
+    "warmUpPeriodSec":10
+  }
+]
+```

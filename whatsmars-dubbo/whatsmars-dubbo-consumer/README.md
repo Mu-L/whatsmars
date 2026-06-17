@@ -1,0 +1,35 @@
+## Sentinel Nocos 配置示例 (Consumer)
+限流规则
+```json
+[
+  {
+    "clusterMode":false,
+    "controlBehavior":0,
+    "count":3.0,
+    "grade":0,
+    "limitApp":"default",
+    "maxQueueingTimeMs":500,
+    "regex":false,
+    "resource":"org.hongxi.whatsmars.dubbo.demo.api.DemoService:slowHello(java.lang.String)",
+    "strategy":0,
+    "warmUpPeriodSec":10
+  }
+]
+```
+
+降级规则
+```json
+[
+  {
+    "count":300.0,
+    "grade":0,
+    "limitApp":"default",
+    "minRequestAmount":5,
+    "regex":false,
+    "resource":"org.hongxi.whatsmars.dubbo.demo.api.DemoService:slowHello(java.lang.String)",
+    "slowRatioThreshold":1.0,
+    "statIntervalMs":1000,
+    "timeWindow":10
+  }
+]
+```
