@@ -1,3 +1,8 @@
+## 2026.6.1
+- RocketMQ v5 核心功能演示
+- Dubbo 3.3 核心功能演示
+- Spring AI, langchain4j 核心功能演示
+
 ## 2026.5.1
 - Upgrade to Java 17
 - Upgrade Spring Boot to 3.5.14

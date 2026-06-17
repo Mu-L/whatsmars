@@ -6,7 +6,7 @@
     <parent>
         <groupId>org.hongxi</groupId>
         <artifactId>whatsmars-dubbo</artifactId>
-        <version>2026.6.1-SNAPSHOT</version>
+        <version>2026.6.1</version>
     </parent>
 
     <artifactId>whatsmars-dubbo-idl</artifactId>
