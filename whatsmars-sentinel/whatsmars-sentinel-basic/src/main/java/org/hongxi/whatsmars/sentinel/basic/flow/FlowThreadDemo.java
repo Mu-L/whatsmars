@@ -8,7 +8,6 @@ import com.alibaba.csp.sentinel.slots.block.flow.FlowRule;
 import com.alibaba.csp.sentinel.slots.block.flow.FlowRuleManager;
 import com.alibaba.csp.sentinel.util.TimeUtil;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicInteger;
@@ -70,16 +69,14 @@ public class FlowThreadDemo {
     }
 
     private static void initFlowRule() {
-        List<FlowRule> rules = new ArrayList<FlowRule>();
-        FlowRule rule1 = new FlowRule();
-        rule1.setResource("methodA");
+        FlowRule rule = new FlowRule();
+        rule.setResource("methodA");
         // set limit concurrent thread for 'methodA' to 20
-        rule1.setCount(20);
-        rule1.setGrade(RuleConstant.FLOW_GRADE_THREAD);
-        rule1.setLimitApp("default");
+        rule.setCount(20);
+        rule.setGrade(RuleConstant.FLOW_GRADE_THREAD);
+        rule.setLimitApp("default");
 
-        rules.add(rule1);
-        FlowRuleManager.loadRules(rules);
+        FlowRuleManager.loadRules(List.of(rule));
     }
 
     private static void tick() {
@@ -89,7 +86,6 @@ public class FlowThreadDemo {
     }
 
     static class TimerTask implements Runnable {
-
         @Override
         public void run() {
             long start = System.currentTimeMillis();
@@ -103,6 +99,7 @@ public class FlowThreadDemo {
                 try {
                     TimeUnit.SECONDS.sleep(1);
                 } catch (InterruptedException e) {
+                    // ignore
                 }
                 long globalTotal = total.get();
                 long oneSecondTotal = globalTotal - oldTotal;

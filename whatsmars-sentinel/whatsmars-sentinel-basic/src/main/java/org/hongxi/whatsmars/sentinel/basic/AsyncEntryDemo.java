@@ -9,7 +9,6 @@ import com.alibaba.csp.sentinel.slots.block.RuleConstant;
 import com.alibaba.csp.sentinel.slots.block.flow.FlowRule;
 import com.alibaba.csp.sentinel.slots.block.flow.FlowRuleManager;
 
-import java.util.Arrays;
 import java.util.List;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.TimeUnit;
@@ -199,7 +198,6 @@ public class AsyncEntryDemo {
             .as(FlowRule.class)
             .setCount(5)
             .setGrade(RuleConstant.FLOW_GRADE_QPS);
-        List<FlowRule> ruleList = Arrays.asList(rule1, rule2);
-        FlowRuleManager.loadRules(ruleList);
+        FlowRuleManager.loadRules(List.of(rule1, rule2));
     }
 }

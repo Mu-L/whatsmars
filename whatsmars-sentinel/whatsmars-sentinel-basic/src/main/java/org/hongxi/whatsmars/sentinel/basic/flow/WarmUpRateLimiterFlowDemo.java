@@ -8,7 +8,6 @@ import com.alibaba.csp.sentinel.slots.block.flow.FlowRule;
 import com.alibaba.csp.sentinel.slots.block.flow.FlowRuleManager;
 import com.alibaba.csp.sentinel.util.TimeUtil;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
 import java.util.concurrent.TimeUnit;
@@ -71,6 +70,7 @@ public class WarmUpRateLimiterFlowDemo {
         try {
             entry = SphU.entry(KEY);
         } catch (Exception e) {
+            // ignore
         } finally {
             if (entry != null) {
                 entry.exit();
@@ -81,7 +81,7 @@ public class WarmUpRateLimiterFlowDemo {
         timer.setName("sentinel-timer-task");
         timer.start();
 
-        //first make the system run on a very low condition
+        // first make the system run on a very low condition
         for (int i = 0; i < 3; i++) {
             Thread t = new Thread(new SlowTask());
             t.setName("sentinel-slow-task");
@@ -98,18 +98,16 @@ public class WarmUpRateLimiterFlowDemo {
     }
 
     private static void initFlowRule() {
-        List<FlowRule> rules = new ArrayList<FlowRule>();
-        FlowRule rule1 = new FlowRule();
-        rule1.setResource(KEY);
-        rule1.setCount(20);
-        rule1.setGrade(RuleConstant.FLOW_GRADE_QPS);
-        rule1.setLimitApp("default");
-        rule1.setControlBehavior(RuleConstant.CONTROL_BEHAVIOR_WARM_UP_RATE_LIMITER);
-        rule1.setWarmUpPeriodSec(10);
-        rule1.setMaxQueueingTimeMs(100);
+        FlowRule rule = new FlowRule();
+        rule.setResource(KEY);
+        rule.setCount(20);
+        rule.setGrade(RuleConstant.FLOW_GRADE_QPS);
+        rule.setLimitApp("default");
+        rule.setControlBehavior(RuleConstant.CONTROL_BEHAVIOR_WARM_UP_RATE_LIMITER);
+        rule.setWarmUpPeriodSec(10);
+        rule.setMaxQueueingTimeMs(100);
 
-        rules.add(rule1);
-        FlowRuleManager.loadRules(rules);
+        FlowRuleManager.loadRules(List.of(rule));
     }
 
     static class SlowTask implements Runnable {
@@ -170,7 +168,6 @@ public class WarmUpRateLimiterFlowDemo {
     }
 
     static class TimerTask implements Runnable {
-
         @Override
         public void run() {
             long start = System.currentTimeMillis();
@@ -182,6 +179,7 @@ public class WarmUpRateLimiterFlowDemo {
                 try {
                     TimeUnit.SECONDS.sleep(1);
                 } catch (InterruptedException e) {
+                    // ignore
                 }
 
                 long globalTotal = total.get();

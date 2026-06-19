@@ -8,7 +8,7 @@ import com.alibaba.csp.sentinel.slots.block.RuleConstant;
 import com.alibaba.csp.sentinel.slots.block.authority.AuthorityRule;
 import com.alibaba.csp.sentinel.slots.block.authority.AuthorityRuleManager;
 
-import java.util.Collections;
+import java.util.List;
 
 /**
  * Authority rule is designed for limiting by request origins. In blacklist mode,
@@ -37,7 +37,7 @@ public class AuthorityDemo {
         testFor(RESOURCE_NAME, "appE");
     }
 
-    private static void testFor(/*@NonNull*/ String resource, /*@NonNull*/ String origin) {
+    private static void testFor(String resource, String origin) {
         ContextUtil.enter(resource, origin);
         Entry entry = null;
         try {
@@ -58,7 +58,7 @@ public class AuthorityDemo {
         rule.setResource(RESOURCE_NAME);
         rule.setStrategy(RuleConstant.AUTHORITY_WHITE);
         rule.setLimitApp("appA,appE");
-        AuthorityRuleManager.loadRules(Collections.singletonList(rule));
+        AuthorityRuleManager.loadRules(List.of(rule));
     }
 
     private static void initBlackRules() {
@@ -66,6 +66,6 @@ public class AuthorityDemo {
         rule.setResource(RESOURCE_NAME);
         rule.setStrategy(RuleConstant.AUTHORITY_BLACK);
         rule.setLimitApp("appA,appB");
-        AuthorityRuleManager.loadRules(Collections.singletonList(rule));
+        AuthorityRuleManager.loadRules(List.of(rule));
     }
 }

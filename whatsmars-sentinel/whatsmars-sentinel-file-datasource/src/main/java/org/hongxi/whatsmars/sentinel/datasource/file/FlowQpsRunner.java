@@ -84,6 +84,7 @@ public class FlowQpsRunner {
                 try {
                     TimeUnit.SECONDS.sleep(1);
                 } catch (InterruptedException e) {
+                    // ignore
                 }
                 long globalTotal = total.get();
                 long oneSecondTotal = globalTotal - oldTotal;

@@ -1,16 +1,18 @@
 package org.hongxi.whatsmars.sentinel.aop.service;
 
 import com.alibaba.csp.sentinel.annotation.SentinelResource;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
+@Slf4j
 @Service
 public class TestServiceImpl implements TestService {
 
     @Override
-    @SentinelResource(value = "test", blockHandler = "handleException",
+    @SentinelResource(value = "hi", blockHandler = "handleException",
             blockHandlerClass = ExceptionUtils.class)
-    public void test() {
-        System.out.println("Test");
+    public String hi(String name) {
+        return "Hi, " + name;
     }
 
     @Override
@@ -35,9 +37,8 @@ public class TestServiceImpl implements TestService {
         return "Hello, " + name;
     }
 
-    public String helloFallback(long s, Throwable ex) {
-        // Do some log here.
-        ex.printStackTrace();
+    public String helloFallback(long s, Throwable t) {
+        log.error("Error occurred", t);
         return "Oops, error occurred at " + s;
     }
 

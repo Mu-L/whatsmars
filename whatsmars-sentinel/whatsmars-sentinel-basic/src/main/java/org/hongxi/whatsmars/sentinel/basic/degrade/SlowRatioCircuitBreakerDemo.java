@@ -86,11 +86,11 @@ public class SlowRatioCircuitBreakerDemo {
         EventObserverRegistry.getInstance().addStateChangeObserver("logging",
             (prevState, newState, rule, snapshotValue) -> {
                 if (newState == State.OPEN) {
-                    System.err.println(String.format("%s -> OPEN at %d, snapshotValue=%.2f", prevState.name(),
-                        TimeUtil.currentTimeMillis(), snapshotValue));
+                    System.err.printf("%s -> OPEN at %d, snapshotValue=%.2f%n", prevState.name(),
+                        TimeUtil.currentTimeMillis(), snapshotValue);
                 } else {
-                    System.err.println(String.format("%s -> %s at %d", prevState.name(), newState.name(),
-                        TimeUtil.currentTimeMillis()));
+                    System.err.printf("%s -> %s at %d%n", prevState.name(), newState.name(),
+                        TimeUtil.currentTimeMillis());
                 }
             });
     }

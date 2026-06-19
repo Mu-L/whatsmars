@@ -11,5 +11,12 @@
 
     <artifactId>whatsmars-sentinel-basic</artifactId>
 
+    <dependencies>
+        <dependency>
+            <groupId>com.alibaba.csp</groupId>
+            <artifactId>sentinel-parameter-flow-control</artifactId>
+        </dependency>
+    </dependencies>
+
 
 </project>

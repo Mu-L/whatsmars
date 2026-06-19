@@ -8,7 +8,6 @@ import com.alibaba.csp.sentinel.slots.block.flow.FlowRule;
 import com.alibaba.csp.sentinel.slots.block.flow.FlowRuleManager;
 import com.alibaba.csp.sentinel.util.TimeUtil;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
 import java.util.concurrent.TimeUnit;
@@ -63,6 +62,7 @@ public class WarmUpFlowDemo {
         try {
             entry = SphU.entry(KEY);
         } catch (Exception e) {
+            // ignore
         } finally {
             if (entry != null) {
                 entry.exit();
@@ -73,7 +73,7 @@ public class WarmUpFlowDemo {
         timer.setName("sentinel-timer-task");
         timer.start();
 
-        //first make the system run on a very low condition
+        // first make the system run on a very low condition
         for (int i = 0; i < 3; i++) {
             Thread t = new Thread(new WarmUpTask());
             t.setName("sentinel-warmup-task");
@@ -94,17 +94,15 @@ public class WarmUpFlowDemo {
     }
 
     private static void initFlowRule() {
-        List<FlowRule> rules = new ArrayList<FlowRule>();
-        FlowRule rule1 = new FlowRule();
-        rule1.setResource(KEY);
-        rule1.setCount(20);
-        rule1.setGrade(RuleConstant.FLOW_GRADE_QPS);
-        rule1.setLimitApp("default");
-        rule1.setControlBehavior(RuleConstant.CONTROL_BEHAVIOR_WARM_UP);
-        rule1.setWarmUpPeriodSec(10);
+        FlowRule rule = new FlowRule();
+        rule.setResource(KEY);
+        rule.setCount(20);
+        rule.setGrade(RuleConstant.FLOW_GRADE_QPS);
+        rule.setLimitApp("default");
+        rule.setControlBehavior(RuleConstant.CONTROL_BEHAVIOR_WARM_UP);
+        rule.setWarmUpPeriodSec(10);
 
-        rules.add(rule1);
-        FlowRuleManager.loadRules(rules);
+        FlowRuleManager.loadRules(List.of(rule));
     }
 
     static class WarmUpTask implements Runnable {
@@ -165,7 +163,6 @@ public class WarmUpFlowDemo {
     }
 
     static class TimerTask implements Runnable {
-
         @Override
         public void run() {
             long start = System.currentTimeMillis();
@@ -177,6 +174,7 @@ public class WarmUpFlowDemo {
                 try {
                     TimeUnit.SECONDS.sleep(1);
                 } catch (InterruptedException e) {
+                    // ignore
                 }
 
                 long globalTotal = total.get();

@@ -49,9 +49,7 @@ public class FileDataSourceDemo {
         FileDataSourceDemo demo = new FileDataSourceDemo();
         demo.listenRules();
 
-        /*
-         * Start to require tokens, rate will be limited by rule in FlowRule.json
-         */
+        // Start to require tokens, rate will be limited by rule in FlowRule.json
         FlowQpsRunner runner = new FlowQpsRunner();
         runner.simulateTraffic();
         runner.tick();
@@ -70,14 +68,12 @@ public class FileDataSourceDemo {
 
         // Data source for DegradeRule
         FileRefreshableDataSource<List<DegradeRule>> degradeRuleDataSource
-            = new FileRefreshableDataSource<>(
-            degradeRulePath, degradeRuleListParser);
+            = new FileRefreshableDataSource<>(degradeRulePath, degradeRuleListParser);
         DegradeRuleManager.register2Property(degradeRuleDataSource.getProperty());
 
         // Data source for SystemRule
         FileRefreshableDataSource<List<SystemRule>> systemRuleDataSource
-            = new FileRefreshableDataSource<>(
-            systemRulePath, systemRuleListParser);
+            = new FileRefreshableDataSource<>(systemRulePath, systemRuleListParser);
         SystemRuleManager.register2Property(systemRuleDataSource.getProperty());
     }
 

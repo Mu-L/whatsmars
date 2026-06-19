@@ -8,7 +8,6 @@ import com.alibaba.csp.sentinel.slots.block.flow.FlowRule;
 import com.alibaba.csp.sentinel.slots.block.flow.FlowRuleManager;
 import com.alibaba.csp.sentinel.util.TimeUtil;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
 import java.util.concurrent.TimeUnit;
@@ -40,19 +39,16 @@ public class FlowQpsDemo {
 
         System.out.println("===== begin to do flow control");
         System.out.println("only 20 requests per second can pass");
-
     }
 
     private static void initFlowQpsRule() {
-        List<FlowRule> rules = new ArrayList<FlowRule>();
-        FlowRule rule1 = new FlowRule();
-        rule1.setResource(KEY);
+        FlowRule rule = new FlowRule();
+        rule.setResource(KEY);
         // set limit qps to 20
-        rule1.setCount(20);
-        rule1.setGrade(RuleConstant.FLOW_GRADE_QPS);
-        rule1.setLimitApp("default");
-        rules.add(rule1);
-        FlowRuleManager.loadRules(rules);
+        rule.setCount(20);
+        rule.setGrade(RuleConstant.FLOW_GRADE_QPS);
+        rule.setLimitApp("default");
+        FlowRuleManager.loadRules(List.of(rule));
     }
 
     private static void simulateTraffic() {
@@ -70,7 +66,6 @@ public class FlowQpsDemo {
     }
 
     static class TimerTask implements Runnable {
-
         @Override
         public void run() {
             long start = System.currentTimeMillis();
@@ -83,6 +78,7 @@ public class FlowQpsDemo {
                 try {
                     TimeUnit.SECONDS.sleep(1);
                 } catch (InterruptedException e) {
+                    // ignore
                 }
                 long globalTotal = total.get();
                 long oneSecondTotal = globalTotal - oldTotal;
@@ -118,10 +114,7 @@ public class FlowQpsDemo {
         @Override
         public void run() {
             while (!stop) {
-                Entry entry = null;
-
-                try {
-                    entry = SphU.entry(KEY);
+                try (Entry entry = SphU.entry(KEY)) {
                     // token acquired, means pass
                     pass.addAndGet(1);
                 } catch (BlockException e1) {
@@ -130,9 +123,6 @@ public class FlowQpsDemo {
                     // biz exception
                 } finally {
                     total.incrementAndGet();
-                    if (entry != null) {
-                        entry.exit();
-                    }
                 }
 
                 Random random2 = new Random();

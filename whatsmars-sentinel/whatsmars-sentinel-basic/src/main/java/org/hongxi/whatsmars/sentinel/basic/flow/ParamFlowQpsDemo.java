@@ -1,11 +1,11 @@
-package org.hongxi.whatsmars.sentinel.flow.param;
+package org.hongxi.whatsmars.sentinel.basic.flow;
 
 import com.alibaba.csp.sentinel.slots.block.RuleConstant;
 import com.alibaba.csp.sentinel.slots.block.flow.param.ParamFlowItem;
 import com.alibaba.csp.sentinel.slots.block.flow.param.ParamFlowRule;
 import com.alibaba.csp.sentinel.slots.block.flow.param.ParamFlowRuleManager;
 
-import java.util.Collections;
+import java.util.List;
 
 /**
  * This demo demonstrates flow control by frequent ("hot spot") parameters.
@@ -54,7 +54,7 @@ public class ParamFlowQpsDemo {
         ParamFlowItem item = new ParamFlowItem().setObject(String.valueOf(PARAM_B))
             .setClassType(int.class.getName())
             .setCount(10);
-        rule.setParamFlowItemList(Collections.singletonList(item));
-        ParamFlowRuleManager.loadRules(Collections.singletonList(rule));
+        rule.setParamFlowItemList(List.of(item));
+        ParamFlowRuleManager.loadRules(List.of(rule));
     }
 }

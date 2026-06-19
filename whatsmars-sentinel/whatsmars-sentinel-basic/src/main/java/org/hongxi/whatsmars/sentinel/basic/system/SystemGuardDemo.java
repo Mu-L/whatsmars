@@ -8,8 +8,6 @@ import com.alibaba.csp.sentinel.slots.system.SystemRule;
 import com.alibaba.csp.sentinel.slots.system.SystemRuleManager;
 import com.alibaba.csp.sentinel.util.TimeUtil;
 
-import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicInteger;
@@ -29,7 +27,6 @@ public class SystemGuardDemo {
     private static int seconds = 60 + 40;
 
     public static void main(String[] args) throws Exception {
-
         tick();
         initSystemRule();
 
@@ -72,7 +69,6 @@ public class SystemGuardDemo {
     }
 
     private static void initSystemRule() {
-        List<SystemRule> rules = new ArrayList<SystemRule>();
         SystemRule rule = new SystemRule();
         // max load is 3
         rule.setHighestSystemLoad(3.0);
@@ -85,8 +81,7 @@ public class SystemGuardDemo {
         // max parallel working thread is 10
         rule.setMaxThread(10);
 
-        rules.add(rule);
-        SystemRuleManager.loadRules(Collections.singletonList(rule));
+        SystemRuleManager.loadRules(List.of(rule));
     }
 
     private static void tick() {
@@ -106,6 +101,7 @@ public class SystemGuardDemo {
                 try {
                     TimeUnit.SECONDS.sleep(1);
                 } catch (InterruptedException e) {
+                    // ignore
                 }
                 long globalTotal = total.get();
                 long oneSecondTotal = globalTotal - oldTotal;

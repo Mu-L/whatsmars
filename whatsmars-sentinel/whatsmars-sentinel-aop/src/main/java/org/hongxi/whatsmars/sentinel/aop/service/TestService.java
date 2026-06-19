@@ -2,7 +2,7 @@ package org.hongxi.whatsmars.sentinel.aop.service;
 
 public interface TestService {
 
-    void test();
+    String hi(String name);
 
     String hello(long s);
 

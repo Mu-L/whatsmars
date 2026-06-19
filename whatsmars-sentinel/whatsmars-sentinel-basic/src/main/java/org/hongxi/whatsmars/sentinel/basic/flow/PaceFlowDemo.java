@@ -8,7 +8,6 @@ import com.alibaba.csp.sentinel.slots.block.flow.FlowRule;
 import com.alibaba.csp.sentinel.slots.block.flow.FlowRuleManager;
 import com.alibaba.csp.sentinel.util.TimeUtil;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.TimeUnit;
@@ -118,35 +117,30 @@ public class PaceFlowDemo {
     }
 
     private static void initPaceFlowRule() {
-        List<FlowRule> rules = new ArrayList<FlowRule>();
-        FlowRule rule1 = new FlowRule();
-        rule1.setResource(KEY);
-        rule1.setCount(count);
-        rule1.setGrade(RuleConstant.FLOW_GRADE_QPS);
-        rule1.setLimitApp("default");
-        /*
-         * CONTROL_BEHAVIOR_RATE_LIMITER means requests more than threshold will be queueing in the queue,
-         * until the queueing time is more than {@link FlowRule#maxQueueingTimeMs}, the requests will be rejected.
-         */
-        rule1.setControlBehavior(RuleConstant.CONTROL_BEHAVIOR_RATE_LIMITER);
-        rule1.setMaxQueueingTimeMs(20 * 1000);
+        FlowRule rule = new FlowRule();
+        rule.setResource(KEY);
+        rule.setCount(count);
+        rule.setGrade(RuleConstant.FLOW_GRADE_QPS);
+        rule.setLimitApp("default");
 
-        rules.add(rule1);
-        FlowRuleManager.loadRules(rules);
+        // CONTROL_BEHAVIOR_RATE_LIMITER means requests more than threshold will be queueing in the queue,
+        // until the queueing time is more than {@link FlowRule#maxQueueingTimeMs}, the requests will be rejected.
+        rule.setControlBehavior(RuleConstant.CONTROL_BEHAVIOR_RATE_LIMITER);
+        rule.setMaxQueueingTimeMs(20 * 1000);
+
+        FlowRuleManager.loadRules(List.of(rule));
     }
 
     private static void initDefaultFlowRule() {
-        List<FlowRule> rules = new ArrayList<FlowRule>();
-        FlowRule rule1 = new FlowRule();
-        rule1.setResource(KEY);
-        rule1.setCount(count);
-        rule1.setGrade(RuleConstant.FLOW_GRADE_QPS);
-        rule1.setLimitApp("default");
+        FlowRule rule = new FlowRule();
+        rule.setResource(KEY);
+        rule.setCount(count);
+        rule.setGrade(RuleConstant.FLOW_GRADE_QPS);
+        rule.setLimitApp("default");
         // CONTROL_BEHAVIOR_DEFAULT means requests more than threshold will be rejected immediately.
-        rule1.setControlBehavior(RuleConstant.CONTROL_BEHAVIOR_DEFAULT);
+        rule.setControlBehavior(RuleConstant.CONTROL_BEHAVIOR_DEFAULT);
 
-        rules.add(rule1);
-        FlowRuleManager.loadRules(rules);
+        FlowRuleManager.loadRules(List.of(rule));
     }
 
     private static void simulatePulseFlow() {

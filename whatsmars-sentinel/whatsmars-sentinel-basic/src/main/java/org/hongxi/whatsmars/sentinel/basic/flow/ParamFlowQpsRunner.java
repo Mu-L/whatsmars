@@ -1,4 +1,4 @@
-package org.hongxi.whatsmars.sentinel.flow.param;
+package org.hongxi.whatsmars.sentinel.basic.flow;
 
 import com.alibaba.csp.sentinel.Entry;
 import com.alibaba.csp.sentinel.EntryType;
@@ -7,7 +7,6 @@ import com.alibaba.csp.sentinel.slots.block.BlockException;
 import com.alibaba.csp.sentinel.util.StringUtil;
 import com.alibaba.csp.sentinel.util.TimeUtil;
 
-import java.util.HashMap;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ThreadLocalRandom;
@@ -89,10 +88,8 @@ public class ParamFlowQpsRunner<T> {
     }
 
     final class RunTask implements Runnable {
-
         @Override
         public void run() {
-
             while (!stop) {
                 Entry entry = null;
                 T param = generateParam();
@@ -133,22 +130,17 @@ public class ParamFlowQpsRunner<T> {
             System.out.println("Begin to run! Go go go!");
             System.out.println("See corresponding metrics.log for accurate statistic data");
 
-            Map<T, Long> map = new HashMap<>(params.length);
-            for (T param : params) {
-                map.putIfAbsent(param, 0L);
-            }
             while (!stop) {
                 sleep(1000);
 
                 // There may be a mismatch for time window of internal sliding window.
                 // See corresponding `metrics.log` for accurate statistic log.
                 for (T param : params) {
-
-                    System.out.println(String.format(
+                    System.out.printf(
                         "[%d][%d] Parameter flow metrics for resource %s: "
-                            + "pass count for param <%s> is %d, block count: %d",
+                            + "pass count for param <%s> is %d, block count: %d%n",
                         seconds, TimeUtil.currentTimeMillis(), resourceName, param,
-                        passCountMap.get(param).getAndSet(0), blockCountMap.get(param).getAndSet(0)));
+                        passCountMap.get(param).getAndSet(0), blockCountMap.get(param).getAndSet(0));
                 }
                 System.out.println("=============================");
                 if (seconds-- <= 0) {
