@@ -37,7 +37,7 @@ public class QwenStreamController {
      * @param input 用户输入
      * @return 流式响应
      */
-    @GetMapping("/ai/stream-chat")
+    @GetMapping(value = "/ai/stream-chat", produces = "text/event-stream;charset=UTF-8")
     public Flux<String> streamChat(@RequestParam String input) {
         log.info("开始流式对话: {}", input);
         
