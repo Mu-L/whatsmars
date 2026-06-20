@@ -3,6 +3,8 @@ package org.hongxi.whatsmars.ai.openai.example.controller;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.ai.chat.client.ChatClient;
+import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
@@ -29,24 +31,30 @@ public class QwenStreamController {
 
     /**
      * 流式聊天接口
+     *
      * <p>
-     * 浏览器访问会乱码，可以用 curl 测试：
-     * curl "http://localhost:8080/ai/stream-chat?input=%E6%AD%A6%E6%B1%89%E7%AE%80%E4%BB%8B"
+     *     浏览器访问会乱码，可用 curl 测试
+     *     Spring Boot 4.0 在浏览器访问不会乱码
      * </p>
      *
-     * @param input 用户输入
+     * @param message 用户输入
      * @return 流式响应
      */
-    @GetMapping(value = "/ai/stream-chat", produces = "text/event-stream;charset=UTF-8")
-    public Flux<String> streamChat(@RequestParam String input) {
-        log.info("开始流式对话: {}", input);
+    @GetMapping("/ai/chat/stream")
+    public ResponseEntity<Flux<String>> streamChat(@RequestParam String message) {
+        log.info("开始流式对话: {}", message);
         
         // 使用 stream() 方法，返回 Flux 流式数据
-        return chatClient.prompt()
-                .user(input)
+        Flux<String> stream = chatClient.prompt()
+                .user(message)
                 .stream()
                 .content()
                 .doOnNext(chunk -> log.debug("收到 chunk: {}", chunk))
                 .doOnComplete(() -> log.info("流式对话完成"));
+
+        return ResponseEntity.ok()
+                .contentType(MediaType.valueOf("text/event-stream;charset=UTF-8"))
+                .header("Cache-Control", "no-cache")
+                .body(stream);
     }
 }

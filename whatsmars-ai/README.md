@@ -51,10 +51,10 @@ curl "http://localhost:8080/chat?message=讲个笑话"
 使用 Reactor 的 `Flux` 实现流式输出，提升用户体验。
 
 ```java
-@GetMapping("/stream-chat")
-public Flux<String> streamChat(@RequestParam String input) {
+@GetMapping("/ai/chat/stream")
+public Flux<String> streamChat(@RequestParam String message) {
     return chatClient.prompt()
-            .user(input)
+            .user(message)
             .stream()
             .content();
 }
@@ -62,7 +62,7 @@ public Flux<String> streamChat(@RequestParam String input) {
 
 **测试：**
 ```bash
-curl "http://localhost:8080/ai/stream-chat?input=介绍一下武汉"
+curl "http://localhost:8080/ai/chat/stream?message=介绍一下武汉"
 ```
 
 ---
@@ -352,6 +352,8 @@ public class RedisRagController {
 ### 7. 多模态视觉理解 (Vision)
 
 支持图片分析、OCR 文字识别、图表解读等功能。
+
+> 请将 model 改为支持多模态的模型，如 qwen3.7-plus
 
 ```java
 @RestController

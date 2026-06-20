@@ -19,6 +19,7 @@ import java.util.Map;
  * 多模态图像处理控制器
  * <p>
  * 演示如何使用 AI 模型理解和描述图片内容
+ * !!!!! 请将 model 改为支持多模态的模型，如 qwen3.7-plus
  * </p>
  *
  * @author hongxi
