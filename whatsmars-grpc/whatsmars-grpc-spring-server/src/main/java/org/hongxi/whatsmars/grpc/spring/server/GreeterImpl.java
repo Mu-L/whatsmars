@@ -11,11 +11,11 @@ import org.springframework.grpc.server.service.GrpcService;
 @GrpcService
 public class GreeterImpl extends GreeterGrpc.GreeterImplBase {
 
-        @Override
-        public void sayHello(HelloRequest req, StreamObserver<HelloReply> responseObserver) {
-            log.info("Received request: {}", req.getName());
-            HelloReply reply = HelloReply.newBuilder().setMessage("Hello " + req.getName()).build();
-            responseObserver.onNext(reply);
-            responseObserver.onCompleted();
-        }
+    @Override
+    public void sayHello(HelloRequest req, StreamObserver<HelloReply> responseObserver) {
+        log.info("Received request: {}", req.getName());
+        HelloReply reply = HelloReply.newBuilder().setMessage("Hello " + req.getName()).build();
+        responseObserver.onNext(reply);
+        responseObserver.onCompleted();
     }
+}
