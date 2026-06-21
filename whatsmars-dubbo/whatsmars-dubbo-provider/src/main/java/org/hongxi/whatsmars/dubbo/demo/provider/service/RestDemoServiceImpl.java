@@ -42,7 +42,7 @@ public class RestDemoServiceImpl implements RestDemoService {
     @Mapping(path = "/echo", method = HttpMethods.POST)
     @Override
     public String echo(@Param(type = ParamType.Body) EchoRequest request) {
-        return "Echo: " + request.getMessage();
+        return "Echo: " + request.message();
     }
 
     /**
