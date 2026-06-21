@@ -31,7 +31,7 @@ public class SerializationTest {
 
     @Test
     public void testJson() throws Exception {
-        Serialization serialization = new FastJsonSerialization();
+        Serialization serialization = new FastJson2Serialization();
         User user = new User("hongxi", 30);
         byte[] bytes = serialization.serialize(user);
         user = serialization.deserialize(bytes, User.class);

@@ -15,7 +15,7 @@ import java.io.IOException;
  *
  * @author shenhongxi 2019/8/5
  */
-public class FastJsonSerialization implements Serialization {
+public class FastJson2Serialization implements Serialization {
 
     @Override
     public byte[] serialize(Object data) throws IOException {
