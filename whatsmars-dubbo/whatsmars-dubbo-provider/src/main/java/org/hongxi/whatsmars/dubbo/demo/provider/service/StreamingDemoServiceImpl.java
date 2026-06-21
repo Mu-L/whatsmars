@@ -1,13 +1,15 @@
 package org.hongxi.whatsmars.dubbo.demo.provider.service;
 
-import lombok.extern.slf4j.Slf4j;
 import org.apache.dubbo.common.stream.StreamObserver;
 import org.apache.dubbo.config.annotation.DubboService;
 import org.hongxi.whatsmars.dubbo.demo.api.StreamingDemoService;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
-@Slf4j
 @DubboService
 public class StreamingDemoServiceImpl implements StreamingDemoService {
+
+    private static final Logger log = LoggerFactory.getLogger(StreamingDemoServiceImpl.class);
     @Override
     public StreamObserver<String> sayHelloStream(StreamObserver<String> response) {
         return new StreamObserver<>() {

@@ -1,15 +1,17 @@
 package org.hongxi.whatsmars.kafka;
 
-import lombok.extern.slf4j.Slf4j;
 import org.springframework.kafka.annotation.KafkaListener;
 import org.springframework.stereotype.Component;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * Created by shenhongxi on 2018/12/12.
  */
-@Slf4j
 @Component
 public class Consumer {
+
+    private static final Logger log = LoggerFactory.getLogger(Consumer.class);
 
     @KafkaListener(topics = "kafkaTest")
     public void onMessage(String message) {

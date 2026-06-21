@@ -1,12 +1,14 @@
 package org.hongxi.whatsmars.common.util.concurrent;
 
-import lombok.extern.slf4j.Slf4j;
 
 import java.util.concurrent.*;
 import java.util.concurrent.atomic.AtomicInteger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
-@Slf4j
 public final class ThreadUtils {
+
+    private static final Logger log = LoggerFactory.getLogger(ThreadUtils.class);
 
     public static ExecutorService newThreadPoolExecutor(int corePoolSize, int maximumPoolSize, long keepAliveTime,
         TimeUnit unit, BlockingQueue<Runnable> workQueue, String processName, boolean isDaemon) {

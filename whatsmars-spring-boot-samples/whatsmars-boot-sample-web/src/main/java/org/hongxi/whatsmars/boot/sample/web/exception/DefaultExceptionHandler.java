@@ -1,6 +1,5 @@
 package org.hongxi.whatsmars.boot.sample.web.exception;
 
-import lombok.extern.slf4j.Slf4j;
 import org.hongxi.whatsmars.common.result.Result;
 import org.hongxi.whatsmars.common.result.ResultHelper;
 import org.springframework.core.annotation.AnnotationUtils;
@@ -16,13 +15,16 @@ import org.springframework.web.method.annotation.MethodArgumentTypeMismatchExcep
 
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.ConstraintViolationException;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * Created by shenhongxi on 2020/8/16.
  */
-@Slf4j
 @ControllerAdvice
 public class DefaultExceptionHandler {
+
+    private static final Logger log = LoggerFactory.getLogger(DefaultExceptionHandler.class);
 
     @ResponseStatus(HttpStatus.OK)
     @ExceptionHandler(BusinessException.class)

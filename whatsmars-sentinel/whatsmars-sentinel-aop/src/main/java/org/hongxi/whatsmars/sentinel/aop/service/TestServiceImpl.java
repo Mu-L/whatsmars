@@ -1,12 +1,14 @@
 package org.hongxi.whatsmars.sentinel.aop.service;
 
 import com.alibaba.csp.sentinel.annotation.SentinelResource;
-import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
-@Slf4j
 @Service
 public class TestServiceImpl implements TestService {
+
+    private static final Logger log = LoggerFactory.getLogger(TestServiceImpl.class);
 
     @Override
     @SentinelResource(value = "hi", blockHandler = "handleException",

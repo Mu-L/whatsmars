@@ -8,13 +8,14 @@ import com.alibaba.csp.sentinel.slots.block.flow.FlowRule;
 import com.alibaba.csp.sentinel.slots.block.flow.FlowRuleManager;
 import com.alibaba.fastjson2.JSON;
 import com.alibaba.fastjson2.TypeReference;
-import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Configuration;
 
 import javax.annotation.PostConstruct;
 import java.util.List;
 import java.util.Properties;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * Sentinel Nacos 数据源配置
@@ -26,9 +27,10 @@ import java.util.Properties;
  *
  * @author hongxi
  */
-@Slf4j
 @Configuration
 public class SentinelNacosConfig {
+
+    private static final Logger log = LoggerFactory.getLogger(SentinelNacosConfig.class);
 
     @Value("${sentinel.nacos.server-addr:127.0.0.1:8848}")
     private String serverAddr;

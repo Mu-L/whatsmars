@@ -1,6 +1,5 @@
 package org.hongxi.whatsmars.rocketmq.boot.producer;
 
-import lombok.extern.slf4j.Slf4j;
 import org.apache.rocketmq.client.producer.SendCallback;
 import org.apache.rocketmq.client.producer.SendResult;
 import org.apache.rocketmq.client.producer.TransactionSendResult;
@@ -14,15 +13,18 @@ import org.springframework.messaging.Message;
 import org.springframework.messaging.support.MessageBuilder;
 
 import java.math.BigDecimal;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * RocketMQ 消息生产者应用
  * <p>
  * 演示了多种消息发送方式，包括同步发送、异步发送、单向发送、延迟消息和顺序消息等
  */
-@Slf4j
 @SpringBootApplication
 public class ProducerApplication implements CommandLineRunner {
+
+    private static final Logger log = LoggerFactory.getLogger(ProducerApplication.class);
     @Autowired
     private RocketMQTemplate rocketMQTemplate;
 

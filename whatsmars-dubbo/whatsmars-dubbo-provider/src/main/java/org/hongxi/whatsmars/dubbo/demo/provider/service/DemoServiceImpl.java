@@ -1,6 +1,5 @@
 package org.hongxi.whatsmars.dubbo.demo.provider.service;
 
-import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.io.ThreadUtils;
 import org.apache.dubbo.config.annotation.DubboService;
 import org.apache.dubbo.rpc.RpcContext;
@@ -10,13 +9,16 @@ import org.hongxi.whatsmars.dubbo.demo.api.vo.User;
 
 import java.time.Duration;
 import java.util.concurrent.ThreadLocalRandom;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * Created by shenhongxi on 2017/12/4.
  */
-@Slf4j
 @DubboService
 public class DemoServiceImpl implements DemoService {
+
+    private static final Logger log = LoggerFactory.getLogger(DemoServiceImpl.class);
 
     @Override
     public String sayHello(String name) {

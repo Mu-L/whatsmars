@@ -1,14 +1,16 @@
 package org.hongxi.whatsmars.rocketmq.boot.producer;
 
-import lombok.extern.slf4j.Slf4j;
 import org.apache.rocketmq.spring.annotation.RocketMQTransactionListener;
 import org.apache.rocketmq.spring.core.RocketMQLocalTransactionListener;
 import org.apache.rocketmq.spring.core.RocketMQLocalTransactionState;
 import org.springframework.messaging.Message;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
-@Slf4j
 @RocketMQTransactionListener
 public class MyTransactionListener implements RocketMQLocalTransactionListener {
+
+    private static final Logger log = LoggerFactory.getLogger(MyTransactionListener.class);
 
     @Override
     public RocketMQLocalTransactionState executeLocalTransaction(Message msg, Object arg) {

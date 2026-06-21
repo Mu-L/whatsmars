@@ -5,7 +5,6 @@ import com.alibaba.nacos.api.naming.NamingService;
 import com.alibaba.nacos.api.naming.listener.EventListener;
 import com.alibaba.nacos.api.naming.listener.NamingEvent;
 import com.alibaba.nacos.api.naming.pojo.Instance;
-import lombok.extern.slf4j.Slf4j;
 import org.hongxi.whatsmars.common.result.Result;
 import org.hongxi.whatsmars.common.result.ResultHelper;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -14,15 +13,18 @@ import org.springframework.web.bind.annotation.*;
 import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * Nacos Naming Service Controller
  * 提供 Nacos 服务注册与发现的 REST API
  */
-@Slf4j
 @RestController
 @RequestMapping("/nacos/naming")
 public class NamingController {
+
+    private static final Logger log = LoggerFactory.getLogger(NamingController.class);
 
     private static final String DEFAULT_GROUP = "DEFAULT_GROUP";
     private static final String DEFAULT_CLUSTER = "DEFAULT";

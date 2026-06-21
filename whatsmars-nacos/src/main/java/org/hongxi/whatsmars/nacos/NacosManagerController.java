@@ -4,7 +4,6 @@ import com.alibaba.cloud.nacos.NacosConfigManager;
 import com.alibaba.nacos.api.config.ConfigService;
 import com.alibaba.nacos.api.config.listener.Listener;
 import com.alibaba.nacos.api.exception.NacosException;
-import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -13,11 +12,14 @@ import org.springframework.web.bind.annotation.RestController;
 import java.util.concurrent.Executor;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
-@Slf4j
 @RestController
 @RequestMapping("/nacos")
 public class NacosManagerController {
+
+    private static final Logger log = LoggerFactory.getLogger(NacosManagerController.class);
 
     private static final String DEFAULT_GROUP = "DEFAULT_GROUP";
 

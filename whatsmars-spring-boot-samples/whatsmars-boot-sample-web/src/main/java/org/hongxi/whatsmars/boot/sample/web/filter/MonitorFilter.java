@@ -1,6 +1,5 @@
 package org.hongxi.whatsmars.boot.sample.web.filter;
 
-import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 import org.hongxi.whatsmars.boot.sample.web.support.WebUtils;
 import org.hongxi.whatsmars.common.util.CollectionUtils;
@@ -23,14 +22,17 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * Created by shenhongxi on 2020/11/12.
  */
-@Slf4j
 @Order(-3)
 @Component
 public class MonitorFilter extends OncePerRequestFilter {
+
+    private static final Logger log = LoggerFactory.getLogger(MonitorFilter.class);
 
     // 针对只有一个uri映射到的method
     // key: methodSign value: uriPattern

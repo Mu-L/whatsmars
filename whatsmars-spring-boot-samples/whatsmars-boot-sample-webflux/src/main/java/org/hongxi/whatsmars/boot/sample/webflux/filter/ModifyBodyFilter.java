@@ -1,6 +1,5 @@
 package org.hongxi.whatsmars.boot.sample.webflux.filter;
 
-import lombok.extern.slf4j.Slf4j;
 import org.hongxi.whatsmars.boot.sample.webflux.support.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.annotation.Order;
@@ -15,14 +14,17 @@ import org.springframework.web.server.WebFilterChain;
 import reactor.core.publisher.Mono;
 
 import java.util.Map;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * Created by shenhongxi on 2021/4/29.
  */
-@Slf4j
 @Order(-1)
 @Component
 public class ModifyBodyFilter implements WebFilter {
+
+    private static final Logger log = LoggerFactory.getLogger(ModifyBodyFilter.class);
 
     @Autowired
     private ServerCodecConfigurer codecConfigurer;

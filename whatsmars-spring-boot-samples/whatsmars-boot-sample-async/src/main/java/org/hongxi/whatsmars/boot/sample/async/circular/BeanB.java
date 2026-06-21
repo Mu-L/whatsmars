@@ -1,10 +1,11 @@
 package org.hongxi.whatsmars.boot.sample.async.circular;
 
-import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Lazy;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Component;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * Created by shenhongxi on 2021/3/4.
@@ -15,9 +16,10 @@ import org.springframework.stereotype.Component;
  *
  * 用 @Lazy 解决循环依赖下使用 @Async 启动失败的问题
  */
-@Slf4j
 @Component
 public class BeanB {
+
+    private static final Logger log = LoggerFactory.getLogger(BeanB.class);
 
     @Lazy
     @Autowired

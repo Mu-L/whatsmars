@@ -1,6 +1,5 @@
 package org.hongxi.whatsmars.boot.sample.webflux.controller;
 
-import lombok.extern.slf4j.Slf4j;
 import org.hongxi.whatsmars.boot.sample.webflux.dao.OrderRepository;
 import org.hongxi.whatsmars.boot.sample.webflux.model.Order;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -8,14 +7,17 @@ import org.springframework.util.Assert;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.server.ServerWebExchange;
 import reactor.core.publisher.Mono;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * Created by shenhongxi on 2021/4/22.
  */
-@Slf4j
 @RestController
 @RequestMapping("/order")
 public class OrderController {
+
+    private static final Logger log = LoggerFactory.getLogger(OrderController.class);
 
     @Autowired
     private OrderRepository orderRepository;

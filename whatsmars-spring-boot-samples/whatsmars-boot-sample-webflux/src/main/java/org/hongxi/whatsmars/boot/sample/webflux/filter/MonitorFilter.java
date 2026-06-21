@@ -1,6 +1,5 @@
 package org.hongxi.whatsmars.boot.sample.webflux.filter;
 
-import lombok.extern.slf4j.Slf4j;
 import org.hongxi.whatsmars.boot.sample.webflux.support.WebUtils;
 import org.springframework.beans.factory.InitializingBean;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -21,14 +20,17 @@ import reactor.core.publisher.Mono;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * Created by shenhongxi on 2021/4/22.
  */
-@Slf4j
 @Order(-3)
 @Component
 public class MonitorFilter implements WebFilter, InitializingBean {
+
+    private static final Logger log = LoggerFactory.getLogger(MonitorFilter.class);
 
     private static final String UNKNOWN_PATH = "/unknown";
 

@@ -1,6 +1,5 @@
 package org.hongxi.whatsmars.boot.sample.web.filter;
 
-import lombok.extern.slf4j.Slf4j;
 import org.hongxi.whatsmars.boot.sample.web.support.WebUtils;
 import org.springframework.core.annotation.Order;
 import org.springframework.stereotype.Component;
@@ -13,14 +12,17 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.util.Arrays;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * Created by shenhongxi on 2021/4/25.
  */
-@Slf4j
 @Order(-4)
 @Component
 public class AccessFilter extends OncePerRequestFilter {
+
+    private static final Logger log = LoggerFactory.getLogger(AccessFilter.class);
 
     private final AntPathMatcher antPathMatcher = new AntPathMatcher();
 

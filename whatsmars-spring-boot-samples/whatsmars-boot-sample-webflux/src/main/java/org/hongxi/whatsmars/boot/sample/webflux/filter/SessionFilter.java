@@ -1,6 +1,5 @@
 package org.hongxi.whatsmars.boot.sample.webflux.filter;
 
-import lombok.extern.slf4j.Slf4j;
 import org.hongxi.whatsmars.boot.sample.webflux.support.SessionContext;
 import org.hongxi.whatsmars.boot.sample.webflux.support.WebUtils;
 import org.springframework.core.annotation.Order;
@@ -14,14 +13,17 @@ import org.springframework.web.server.WebFilterChain;
 import reactor.core.publisher.Mono;
 
 import java.util.List;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * Created by shenhongxi on 2021/4/29.
  */
-@Slf4j
 @Order(-2)
 @Component
 public class SessionFilter implements WebFilter {
+
+    private static final Logger log = LoggerFactory.getLogger(SessionFilter.class);
 
     private static final String COOKIE_NAME = "SESSIONID";
 

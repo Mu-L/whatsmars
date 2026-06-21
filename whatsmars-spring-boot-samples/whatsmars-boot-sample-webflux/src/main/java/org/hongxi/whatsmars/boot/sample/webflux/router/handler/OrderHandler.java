@@ -1,6 +1,5 @@
 package org.hongxi.whatsmars.boot.sample.webflux.router.handler;
 
-import lombok.extern.slf4j.Slf4j;
 import org.hongxi.whatsmars.boot.sample.webflux.dao.OrderRepository;
 import org.hongxi.whatsmars.boot.sample.webflux.model.Order;
 import org.springframework.stereotype.Service;
@@ -10,10 +9,13 @@ import org.springframework.web.reactive.function.server.ServerResponse;
 import reactor.core.publisher.Mono;
 
 import java.net.URI;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
-@Slf4j
 @Service
 public class OrderHandler {
+
+    private static final Logger log = LoggerFactory.getLogger(OrderHandler.class);
 
     final OrderRepository orderRepository;
 

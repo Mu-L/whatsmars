@@ -1,6 +1,5 @@
 package org.hongxi.whatsmars.rocketmq.v5.boot.producer;
 
-import lombok.extern.slf4j.Slf4j;
 import org.apache.rocketmq.client.annotation.RocketMQTransactionListener;
 import org.apache.rocketmq.client.apis.ClientException;
 import org.apache.rocketmq.client.apis.message.MessageView;
@@ -25,10 +24,13 @@ import java.util.Objects;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
-@Slf4j
 @SpringBootApplication
 public class ProducerApplication implements CommandLineRunner {
+
+    private static final Logger log = LoggerFactory.getLogger(ProducerApplication.class);
 
     private static final String NORMAL_TOPIC = "demo-normal-topic";
     private static final String FIFO_TOPIC = "demo-fifo-topic";
