@@ -119,3 +119,6 @@ curl -X DELETE "http://localhost:8761/nacos/naming/unsubscribe?serviceName=test-
 curl -X DELETE "http://localhost:8762/nacos/naming/deregister?serviceName=test-service&ip=192.168.1.101&port=8081"
 curl -X DELETE "http://localhost:8763/nacos/naming/deregister?serviceName=test-service&ip=192.168.1.102&port=8082"
 ```
+
+## nacos server 升级方式
+下载最近的二进制包解压，用target下的`nacos-server.jar`覆盖本地的即可
