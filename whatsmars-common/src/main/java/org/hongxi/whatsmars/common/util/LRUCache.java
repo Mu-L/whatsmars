@@ -1,11 +1,13 @@
 package org.hongxi.whatsmars.common.util;
 
+import java.io.Serial;
 import java.util.LinkedHashMap;
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;
 
 public class LRUCache<K, V> extends LinkedHashMap<K, V> {
 
+    @Serial
     private static final long serialVersionUID = -5167631809472116969L;
 
     private static final float DEFAULT_LOAD_FACTOR = 0.75f;
