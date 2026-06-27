@@ -1,11 +1,13 @@
 package org.hongxi.whatsmars.boot.sample.session;
 
+import java.io.Serial;
 import java.io.Serializable;
 
 /**
  * Created by shenhongxi on 2018/1/8.
  */
 public class User implements Serializable {
+    @Serial
     private static final long serialVersionUID = -6332350121099606299L;
 
     private String id;

@@ -1,5 +1,6 @@
 package org.hongxi.whatsmars.boot.sample.datasource.model;
 
+import java.io.Serial;
 import java.io.Serializable;
 import java.util.Date;
 
@@ -7,6 +8,7 @@ import java.util.Date;
  * Created by shenhongxi on 2017/6/26.
  */
 public class User implements Serializable {
+    @Serial
     private static final long serialVersionUID = 6469790070035101683L;
 
     private Long id;

@@ -2,6 +2,7 @@ package org.hongxi.whatsmars.boot.sample.web.model;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
 
+import java.io.Serial;
 import java.io.Serializable;
 import java.time.LocalDateTime;
 
@@ -9,6 +10,7 @@ import java.time.LocalDateTime;
  * Created by shenhongxi on 2017/6/26.
  */
 public class User implements Serializable {
+    @Serial
     private static final long serialVersionUID = 6469790070035101683L;
 
     private Long id;

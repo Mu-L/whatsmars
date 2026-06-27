@@ -1,9 +1,11 @@
 package org.hongxi.whatsmars.scheduling.elastic.entity;
 
+import java.io.Serial;
 import java.io.Serializable;
 
 public final class Foo implements Serializable {
     
+    @Serial
     private static final long serialVersionUID = 2706842871078949451L;
     
     private final long id;
