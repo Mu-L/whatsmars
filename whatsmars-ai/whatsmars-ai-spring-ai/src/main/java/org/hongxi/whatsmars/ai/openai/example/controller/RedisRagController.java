@@ -75,9 +75,11 @@ public class RedisRagController {
      * @return 操作结果
      */
     @PostMapping("/document")
-    public Map<String, Object> addDocument(@RequestParam String content,
+    public Object addDocument(@RequestParam String content,
                                             @RequestParam(required = false) String source,
                                             @RequestParam(required = false) String category) {
+        record DocumentAddResult(String message, int contentLength) {}
+
         log.info("添加文档: {}", content.substring(0, Math.min(50, content.length())));
 
         Map<String, Object> metadata = new HashMap<>();
@@ -91,10 +93,7 @@ public class RedisRagController {
         Document document = new Document(content, metadata);
         vectorStore.add(List.of(document));
 
-        Map<String, Object> result = new HashMap<>();
-        result.put("message", "文档添加成功");
-        result.put("contentLength", content.length());
-        return result;
+        return new DocumentAddResult("文档添加成功", content.length());
     }
 
     /**
@@ -110,7 +109,7 @@ public class RedisRagController {
      * @return AI 回答
      */
     @GetMapping("/ask")
-    public Map<String, Object> askQuestion(@RequestParam String question,
+    public Object askQuestion(@RequestParam String question,
                                             @RequestParam(defaultValue = "3") int topK) {
         log.info("Redis RAG 问答 - 问题: {}", question);
 
@@ -142,20 +141,19 @@ public class RedisRagController {
         log.info("AI 回答: {}", answer);
 
         // 构建返回结果
-        Map<String, Object> result = new HashMap<>();
-        result.put("question", question);
-        result.put("answer", answer);
-        result.put("relevantDocuments", relevantDocs.stream()
-                .map(doc -> Map.of(
-                        "content", doc.getText(),
-                        "source", doc.getMetadata().getOrDefault("source", "unknown"),
-                        "category", doc.getMetadata().getOrDefault("category", "unknown"),
-                        "score", doc.getScore()
-                ))
-                .collect(Collectors.toList()));
-        result.put("docCount", relevantDocs.size());
+        record RelevantDoc(String content, String source, String category, double score) {}
+        record RagAnswer(String question, String answer, List<RelevantDoc> relevantDocuments, int docCount) {}
 
-        return result;
+        return new RagAnswer(question, answer,
+                relevantDocs.stream()
+                        .map(doc -> new RelevantDoc(
+                                doc.getText(),
+                                String.valueOf(doc.getMetadata().getOrDefault("source", "unknown")),
+                                String.valueOf(doc.getMetadata().getOrDefault("category", "unknown")),
+                                doc.getScore()
+                        ))
+                        .toList(),
+                relevantDocs.size());
     }
 
     /**
@@ -167,7 +165,7 @@ public class RedisRagController {
      * @return 相关文档
      */
     @GetMapping("/search-by-category")
-    public Map<String, Object> searchByCategory(@RequestParam String category,
+    public Object searchByCategory(@RequestParam String category,
                                                   @RequestParam String query,
                                                   @RequestParam(defaultValue = "5") int topK) {
         log.info("按分类检索 - 分类: {}, 查询: {}", category, query);
@@ -185,19 +183,18 @@ public class RedisRagController {
                 .limit(topK)
                 .toList();
 
-        Map<String, Object> result = new HashMap<>();
-        result.put("category", category);
-        result.put("query", query);
-        result.put("documents", filteredDocs.stream()
-                .map(doc -> Map.of(
-                        "content", doc.getText(),
-                        "source", doc.getMetadata().get("source"),
-                        "score", doc.getScore()
-                ))
-                .collect(Collectors.toList()));
-        result.put("count", filteredDocs.size());
+        record DocInfo(String content, String source, double score) {}
+        record SearchByCategoryResult(String category, String query, List<DocInfo> documents, int count) {}
 
-        return result;
+        return new SearchByCategoryResult(category, query,
+                filteredDocs.stream()
+                        .map(doc -> new DocInfo(
+                                doc.getText(),
+                                String.valueOf(doc.getMetadata().get("source")),
+                                doc.getScore()
+                        ))
+                        .toList(),
+                filteredDocs.size());
     }
 
     /**
@@ -206,14 +203,16 @@ public class RedisRagController {
      * @return 操作结果
      */
     @DeleteMapping("/clear")
-    public Map<String, String> clearVectorStore() {
+    public Object clearVectorStore() {
+        record ClearResult(String message, String hint) {}
+
         log.info("清空 Redis 向量存储");
         
         // 注意：具体清空方式取决于 Redis Vector Store 的实现
         // 可能需要删除特定的 key 或使用 FLUSHDB
-        Map<String, String> result = new HashMap<>();
-        result.put("message", "请使用 Redis CLI 执行: DEL <vector-index-key>");
-        result.put("hint", "查看 application.yml 中的 spring.ai.vectorstore.redis.index-name 配置");
-        return result;
+        return new ClearResult(
+                "请使用 Redis CLI 执行: DEL <vector-index-key>",
+                "查看 application.yml 中的 spring.ai.vectorstore.redis.index-name 配置"
+        );
     }
 }

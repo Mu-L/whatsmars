@@ -1,5 +1,6 @@
 package org.hongxi.whatsmars.ai.openai.example.controller;
 
+import org.hongxi.whatsmars.ai.openai.example.vo.ChatResponse;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.ai.chat.client.ChatClient;
@@ -9,7 +10,6 @@ import org.springframework.ai.chat.messages.UserMessage;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -40,7 +40,7 @@ public class AdvancedChatController {
      * @return AI 回复
      */
     @PostMapping("/system-message")
-    public Map<String, String> chatWithSystemMessage(@RequestParam String message) {
+    public Object chatWithSystemMessage(@RequestParam String message) {
         log.info("System Message 对话: {}", message);
 
         String response = chatClient.prompt()
@@ -51,10 +51,7 @@ public class AdvancedChatController {
 
         log.info("AI 回复: {}", response);
 
-        Map<String, String> result = new HashMap<>();
-        result.put("userMessage", message);
-        result.put("aiResponse", response);
-        return result;
+        return new ChatResponse(message, response);
     }
 
     /**
@@ -64,7 +61,7 @@ public class AdvancedChatController {
      * @return AI 回复
      */
     @PostMapping("/few-shot")
-    public Map<String, String> fewShotPrompting(@RequestParam String message) {
+    public Object fewShotPrompting(@RequestParam String message) {
         log.info("Few-shot 提示: {}", message);
 
         String response = chatClient.prompt()
@@ -87,10 +84,7 @@ public class AdvancedChatController {
 
         log.info("AI 回复: {}", response);
 
-        Map<String, String> result = new HashMap<>();
-        result.put("userMessage", message);
-        result.put("aiResponse", response);
-        return result;
+        return new ChatResponse(message, response);
     }
 
     /**
@@ -101,10 +95,11 @@ public class AdvancedChatController {
      * @return AI 回复
      */
     @PostMapping("/conversation")
-    public Map<String, Object> conversation(
+    public Object conversation(
             @RequestBody(required = false) List<Map<String, String>> messages,
             @RequestParam String currentMessage) {
-        
+        record ConversationResponse(String currentMessage, String aiResponse, int messageCount) {}
+
         log.info("多轮对话 - 当前消息: {}", currentMessage);
 
         // 简化测试，使用固定上下文
@@ -119,11 +114,8 @@ public class AdvancedChatController {
 
         log.info("AI 回复: {}", response);
 
-        Map<String, Object> result = new HashMap<>();
-        result.put("currentMessage", currentMessage);
-        result.put("aiResponse", response);
-        result.put("messageCount", messages == null ? 1 : messages.size() + 1);
-        return result;
+        return new ConversationResponse(currentMessage, response,
+                messages == null ? 1 : messages.size() + 1);
     }
 
     /**
@@ -133,7 +125,7 @@ public class AdvancedChatController {
      * @return AI 回复
      */
     @PostMapping("/creative")
-    public Map<String, String> creativeChat(@RequestParam String message) {
+    public Object creativeChat(@RequestParam String message) {
         log.info("创意性对话: {}", message);
 
         String response = chatClient.prompt()
@@ -144,9 +136,6 @@ public class AdvancedChatController {
 
         log.info("AI 回复: {}", response);
 
-        Map<String, String> result = new HashMap<>();
-        result.put("userMessage", message);
-        result.put("aiResponse", response);
-        return result;
+        return new ChatResponse(message, response);
     }
 }

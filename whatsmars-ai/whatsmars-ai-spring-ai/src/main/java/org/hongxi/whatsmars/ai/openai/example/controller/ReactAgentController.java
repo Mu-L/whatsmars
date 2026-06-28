@@ -11,9 +11,6 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
-import java.util.HashMap;
-import java.util.Map;
-
 /**
  * ReAct Agent 控制器
  * <p>
@@ -69,7 +66,9 @@ public class ReactAgentController {
      * @return Agent 的回答和思考过程
      */
     @GetMapping("/chat")
-    public Map<String, Object> agentChat(@RequestParam String question) {
+    public Object agentChat(@RequestParam String question) {
+        record AgentChatResult(String question, String answer, String type) {}
+
         log.info("USER: {}", question);
         
         String response = chatClient.prompt()
@@ -94,11 +93,7 @@ public class ReactAgentController {
                 .content();
         log.info("ASSISTANT: {}", response);
 
-        Map<String, Object> result = new HashMap<>();
-        result.put("question", question);
-        result.put("answer", response);
-        result.put("type", "react-agent");
-        return result;
+        return new AgentChatResult(question, response, "react-agent");
     }
 
     /**
@@ -111,7 +106,9 @@ public class ReactAgentController {
      * @return 任务执行结果
      */
     @GetMapping("/complex-task")
-    public Map<String, Object> handleComplexTask(@RequestParam String task) {
+    public Object handleComplexTask(@RequestParam String task) {
+        record ComplexTaskResult(String task, String solution, String type) {}
+
         String response = chatClient.prompt()
                 .system("""
                         你是一个强大的 AI Agent，擅长解决复杂问题。
@@ -132,11 +129,7 @@ public class ReactAgentController {
                 .call()
                 .content();
 
-        Map<String, Object> result = new HashMap<>();
-        result.put("task", task);
-        result.put("solution", response);
-        result.put("type", "complex-task-solving");
-        return result;
+        return new ComplexTaskResult(task, response, "complex-task-solving");
     }
 
     /**
@@ -150,8 +143,10 @@ public class ReactAgentController {
      * @return 回复消息
      */
     @GetMapping("/contextual-chat")
-    public Map<String, Object> contextualChat(@RequestParam String message,
+    public Object contextualChat(@RequestParam String message,
                                               @RequestParam(required = false, defaultValue = "default") String contextId) {
+        record ContextualChatResult(String contextId, String message, String reply) {}
+
         // 在实际项目中，应该使用 ChatMemory 来管理对话历史
         // 这里简化处理，仅展示概念
         String response = chatClient.prompt()
@@ -166,11 +161,7 @@ public class ReactAgentController {
                 .call()
                 .content();
 
-        Map<String, Object> result = new HashMap<>();
-        result.put("contextId", contextId);
-        result.put("message", message);
-        result.put("reply", response);
-        return result;
+        return new ContextualChatResult(contextId, message, response);
     }
 
     /**
@@ -182,8 +173,10 @@ public class ReactAgentController {
      * @return 多个示例的对比结果
      */
     @GetMapping("/demo")
-    public Map<String, Object> demo() {
-        Map<String, Object> results = new HashMap<>();
+    public Object demo() {
+        record DemoExample(String question, String answer) {}
+        record DemoResult(DemoExample weatherExample, DemoExample searchExample,
+                          DemoExample calculationExample, DemoExample complexExample) {}
 
         // 示例 1: 需要天气查询
         String weatherAnswer = chatClient.prompt()
@@ -191,10 +184,10 @@ public class ReactAgentController {
                 .tools(weatherTools, searchTools, calculatorTools)
                 .call()
                 .content();
-        results.put("weatherExample", Map.of(
-                "question", "北京今天的天气怎么样？我需要出门，应该穿什么衣服？",
-                "answer", weatherAnswer
-        ));
+        var weatherExample = new DemoExample(
+                "北京今天的天气怎么样？我需要出门，应该穿什么衣服？",
+                weatherAnswer
+        );
         
         // 示例 2: 需要知识搜索
         String searchAnswer = chatClient.prompt()
@@ -202,10 +195,10 @@ public class ReactAgentController {
                 .tools(weatherTools, searchTools, calculatorTools)
                 .call()
                 .content();
-        results.put("searchExample", Map.of(
-                "question", "什么是 Apache Dubbo？它有什么特点？",
-                "answer", searchAnswer
-        ));
+        var searchExample = new DemoExample(
+                "什么是 Apache Dubbo？它有什么特点？",
+                searchAnswer
+        );
         
         // 示例 3: 需要数学计算
         String calcAnswer = chatClient.prompt()
@@ -213,10 +206,10 @@ public class ReactAgentController {
                 .tools(weatherTools, searchTools, calculatorTools)
                 .call()
                 .content();
-        results.put("calculationExample", Map.of(
-                "question", "如果一个商品原价 299 元，打 8 折后再减 50 元优惠券，最终价格是多少？",
-                "answer", calcAnswer
-        ));
+        var calculationExample = new DemoExample(
+                "如果一个商品原价 299 元，打 8 折后再减 50 元优惠券，最终价格是多少？",
+                calcAnswer
+        );
         
         // 示例 4: 需要综合多个工具
         String complexAnswer = chatClient.prompt()
@@ -224,11 +217,11 @@ public class ReactAgentController {
                 .tools(weatherTools, searchTools, calculatorTools)
                 .call()
                 .content();
-        results.put("complexExample", Map.of(
-                "question", "我想了解微服务架构的最新发展趋势，以及 Spring Boot 在其中的作用",
-                "answer", complexAnswer
-        ));
+        var complexExample = new DemoExample(
+                "我想了解微服务架构的最新发展趋势，以及 Spring Boot 在其中的作用",
+                complexAnswer
+        );
         
-        return results;
+        return new DemoResult(weatherExample, searchExample, calculationExample, complexExample);
     }
 }
