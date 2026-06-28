@@ -1,5 +1,10 @@
 package org.hongxi.whatsmars.ai.openai.example.controller;
 
+import org.hongxi.whatsmars.ai.openai.example.vo.ChatResponse;
+import org.hongxi.whatsmars.ai.openai.example.vo.DocInfo;
+import org.hongxi.whatsmars.ai.openai.example.vo.DocumentAddResult;
+import org.hongxi.whatsmars.ai.openai.example.vo.ClearResult;
+import org.hongxi.whatsmars.ai.openai.example.vo.SearchByCategoryResult;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.ai.chat.client.ChatClient;
@@ -75,11 +80,9 @@ public class RedisRagController {
      * @return 操作结果
      */
     @PostMapping("/document")
-    public Object addDocument(@RequestParam String content,
+    public DocumentAddResult addDocument(@RequestParam String content,
                                             @RequestParam(required = false) String source,
                                             @RequestParam(required = false) String category) {
-        record DocumentAddResult(String message, int contentLength) {}
-
         log.info("添加文档: {}", content.substring(0, Math.min(50, content.length())));
 
         Map<String, Object> metadata = new HashMap<>();
@@ -104,18 +107,18 @@ public class RedisRagController {
      * 3. AI 基于上下文回答问题
      * </p>
      *
-     * @param question 用户问题
+     * @param message 用户问题
      * @param topK     返回最相关的 K 个文档（默认 3）
      * @return AI 回答
      */
     @GetMapping("/ask")
-    public Object askQuestion(@RequestParam String question,
+    public ChatResponse askQuestion(@RequestParam String message,
                                             @RequestParam(defaultValue = "3") int topK) {
-        log.info("Redis RAG 问答 - 问题: {}", question);
+        log.info("Redis RAG 问答 - 问题: {}", message);
 
         // 步骤 1: 从 Redis 检索相关文档
         SearchRequest searchRequest = SearchRequest.builder()
-                .query(question)
+                .query(message)
                 .topK(topK)
                 .build();
         List<Document> relevantDocs = vectorStore.similaritySearch(searchRequest);
@@ -134,26 +137,12 @@ public class RedisRagController {
                 .system("你是一个技术专家助手。请基于提供的上下文信息回答用户的问题。\n" +
                         "如果上下文中没有相关信息，请明确说明。\n\n" +
                         "上下文：\n" + context)
-                .user(question)
+                .user(message)
                 .call()
                 .content();
 
         log.info("AI 回答: {}", answer);
-
-        // 构建返回结果
-        record RelevantDoc(String content, String source, String category, double score) {}
-        record RagAnswer(String question, String answer, List<RelevantDoc> relevantDocuments, int docCount) {}
-
-        return new RagAnswer(question, answer,
-                relevantDocs.stream()
-                        .map(doc -> new RelevantDoc(
-                                doc.getText(),
-                                String.valueOf(doc.getMetadata().getOrDefault("source", "unknown")),
-                                String.valueOf(doc.getMetadata().getOrDefault("category", "unknown")),
-                                doc.getScore()
-                        ))
-                        .toList(),
-                relevantDocs.size());
+        return new ChatResponse(message, answer);
     }
 
     /**
@@ -165,7 +154,7 @@ public class RedisRagController {
      * @return 相关文档
      */
     @GetMapping("/search-by-category")
-    public Object searchByCategory(@RequestParam String category,
+    public SearchByCategoryResult searchByCategory(@RequestParam String category,
                                                   @RequestParam String query,
                                                   @RequestParam(defaultValue = "5") int topK) {
         log.info("按分类检索 - 分类: {}, 查询: {}", category, query);
@@ -182,9 +171,6 @@ public class RedisRagController {
                 .filter(doc -> category.equals(doc.getMetadata().get("category")))
                 .limit(topK)
                 .toList();
-
-        record DocInfo(String content, String source, double score) {}
-        record SearchByCategoryResult(String category, String query, List<DocInfo> documents, int count) {}
 
         return new SearchByCategoryResult(category, query,
                 filteredDocs.stream()
@@ -203,9 +189,7 @@ public class RedisRagController {
      * @return 操作结果
      */
     @DeleteMapping("/clear")
-    public Object clearVectorStore() {
-        record ClearResult(String message, String hint) {}
-
+    public ClearResult clearVectorStore() {
         log.info("清空 Redis 向量存储");
         
         // 注意：具体清空方式取决于 Redis Vector Store 的实现

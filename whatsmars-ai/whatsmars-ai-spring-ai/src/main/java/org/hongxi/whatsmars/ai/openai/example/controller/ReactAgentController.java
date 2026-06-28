@@ -3,6 +3,9 @@ package org.hongxi.whatsmars.ai.openai.example.controller;
 import org.hongxi.whatsmars.ai.openai.example.tool.CalculatorTools;
 import org.hongxi.whatsmars.ai.openai.example.tool.SearchTools;
 import org.hongxi.whatsmars.ai.openai.example.tool.WeatherTools;
+import org.hongxi.whatsmars.ai.openai.example.vo.AgentResult;
+import org.hongxi.whatsmars.ai.openai.example.vo.ChatResponse;
+import org.hongxi.whatsmars.ai.openai.example.vo.DemoResult;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.ai.chat.client.ChatClient;
@@ -66,11 +69,8 @@ public class ReactAgentController {
      * @return Agent 的回答和思考过程
      */
     @GetMapping("/chat")
-    public Object agentChat(@RequestParam String question) {
-        record AgentChatResult(String question, String answer, String type) {}
-
-        log.info("USER: {}", question);
-        
+    public AgentResult agentChat(@RequestParam String message) {
+        log.info("Agent 收到问题: {}", message);
         String response = chatClient.prompt()
                 .system("""
                         你是一个智能助手，可以使用各种工具来帮助用户解决问题。
@@ -82,18 +82,17 @@ public class ReactAgentController {
                         - 数学计算：执行加减乘除等运算
                         
                         回答要求：
-                        1. 如果需要调用工具，先说明你的思考过程
-                        2. 调用工具后，基于工具返回的结果给出完整回答
-                        3. 如果不需要工具，直接回答问题
+                        1. 根据问题需要，主动调用合适的工具获取信息
+                        2. 基于工具返回的结果给出完整、有用的回答
+                        3. 如果一个问题需要多个工具配合，依次调用
                         4. 保持回答简洁、准确、有用
                         """)
-                .user(question)
+                .user(message)
                 .tools(weatherTools, searchTools, calculatorTools)
                 .call()
                 .content();
-        log.info("ASSISTANT: {}", response);
-
-        return new AgentChatResult(question, response, "react-agent");
+        log.info("Agent 回复: {}", response);
+        return new AgentResult(message, response, "react-agent");
     }
 
     /**
@@ -106,9 +105,8 @@ public class ReactAgentController {
      * @return 任务执行结果
      */
     @GetMapping("/complex-task")
-    public Object handleComplexTask(@RequestParam String task) {
-        record ComplexTaskResult(String task, String solution, String type) {}
-
+    public AgentResult handleComplexTask(@RequestParam String message) {
+        log.info("Agent 收到复杂任务: {}", message);
         String response = chatClient.prompt()
                 .system("""
                         你是一个强大的 AI Agent，擅长解决复杂问题。
@@ -122,14 +120,14 @@ public class ReactAgentController {
                         可用的工具：
                         - 天气查询、知识搜索、最新资讯、数学计算
                         
-                        请详细展示你的思考过程和每一步的操作。
+                        请详细展示你的思考过程和每一步的操作结果。
                         """)
-                .user(task)
+                .user(message)
                 .tools(weatherTools, searchTools, calculatorTools)
                 .call()
                 .content();
-
-        return new ComplexTaskResult(task, response, "complex-task-solving");
+        log.info("Agent 完成复杂任务");
+        return new AgentResult(message, response, "complex-task-solving");
     }
 
     /**
@@ -143,10 +141,8 @@ public class ReactAgentController {
      * @return 回复消息
      */
     @GetMapping("/contextual-chat")
-    public Object contextualChat(@RequestParam String message,
+    public ChatResponse contextualChat(@RequestParam String message,
                                               @RequestParam(required = false, defaultValue = "default") String contextId) {
-        record ContextualChatResult(String contextId, String message, String reply) {}
-
         // 在实际项目中，应该使用 ChatMemory 来管理对话历史
         // 这里简化处理，仅展示概念
         String response = chatClient.prompt()
@@ -161,7 +157,7 @@ public class ReactAgentController {
                 .call()
                 .content();
 
-        return new ContextualChatResult(contextId, message, response);
+        return new ChatResponse(message, response);
     }
 
     /**
@@ -173,10 +169,7 @@ public class ReactAgentController {
      * @return 多个示例的对比结果
      */
     @GetMapping("/demo")
-    public Object demo() {
-        record DemoExample(String question, String answer) {}
-        record DemoResult(DemoExample weatherExample, DemoExample searchExample,
-                          DemoExample calculationExample, DemoExample complexExample) {}
+    public DemoResult demo() {
 
         // 示例 1: 需要天气查询
         String weatherAnswer = chatClient.prompt()
@@ -184,7 +177,7 @@ public class ReactAgentController {
                 .tools(weatherTools, searchTools, calculatorTools)
                 .call()
                 .content();
-        var weatherExample = new DemoExample(
+        var weatherExample = new ChatResponse(
                 "北京今天的天气怎么样？我需要出门，应该穿什么衣服？",
                 weatherAnswer
         );
@@ -195,7 +188,7 @@ public class ReactAgentController {
                 .tools(weatherTools, searchTools, calculatorTools)
                 .call()
                 .content();
-        var searchExample = new DemoExample(
+        var searchExample = new ChatResponse(
                 "什么是 Apache Dubbo？它有什么特点？",
                 searchAnswer
         );
@@ -206,7 +199,7 @@ public class ReactAgentController {
                 .tools(weatherTools, searchTools, calculatorTools)
                 .call()
                 .content();
-        var calculationExample = new DemoExample(
+        var calculationExample = new ChatResponse(
                 "如果一个商品原价 299 元，打 8 折后再减 50 元优惠券，最终价格是多少？",
                 calcAnswer
         );
@@ -217,7 +210,7 @@ public class ReactAgentController {
                 .tools(weatherTools, searchTools, calculatorTools)
                 .call()
                 .content();
-        var complexExample = new DemoExample(
+        var complexExample = new ChatResponse(
                 "我想了解微服务架构的最新发展趋势，以及 Spring Boot 在其中的作用",
                 complexAnswer
         );

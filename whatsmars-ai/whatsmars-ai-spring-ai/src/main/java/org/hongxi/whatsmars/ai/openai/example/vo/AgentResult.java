@@ -1,11 +1,12 @@
 package org.hongxi.whatsmars.ai.openai.example.vo;
 
 /**
- * AI 通用响应
+ * Agent 响应结果
  *
  * @param message  用户消息
  * @param response AI 回复
+ * @param type     Agent 类型标识
  * @author hongxi
  */
-public record ChatResponse(String message, String response) {
+public record AgentResult(String message, String response, String type) {
 }

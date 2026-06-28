@@ -3,13 +3,11 @@ package org.hongxi.whatsmars.ai.openai.example.controller;
 import org.hongxi.whatsmars.ai.openai.example.tool.TimeTools;
 import org.hongxi.whatsmars.ai.openai.example.tool.UserTools;
 import org.hongxi.whatsmars.ai.openai.example.tool.WeatherTools;
+import org.hongxi.whatsmars.ai.openai.example.vo.ChatResponse;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.ai.chat.client.ChatClient;
 import org.springframework.web.bind.annotation.*;
-
-import java.util.HashMap;
-import java.util.Map;
 
 /**
  * Function Calling（函数调用）示例控制器
@@ -51,21 +49,17 @@ public class FunctionCallingController {
      * @return AI 回复
      */
     @GetMapping("/weather")
-    public Map<String, Object> getWeather(@RequestParam String question) {
-        log.info("天气查询: {}", question);
+    public ChatResponse getWeather(@RequestParam String message) {
+        log.info("天气查询: {}", message);
 
         String response = chatClient.prompt()
-                .user(question)
+                .user(message)
                 .tools(weatherTools, timeTools, userTools)
                 .call()
                 .content();
 
         log.info("AI 回复: {}", response);
-
-        Map<String, Object> result = new HashMap<>();
-        result.put("question", question);
-        result.put("answer", response);
-        return result;
+        return new ChatResponse(message, response);
     }
 
     /**
@@ -81,21 +75,17 @@ public class FunctionCallingController {
      * @return AI 回复
      */
     @GetMapping("/ask")
-    public Map<String, Object> smartAssistant(@RequestParam String question) {
-        log.info("智能助手收到问题: {}", question);
+    public ChatResponse smartAssistant(@RequestParam String message) {
+        log.info("智能助手收到问题: {}", message);
 
         String response = chatClient.prompt()
                 .system("你是一个智能助手，可以根据用户的问题自动调用合适的工具来获取信息。")
-                .user(question)
+                .user(message)
                 .tools(weatherTools, timeTools, userTools)
                 .call()
                 .content();
 
         log.info("AI 回复: {}", response);
-
-        Map<String, Object> result = new HashMap<>();
-        result.put("question", question);
-        result.put("answer", response);
-        return result;
+        return new ChatResponse(message, response);
     }
 }

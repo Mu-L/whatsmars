@@ -1,6 +1,7 @@
 package org.hongxi.whatsmars.ai.openai.example.controller;
 
 import org.hongxi.whatsmars.ai.openai.example.cache.CachedChatService;
+import org.hongxi.whatsmars.ai.openai.example.vo.ChatResponse;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.HashMap;
@@ -31,84 +32,59 @@ public class CacheController {
      * 第一次调用会请求 AI API，后续相同问题直接返回缓存结果
      * </p>
      *
-     * @param question 用户问题
+     * @param message 用户问题
      * @return AI 回答和缓存状态
      */
     @GetMapping("/chat")
-    public Map<String, Object> cachedChat(@RequestParam String question) {
+    public ChatResponse cachedChat(@RequestParam String message) {
         long startTime = System.currentTimeMillis();
-        String answer = cachedChatService.chatWithCache(question);
+        String answer = cachedChatService.chatWithCache(message);
         long duration = System.currentTimeMillis() - startTime;
-        
-        Map<String, Object> result = new HashMap<>();
-        result.put("question", question);
-        result.put("answer", answer);
-        result.put("responseTimeMs", duration);
-        result.put("cached", duration < 100); // 小于 100ms 很可能是缓存命中
-        
-        return result;
+        return new ChatResponse(message, answer);
     }
 
     /**
      * 带系统提示词的缓存聊天
      *
      * @param systemPrompt 系统提示词
-     * @param question 用户问题
+     * @param message 用户问题
      * @return AI 回答
      */
     @PostMapping("/chat-with-system")
-    public Map<String, Object> chatWithSystem(
+    public ChatResponse chatWithSystem(
             @RequestParam String systemPrompt,
-            @RequestParam String question) {
-        long startTime = System.currentTimeMillis();
-        String answer = cachedChatService.chatWithSystemAndCache(systemPrompt, question);
-        long duration = System.currentTimeMillis() - startTime;
-        
-        Map<String, Object> result = new HashMap<>();
-        result.put("systemPrompt", systemPrompt);
-        result.put("question", question);
-        result.put("answer", answer);
-        result.put("responseTimeMs", duration);
-        
-        return result;
+            @RequestParam String message) {
+        String answer = cachedChatService.chatWithSystemAndCache(systemPrompt, message);
+        return new ChatResponse(message, answer);
     }
 
     /**
      * RAG 问答（带缓存）
      *
-     * @param question 用户问题
+     * @param message 用户问题
      * @param context 检索到的上下文
      * @return AI 回答
      */
     @PostMapping("/rag-chat")
-    public Map<String, Object> ragChat(@RequestParam String question,
+    public ChatResponse ragChat(@RequestParam String message,
                                        @RequestParam String context) {
-        long startTime = System.currentTimeMillis();
-        String answer = cachedChatService.ragChatWithCache(question, context);
-        long duration = System.currentTimeMillis() - startTime;
-        
-        Map<String, Object> result = new HashMap<>();
-        result.put("question", question);
-        result.put("answer", answer);
-        result.put("responseTimeMs", duration);
-        result.put("cached", duration < 100);
-        
-        return result;
+        String answer = cachedChatService.ragChatWithCache(message, context);
+        return new ChatResponse(message, answer);
     }
 
     /**
      * 清除指定问题的缓存
      *
-     * @param question 问题内容
+     * @param message 问题内容
      * @return 操作结果
      */
     @DeleteMapping("/evict")
-    public Map<String, Object> evictCache(@RequestParam String question) {
-        cachedChatService.evictQuestionCache(question);
+    public Map<String, Object> evictCache(@RequestParam String message) {
+        cachedChatService.evictQuestionCache(message);
         
         Map<String, Object> result = new HashMap<>();
         result.put("status", "success");
-        result.put("message", "已清除问题 \"" + question + "\" 的缓存");
+        result.put("message", "已清除问题 \"" + message + "\" 的缓存");
         
         return result;
     }
@@ -135,24 +111,24 @@ public class CacheController {
      * 连续调用两次相同问题，对比响应时间
      * </p>
      *
-     * @param question 测试问题
+     * @param message 测试问题
      * @return 性能对比结果
      */
     @GetMapping("/benchmark")
-    public Map<String, Object> benchmark(@RequestParam String question) {
+    public Map<String, Object> benchmark(@RequestParam String message) {
         Map<String, Object> result = new HashMap<>();
         
         // 第一次调用（缓存未命中）
         long start1 = System.currentTimeMillis();
-        String answer1 = cachedChatService.chatWithCache(question);
+        String answer1 = cachedChatService.chatWithCache(message);
         long duration1 = System.currentTimeMillis() - start1;
         
         // 第二次调用（缓存命中）
         long start2 = System.currentTimeMillis();
-        String answer2 = cachedChatService.chatWithCache(question);
+        String answer2 = cachedChatService.chatWithCache(message);
         long duration2 = System.currentTimeMillis() - start2;
         
-        result.put("question", question);
+        result.put("question", message);
         result.put("firstCall", Map.of(
                 "duration", duration1 + "ms",
                 "cached", false,
@@ -173,25 +149,16 @@ public class CacheController {
      * 多轮对话缓存示例
      *
      * @param contextId 会话ID
-     * @param question 当前问题
+     * @param message 当前问题
      * @param history 对话历史（JSON 数组）
      * @return AI 回答
      */
     @PostMapping("/contextual-chat")
-    public Map<String, Object> contextualChat(
+    public ChatResponse contextualChat(
             @RequestParam String contextId,
-            @RequestParam String question,
+            @RequestParam String message,
             @RequestBody(required = false) List<String> history) {
-        long startTime = System.currentTimeMillis();
-        String answer = cachedChatService.contextualChatWithCache(contextId, question, history);
-        long duration = System.currentTimeMillis() - startTime;
-        
-        Map<String, Object> result = new HashMap<>();
-        result.put("contextId", contextId);
-        result.put("question", question);
-        result.put("answer", answer);
-        result.put("responseTimeMs", duration);
-        
-        return result;
+        String answer = cachedChatService.contextualChatWithCache(contextId, message, history);
+        return new ChatResponse(message, answer);
     }
 }

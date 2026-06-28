@@ -1,5 +1,7 @@
 package org.hongxi.whatsmars.ai.openai.example.controller;
 
+import org.hongxi.whatsmars.ai.openai.example.vo.ImageComparisonResult;
+import org.hongxi.whatsmars.ai.openai.example.vo.VisionResult;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.ai.chat.client.ChatClient;
@@ -12,8 +14,7 @@ import org.springframework.web.multipart.MultipartFile;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
-import java.util.HashMap;
-import java.util.Map;
+import java.util.List;
 
 /**
  * 多模态图像处理控制器
@@ -44,7 +45,7 @@ public class VisionController {
      * @return 图片描述
      */
     @PostMapping("/analyze-url")
-    public Map<String, Object> analyzeImageByUrl(@RequestParam String imageUrl,
+    public VisionResult analyzeImageByUrl(@RequestParam String imageUrl,
                                                    @RequestParam(defaultValue = "请详细描述这张图片的内容") String prompt) {
         log.info("分析图片 URL: {}", imageUrl);
 
@@ -59,11 +60,7 @@ public class VisionController {
                     .content();
 
             log.info("图片描述: {}", description);
-
-            Map<String, Object> result = new HashMap<>();
-            result.put("imageUrl", imageUrl);
-            result.put("description", description);
-            return result;
+            return new VisionResult(imageUrl, description);
         } catch (Exception e) {
             log.error("分析图片失败", e);
             throw new RuntimeException("分析图片失败: " + e.getMessage(), e);
@@ -78,12 +75,11 @@ public class VisionController {
      * @return 图片描述
      */
     @PostMapping("/analyze-upload")
-    public Map<String, Object> analyzeUploadedFile(@RequestParam("file") MultipartFile file,
+    public VisionResult analyzeUploadedFile(@RequestParam("file") MultipartFile file,
                                                      @RequestParam(defaultValue = "请详细描述这张图片的内容") String prompt) {
         log.info("上传并分析图片: {}", file.getOriginalFilename());
 
         try {
-            // 保存临时文件
             Path tempFile = Files.createTempFile("upload-", "-" + file.getOriginalFilename());
             file.transferTo(tempFile);
 
@@ -96,16 +92,10 @@ public class VisionController {
                     .call()
                     .content();
 
-            // 删除临时文件
             Files.deleteIfExists(tempFile);
 
             log.info("图片描述: {}", description);
-
-            Map<String, Object> result = new HashMap<>();
-            result.put("filename", file.getOriginalFilename());
-            result.put("size", file.getSize());
-            result.put("description", description);
-            return result;
+            return new VisionResult(file.getOriginalFilename(), description);
         } catch (IOException e) {
             log.error("处理上传文件失败", e);
             throw new RuntimeException("处理上传文件失败: " + e.getMessage(), e);
@@ -119,7 +109,7 @@ public class VisionController {
      * @return 识别的文字
      */
     @PostMapping("/ocr")
-    public Map<String, Object> ocrTextRecognition(@RequestParam String imageUrl) {
+    public VisionResult ocrTextRecognition(@RequestParam String imageUrl) {
         log.info("OCR 文字识别: {}", imageUrl);
 
         try {
@@ -133,11 +123,7 @@ public class VisionController {
                     .content();
 
             log.info("识别结果: {}", text);
-
-            Map<String, Object> result = new HashMap<>();
-            result.put("imageUrl", imageUrl);
-            result.put("recognizedText", text);
-            return result;
+            return new VisionResult(imageUrl, text);
         } catch (Exception e) {
             log.error("OCR 识别失败", e);
             throw new RuntimeException("OCR 识别失败: " + e.getMessage(), e);
@@ -151,7 +137,7 @@ public class VisionController {
      * @return 图表分析结果
      */
     @PostMapping("/chart-analysis")
-    public Map<String, Object> analyzeChart(@RequestParam String imageUrl) {
+    public VisionResult analyzeChart(@RequestParam String imageUrl) {
         log.info("分析图表: {}", imageUrl);
 
         try {
@@ -169,11 +155,7 @@ public class VisionController {
                     .content();
 
             log.info("图表分析: {}", analysis);
-
-            Map<String, Object> result = new HashMap<>();
-            result.put("imageUrl", imageUrl);
-            result.put("analysis", analysis);
-            return result;
+            return new VisionResult(imageUrl, analysis);
         } catch (Exception e) {
             log.error("图表分析失败", e);
             throw new RuntimeException("图表分析失败: " + e.getMessage(), e);
@@ -187,7 +169,7 @@ public class VisionController {
      * @return 转换后的代码
      */
     @PostMapping("/code-from-image")
-    public Map<String, Object> codeFromImage(@RequestParam String imageUrl) {
+    public VisionResult codeFromImage(@RequestParam String imageUrl) {
         log.info("代码截图转换: {}", imageUrl);
 
         try {
@@ -201,11 +183,7 @@ public class VisionController {
                     .content();
 
             log.info("提取的代码: {}", code);
-
-            Map<String, Object> result = new HashMap<>();
-            result.put("imageUrl", imageUrl);
-            result.put("code", code);
-            return result;
+            return new VisionResult(imageUrl, code);
         } catch (Exception e) {
             log.error("代码提取失败", e);
             throw new RuntimeException("代码提取失败: " + e.getMessage(), e);
@@ -220,7 +198,7 @@ public class VisionController {
      * @return 对比分析结果
      */
     @PostMapping("/compare")
-    public Map<String, Object> compareImages(@RequestParam String imageUrl1,
+    public ImageComparisonResult compareImages(@RequestParam String imageUrl1,
                                                @RequestParam String imageUrl2) {
         log.info("对比图片: {} vs {}", imageUrl1, imageUrl2);
 
@@ -237,12 +215,7 @@ public class VisionController {
                     .content();
 
             log.info("对比结果: {}", comparison);
-
-            Map<String, Object> result = new HashMap<>();
-            result.put("image1", imageUrl1);
-            result.put("image2", imageUrl2);
-            result.put("comparison", comparison);
-            return result;
+            return new ImageComparisonResult(List.of(imageUrl1, imageUrl2), comparison);
         } catch (Exception e) {
             log.error("图片对比失败", e);
             throw new RuntimeException("图片对比失败: " + e.getMessage(), e);

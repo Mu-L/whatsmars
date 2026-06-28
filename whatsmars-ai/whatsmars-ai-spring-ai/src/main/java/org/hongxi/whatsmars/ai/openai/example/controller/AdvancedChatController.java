@@ -11,7 +11,6 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
 
 /**
  * ChatClient 高级用法控制器
@@ -40,7 +39,7 @@ public class AdvancedChatController {
      * @return AI 回复
      */
     @PostMapping("/system-message")
-    public Object chatWithSystemMessage(@RequestParam String message) {
+    public ChatResponse chatWithSystemMessage(@RequestParam String message) {
         log.info("System Message 对话: {}", message);
 
         String response = chatClient.prompt()
@@ -61,7 +60,7 @@ public class AdvancedChatController {
      * @return AI 回复
      */
     @PostMapping("/few-shot")
-    public Object fewShotPrompting(@RequestParam String message) {
+    public ChatResponse fewShotPrompting(@RequestParam String message) {
         log.info("Few-shot 提示: {}", message);
 
         String response = chatClient.prompt()
@@ -90,32 +89,30 @@ public class AdvancedChatController {
     /**
      * 多轮对话（手动维护上下文）
      *
-     * @param messages 消息历史（交替的用户和 AI 消息）
-     * @param currentMessage 当前用户消息
+     * @param message 当前用户消息
+     * @param history 历史消息（可选）
      * @return AI 回复
      */
     @PostMapping("/conversation")
-    public Object conversation(
-            @RequestBody(required = false) List<Map<String, String>> messages,
-            @RequestParam String currentMessage) {
-        record ConversationResponse(String currentMessage, String aiResponse, int messageCount) {}
-
-        log.info("多轮对话 - 当前消息: {}", currentMessage);
-
-        // 简化测试，使用固定上下文
-        List<Message> history = new ArrayList<>();
-        history.add(UserMessage.builder().text("你好").build());
-        history.add(AssistantMessage.builder().content("你好！有什么可以帮助你的？").build());
+    public ChatResponse conversation(
+            @RequestParam String message,
+            @RequestBody(required = false) List<String> history) {
+        log.info("多轮对话 - 当前消息: {}", message);
+        List<Message> messages = new ArrayList<>();
+        messages.add(UserMessage.builder().text("你好").build());
+        messages.add(AssistantMessage.builder().content("你好！有什么可以帮助你的？").build());
+        if (history != null) {
+            for (String h : history) {
+                messages.add(UserMessage.builder().text(h).build());
+            }
+        }
         String response = chatClient.prompt()
-                .messages(history)
-                .user(currentMessage)
+                .messages(messages)
+                .user(message)
                 .call()
                 .content();
-
         log.info("AI 回复: {}", response);
-
-        return new ConversationResponse(currentMessage, response,
-                messages == null ? 1 : messages.size() + 1);
+        return new ChatResponse(message, response);
     }
 
     /**
@@ -125,7 +122,7 @@ public class AdvancedChatController {
      * @return AI 回复
      */
     @PostMapping("/creative")
-    public Object creativeChat(@RequestParam String message) {
+    public ChatResponse creativeChat(@RequestParam String message) {
         log.info("创意性对话: {}", message);
 
         String response = chatClient.prompt()

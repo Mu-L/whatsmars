@@ -8,15 +8,15 @@ Spring AI 提供了统一的 `ChatClient` API，支持多种大语言模型（Op
 
 ```java
 @RestController
-public class HelloController {
-    
+public class AiChatController {
+
     private final ChatClient chatClient;
-    
-    public HelloController(ChatClient.Builder builder) {
+
+    public AiChatController(ChatClient.Builder builder) {
         this.chatClient = builder.build();
     }
-    
-    @GetMapping("/chat")
+
+    @GetMapping("/ai/chat")
     public String chat(@RequestParam String message) {
         return chatClient.prompt()
                 .user(message)
@@ -41,7 +41,7 @@ spring:
 
 **测试：**
 ```bash
-curl "http://localhost:8080/chat?message=讲个笑话"
+curl "http://localhost:8080/ai/chat?message=讲个笑话"
 ```
 
 ---
@@ -52,11 +52,15 @@ curl "http://localhost:8080/chat?message=讲个笑话"
 
 ```java
 @GetMapping("/ai/chat/stream")
-public Flux<String> streamChat(@RequestParam String message) {
-    return chatClient.prompt()
+public ResponseEntity<Flux<String>> streamChat(@RequestParam String message) {
+    Flux<String> stream = chatClient.prompt()
             .user(message)
             .stream()
             .content();
+    return ResponseEntity.ok()
+            .contentType(MediaType.valueOf("text/event-stream;charset=UTF-8"))
+            .header("Cache-Control", "no-cache")
+            .body(stream);
 }
 ```
 
@@ -72,39 +76,75 @@ curl "http://localhost:8080/ai/chat/stream?message=介绍一下武汉"
 #### System Message 角色设定
 
 ```java
-String response = chatClient.prompt()
-    .system("你是一个资深的 Java 架构师，擅长设计高并发、高可用的分布式系统。")
-    .user("如何设计一个秒杀系统？")
-    .call()
-    .content();
+@PostMapping("/system-message")
+public ChatResponse chatWithSystemMessage(@RequestParam String message) {
+    String response = chatClient.prompt()
+        .system("你是一个资深的 Java 架构师，擅长设计高并发、高可用的分布式系统。")
+        .user(message)
+        .call()
+        .content();
+    return new ChatResponse(message, response);
+}
 ```
 
 #### Few-shot Prompting（少样本提示）
 
 ```java
-String response = chatClient.prompt()
-    .system("你是一个翻译助手")
-    .messages(
-        Message.builder().role(Role.USER).text("Hello").build(),
-        Message.builder().role(Role.ASSISTANT).text("你好").build(),
-        Message.builder().role(Role.USER).text("Good morning").build()
-    )
-    .call()
-    .content();
+@PostMapping("/few-shot")
+public ChatResponse fewShotPrompting(@RequestParam String message) {
+    String response = chatClient.prompt()
+        .system("""
+                你是一个代码翻译助手，请将用户的自然语言转换为 Java 代码。
+                示例 1:
+                用户: 创建一个字符串变量 name，值为 "Hello"
+                AI: String name = "Hello";
+                """)
+        .user(message)
+        .call()
+        .content();
+    return new ChatResponse(message, response);
+}
 ```
 
 #### 多轮对话历史
 
 ```java
-List<Message> history = new ArrayList<>();
-history.add(UserMessage.builder().text("你好").build());
-history.add(AssistantMessage.builder().content("你好！有什么可以帮助你的？").build());
+@PostMapping("/conversation")
+public ChatResponse conversation(
+        @RequestParam String message,
+        @RequestBody(required = false) List<String> history) {
+    List<Message> messages = new ArrayList<>();
+    messages.add(UserMessage.builder().text("你好").build());
+    messages.add(AssistantMessage.builder().content("你好！有什么可以帮助你的？").build());
+    if (history != null) {
+        for (String h : history) {
+            messages.add(UserMessage.builder().text(h).build());
+        }
+    }
+    String response = chatClient.prompt()
+        .messages(messages)
+        .user(message)
+        .call()
+        .content();
+    return new ChatResponse(message, response);
+}
+```
 
-String response = chatClient.prompt()
-    .messages(history)
-    .user("今天天气怎么样？")
-    .call()
-    .content();
+**响应格式（ChatResponse）：**
+
+```java
+public record ChatResponse(String message, String response) {}
+```
+
+**测试：**
+```bash
+# System Message
+curl -X POST "http://localhost:8080/ai/advanced/system-message?message=如何设计一个秒杀系统？"
+
+# 多轮对话
+curl -X POST "http://localhost:8080/ai/advanced/conversation?message=今天天气怎么样？" \
+  -H "Content-Type: application/json" \
+  -d '["你好","你好，有什么可以帮助你的？"]'
 ```
 
 ---
@@ -117,7 +157,15 @@ String response = chatClient.prompt()
 @PostMapping("/extract-user")
 public UserInfo extractUserInfo(@RequestParam String text) {
     return chatClient.prompt()
-            .system("从文本中提取用户信息，以 JSON 格式返回")
+            .system("""
+                    你是一个信息提取助手。请从用户的描述中提取个人信息，并以 JSON 格式返回。
+                    要求：
+                    - name: 姓名（字符串）
+                    - age: 年龄（整数）
+                    - email: 邮箱（字符串）
+                    - hobbies: 爱好（字符串数组）
+                    - occupation: 职业（字符串）
+                    """)
             .user(text)
             .call()
             .entity(UserInfo.class);
@@ -154,10 +202,9 @@ curl -X POST "http://localhost:8080/ai/structured/extract-user" \
 ```java
 @Component
 public class WeatherTools {
-    
+
     @Tool(description = "获取指定城市的当前天气信息")
     public String getWeather(@ToolParam(description = "城市名称") String city) {
-        // 实际项目中可以调用真实天气 API
         return switch (city) {
             case "北京" -> "晴天，温度 25°C，空气质量良好";
             case "上海" -> "多云，温度 28°C，湿度 65%";
@@ -173,41 +220,91 @@ public class WeatherTools {
 @RestController
 @RequestMapping("/ai/fc")
 public class FunctionCallingController {
-    
+
     private final ChatClient chatClient;
     private final WeatherTools weatherTools;
-    
-    public FunctionCallingController(ChatClient.Builder builder, 
-                                     WeatherTools weatherTools) {
+
+    public FunctionCallingController(ChatClient.Builder builder, WeatherTools weatherTools) {
         this.chatClient = builder.build();
         this.weatherTools = weatherTools;
     }
-    
+
     @GetMapping("/weather")
-    public String getWeather(@RequestParam String question) {
-        return chatClient.prompt()
-                .user(question)
-                .tools(weatherTools)  // 注册工具
+    public ChatResponse getWeather(@RequestParam String message) {
+        String response = chatClient.prompt()
+                .user(message)
+                .tools(weatherTools)
                 .call()
                 .content();
+        return new ChatResponse(message, response);
     }
 }
 ```
 
 **测试：**
 ```bash
-curl "http://localhost:8080/ai/fc/weather?question=北京今天的天气怎么样？"
+curl "http://localhost:8080/ai/fc/weather?message=北京今天的天气怎么样？"
 ```
 
 AI 会自动识别需要调用 `getWeather("北京")` 获取天气信息。
 
 ---
 
-### 6. RAG (检索增强生成)
+### 6. ReAct Agent
+
+ReAct (Reasoning + Acting) Agent 模式，Agent 会根据任务自主决定调用哪些工具。
+
+```java
+@RestController
+@RequestMapping("/ai/react-agent")
+public class ReactAgentController {
+
+    private final ChatClient chatClient;
+    private final WeatherTools weatherTools;
+    private final SearchTools searchTools;
+    private final CalculatorTools calculatorTools;
+
+    @GetMapping("/chat")
+    public AgentResult agentChat(@RequestParam String message) {
+        String response = chatClient.prompt()
+                .system("你是一个智能助手，可以使用各种工具来帮助用户解决问题。")
+                .user(message)
+                .tools(weatherTools, searchTools, calculatorTools)
+                .call()
+                .content();
+        return new AgentResult(message, response, "react-agent");
+    }
+}
+```
+
+**响应格式（AgentResult）：**
+
+```java
+public record AgentResult(String message, String response, String type) {}
+```
+
+**测试：**
+```bash
+# 天气查询
+curl "http://localhost:8080/ai/react-agent/chat?message=北京今天的天气怎么样？"
+
+# 知识搜索
+curl "http://localhost:8080/ai/react-agent/chat?message=什么是Apache%20Dubbo？"
+
+# 数学计算
+curl "http://localhost:8080/ai/react-agent/chat?message=299打8折再减50是多少？"
+
+# 复杂任务
+curl "http://localhost:8080/ai/react-agent/complex-task?message=我想去杭州旅游，帮我查天气和介绍著名景点"
+```
+
+---
+
+### 7. RAG (检索增强生成)
 
 结合向量数据库实现知识库问答，解决大模型知识时效性问题。
 
-#### 6.1 内存向量存储（开发测试用）
+#### 7.1 内存向量存储（开发测试用）
 
 **配置 (application.yml)：**
 
@@ -222,7 +319,6 @@ spring:
           model: qwen3.7-plus
       embedding:
         options:
-          # Qwen 的嵌入模型
           model: text-embedding-v3
 ```
 
@@ -232,45 +328,36 @@ spring:
 @RestController
 @RequestMapping("/ai/rag")
 public class RagController {
-    
+
     private final ChatClient chatClient;
     private final VectorStore vectorStore;
-    
+
     public RagController(ChatClient.Builder builder, EmbeddingModel embeddingModel) {
         this.chatClient = builder.build();
         this.vectorStore = SimpleVectorStore.builder(embeddingModel).build();
-        
-        // 初始化知识库
         initializeKnowledgeBase();
     }
-    
-    private void initializeKnowledgeBase() {
-        List<Document> documents = List.of(
-            new Document("Spring Boot 是一个用于快速构建基于 Spring 框架的生产级应用程序的框架。"),
-            new Document("Apache Dubbo 是一款高性能、轻量级的开源 Java RPC 框架。"),
-            new Document("Redis 是一个开源的内存数据结构存储系统，可用作数据库、缓存和消息中间件。")
-        );
-        vectorStore.add(documents);
+
+    @PostMapping("/document")
+    public DocumentAddResult addDocument(@RequestParam String content) {
+        Document document = new Document(content);
+        vectorStore.add(List.of(document));
+        return new DocumentAddResult("文档添加成功", content.length());
     }
-    
+
     @GetMapping("/ask")
-    public Map<String, Object> askQuestion(@RequestParam String question) {
-        // 步骤 1: 检索相关文档
-        List<Document> relevantDocs = vectorStore.similaritySearch(question);
-        
-        // 步骤 2: 构建上下文
+    public ChatResponse askQuestion(@RequestParam String message) {
+        List<Document> relevantDocs = vectorStore.similaritySearch(message);
         String context = relevantDocs.stream()
                 .map(Document::getText)
                 .collect(Collectors.joining("\n\n"));
-        
-        // 步骤 3: 基于上下文回答问题
+
         String answer = chatClient.prompt()
                 .system("基于以下上下文回答问题：\n" + context)
-                .user(question)
+                .user(message)
                 .call()
                 .content();
-        
-        return Map.of("answer", answer, "docCount", relevantDocs.size());
+        return new ChatResponse(message, answer);
     }
 }
 ```
@@ -282,10 +369,10 @@ curl -X POST "http://localhost:8080/ai/rag/document" \
   -d "content=Nacos 是一个易于构建 AI Agent 应用的动态服务发现、配置管理平台"
 
 # 问答
-curl "http://localhost:8080/ai/rag/ask?question=国内最流行的RPC框架是哪一款"
+curl "http://localhost:8080/ai/rag/ask?message=国内最流行的RPC框架是哪一款"
 ```
 
-#### 6.2 Redis 向量存储（生产环境推荐）
+#### 7.2 Redis 向量存储（生产环境推荐）
 
 需要先启动 Redis Stack：
 ```bash
@@ -300,56 +387,19 @@ spring:
     vectorstore:
       redis:
         index-name: spring-ai-vector-index
-        dimensions: 1024  # text-embedding-v3 默认 1024 维
+        dimensions: 1024
         initialize-schema: true
         distance-type: COSINE
-  
   redis:
     host: localhost
     port: 6379
-```
-
-**使用：**
-
-```java
-@RestController
-@RequestMapping("/ai/rag-redis")
-public class RedisRagController {
-    
-    private final ChatClient chatClient;
-    private final VectorStore vectorStore;
-    
-    public RedisRagController(ChatClient.Builder builder, VectorStore vectorStore) {
-        this.chatClient = builder.build();
-        this.vectorStore = vectorStore;  // 自动注入 Redis VectorStore
-    }
-    
-    @PostMapping("/document")
-    public void addDocument(@RequestParam String content) {
-        vectorStore.add(List.of(new Document(content)));
-    }
-    
-    @GetMapping("/ask")
-    public String ask(@RequestParam String question) {
-        List<Document> docs = vectorStore.similaritySearch(question);
-        String context = docs.stream()
-                .map(Document::getText)
-                .collect(Collectors.joining("\n"));
-        
-        return chatClient.prompt()
-                .system("基于上下文回答：" + context)
-                .user(question)
-                .call()
-                .content();
-    }
-}
 ```
 
 **注意：** Spring AI 使用 Redis 作为 VectorStore 时，必须使用 **Redis Stack**（包含 RediSearch 模块），普通 Redis 不支持向量搜索。
 
 ---
 
-### 7. 多模态视觉理解 (Vision)
+### 8. 多模态视觉理解 (Vision)
 
 支持图片分析、OCR 文字识别、图表解读等功能。
 
@@ -359,108 +409,147 @@ public class RedisRagController {
 @RestController
 @RequestMapping("/ai/vision")
 public class VisionController {
-    
+
     private final ChatClient chatClient;
-    
-    public VisionController(ChatClient.Builder builder) {
-        this.chatClient = builder.build();
-    }
-    
-    /**
-     * 分析图片内容
-     */
+
     @PostMapping("/analyze-url")
-    public String analyzeImage(@RequestParam String imageUrl) {
+    public VisionResult analyzeImageByUrl(@RequestParam String imageUrl,
+                                          @RequestParam(defaultValue = "请详细描述这张图片的内容") String prompt) {
         Resource imageResource = new UrlResource(imageUrl);
-        
-        return chatClient.prompt()
+        String description = chatClient.prompt()
                 .user(userSpec -> userSpec
-                        .text("请详细描述这张图片的内容")
+                        .text(prompt)
                         .media(MediaType.IMAGE_JPEG, imageResource))
                 .call()
                 .content();
+        return new VisionResult(imageUrl, description);
     }
-    
-    /**
-     * OCR 文字识别
-     */
+
     @PostMapping("/ocr")
-    public String ocrTextRecognition(@RequestParam String imageUrl) {
+    public VisionResult ocrTextRecognition(@RequestParam String imageUrl) {
         Resource imageResource = new UrlResource(imageUrl);
-        
-        return chatClient.prompt()
+        String text = chatClient.prompt()
                 .user(userSpec -> userSpec
                         .text("请提取图片中的所有文字，保持原有格式")
                         .media(MediaType.IMAGE_JPEG, imageResource))
                 .call()
                 .content();
+        return new VisionResult(imageUrl, text);
     }
-    
-    /**
-     * 图表分析
-     */
-    @PostMapping("/chart-analysis")
-    public String analyzeChart(@RequestParam String imageUrl) {
-        Resource imageResource = new UrlResource(imageUrl);
-        
-        return chatClient.prompt()
-                .user(userSpec -> userSpec
-                        .text("请分析这个图表，包括：\n" +
-                              "1. 图表类型\n" +
-                              "2. 数据趋势\n" +
-                              "3. 关键发现\n" +
-                              "4. 结论建议")
-                        .media(MediaType.IMAGE_JPEG, imageResource))
-                .call()
-                .content();
-    }
-    
-    /**
-     * 代码截图转代码
-     */
-    @PostMapping("/code-from-image")
-    public String codeFromImage(@RequestParam String imageUrl) {
-        Resource imageResource = new UrlResource(imageUrl);
-        
-        return chatClient.prompt()
-                .user(userSpec -> userSpec
-                        .text("请将这张图片中的代码完整提取出来，保持格式和缩进")
-                        .media(MediaType.IMAGE_JPEG, imageResource))
-                .call()
-                .content();
-    }
-    
-    /**
-     * 多图片对比分析
-     */
+
     @PostMapping("/compare")
-    public String compareImages(@RequestParam String imageUrl1,
-                                @RequestParam String imageUrl2) {
+    public ImageComparisonResult compareImages(@RequestParam String imageUrl1,
+                                               @RequestParam String imageUrl2) {
         Resource image1 = new UrlResource(imageUrl1);
         Resource image2 = new UrlResource(imageUrl2);
-        
-        return chatClient.prompt()
+        String comparison = chatClient.prompt()
                 .user(userSpec -> userSpec
                         .text("请对比这两张图片，分析它们的相似点和不同点")
                         .media(MediaType.IMAGE_JPEG, image1)
                         .media(MediaType.IMAGE_JPEG, image2))
                 .call()
                 .content();
+        return new ImageComparisonResult(List.of(imageUrl1, imageUrl2), comparison);
     }
 }
 ```
 
+**响应格式：**
+
+```java
+public record VisionResult(String imageUrl, String response) {}
+public record ImageComparisonResult(List<String> imageUrls, String response) {}
+```
+
 **测试：**
 ```bash
-# 图片分析
+# 1/6 URL 图片分析（神舟十号海报）
 curl -X POST "http://localhost:8080/ai/vision/analyze-url" \
-  -d "imageUrl=https://img1.baidu.com/it/u=3224850734,2174446166&fm=253&fmt=auto&app=120&f=JPEG?w=500&h=837"
+  -d "imageUrl=https://imagecloud.thepaper.cn/thepaper/image/333/857/150.jpg"
 
-# OCR 识别
+# 2/6 图片上传分析（项目根目录下的架构图）
+curl -X POST "http://localhost:8080/ai/vision/analyze-upload" \
+  -F "file=@arch.png"
+
+# 3/6 OCR 文字识别
 curl -X POST "http://localhost:8080/ai/vision/ocr" \
   -d "imageUrl=https://imagecloud.thepaper.cn/thepaper/image/333/857/151.jpg"
 
-# 图表分析
+# 4/6 图表分析（QuickChart.io 生成的柱状图）
 curl -X POST "http://localhost:8080/ai/vision/chart-analysis" \
-  -d "imageUrl=https://img0.baidu.com/it/u=3716881902,3785738263&fm=253&app=138&f=JPEG?w=684&h=912"
+  -d "imageUrl=https://quickchart.io/chart?c=%7Btype%3A%27bar%27%2Cdata%3A%7Blabels%3A%5B%27Q1%27%2C%27Q2%27%2C%27Q3%27%2C%27Q4%27%5D%2Cdatasets%3A%5B%7Blabel%3A%27Revenue%27%2Cdata%3A%5B100%2C200%2C150%2C300%5D%7D%5D%7D%7D"
+
+# 5/6 代码截图转代码（CSDN C语言代码图片）
+curl -X POST "http://localhost:8080/ai/vision/code-from-image" \
+  -d "imageUrl=https://i-blog.csdnimg.cn/blog_migrate/486ded85cb954f0da650e7f9c306900e.png"
+
+# 6/6 多图片对比分析（神舟十号海报 vs 北京申奥号外）
+curl -X POST "http://localhost:8080/ai/vision/compare" \
+  -d "imageUrl1=https://imagecloud.thepaper.cn/thepaper/image/333/857/150.jpg" \
+  -d "imageUrl2=https://imagecloud.thepaper.cn/thepaper/image/333/857/151.jpg"
 ```
+
+---
+
+### 9. AI 缓存 (Cache)
+
+使用缓存优化 AI 响应性能，降低 API 调用成本。
+
+```java
+@RestController
+@RequestMapping("/ai/cache")
+public class CacheController {
+
+    private final CachedChatService cachedChatService;
+
+    @GetMapping("/chat")
+    public ChatResponse cachedChat(@RequestParam String message) {
+        String answer = cachedChatService.chatWithCache(message);
+        return new ChatResponse(message, answer);
+    }
+}
+```
+
+**接口列表：**
+
+| 方法 | 路径 | 说明 |
+|------|------|------|
+| GET | `/ai/cache/chat` | 带缓存的聊天 |
+| POST | `/ai/cache/chat-with-system` | 带系统提示词的缓存聊天 |
+| POST | `/ai/cache/rag-chat` | RAG 问答（带缓存） |
+| POST | `/ai/cache/contextual-chat` | 多轮对话缓存 |
+| DELETE | `/ai/cache/evict` | 清除指定问题缓存 |
+| DELETE | `/ai/cache/clear-all` | 清除所有缓存 |
+| GET | `/ai/cache/benchmark` | 缓存性能对比测试 |
+
+**测试：**
+```bash
+# 第一次调用（请求 AI API）
+curl "http://localhost:8080/ai/cache/chat?message=什么是Spring%20Boot？"
+
+# 第二次调用（直接返回缓存）
+curl "http://localhost:8080/ai/cache/chat?message=什么是Spring%20Boot？"
+
+# 性能对比测试
+curl "http://localhost:8080/ai/cache/benchmark?message=什么是Spring%20Boot？"
+```
+
+---
+
+### 接口响应规范
+
+所有接口统一使用 `vo` 包下的 record 类作为响应类型：
+
+| VO 类 | 字段 | 使用场景 |
+|--------|------|----------|
+| `ChatResponse` | message, response | 通用聊天响应 |
+| `AgentResult` | message, response, type | Agent 响应 |
+| `VisionResult` | imageUrl, response | 图片分析 |
+| `ImageComparisonResult` | imageUrls, response | 图片对比 |
+| `DocumentAddResult` | message, contentLength | 文档添加 |
+| `ClearResult` | message, hint | 清空操作 |
+| `DocInfo` | content, source, score | 检索文档信息 |
+| `SearchByCategoryResult` | category, query, documents, count | 分类检索 |
+| `DemoResult` | weatherExample, searchExample, ... | Agent 演示 |
+
+请求参数统一使用 `message` 命名。

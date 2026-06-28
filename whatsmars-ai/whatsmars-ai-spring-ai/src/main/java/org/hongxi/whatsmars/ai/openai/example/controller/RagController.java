@@ -1,5 +1,8 @@
 package org.hongxi.whatsmars.ai.openai.example.controller;
 
+import org.hongxi.whatsmars.ai.openai.example.vo.ChatResponse;
+import org.hongxi.whatsmars.ai.openai.example.vo.DocumentAddResult;
+import org.hongxi.whatsmars.ai.openai.example.vo.ClearResult;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.ai.chat.client.ChatClient;
@@ -9,9 +12,7 @@ import org.springframework.ai.vectorstore.VectorStore;
 import org.springframework.ai.vectorstore.SimpleVectorStore;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 import java.util.stream.Collectors;
 
 /**
@@ -72,16 +73,13 @@ public class RagController {
      * @return 操作结果
      */
     @PostMapping("/document")
-    public Map<String, Object> addDocument(@RequestParam String content) {
+    public DocumentAddResult addDocument(@RequestParam String content) {
         log.info("添加文档: {}", content.substring(0, Math.min(50, content.length())));
 
         Document document = new Document(content);
         vectorStore.add(List.of(document));
 
-        Map<String, Object> result = new HashMap<>();
-        result.put("message", "文档添加成功");
-        result.put("contentLength", content.length());
-        return result;
+        return new DocumentAddResult("文档添加成功", content.length());
     }
 
     /**
@@ -95,15 +93,15 @@ public class RagController {
      *     国内最流行的RPC框架是哪一款
      * </p>
      *
-     * @param question 用户问题
+     * @param message 用户问题
      * @return AI 回答
      */
     @GetMapping("/ask")
-    public Map<String, Object> askQuestion(@RequestParam String question) {
-        log.info("RAG 问答 - 问题: {}", question);
+    public ChatResponse askQuestion(@RequestParam String message) {
+        log.info("RAG 问答 - 问题: {}", message);
 
         // 步骤 1: 检索相关文档（简化版本）
-        List<Document> relevantDocs = vectorStore.similaritySearch(question);
+        List<Document> relevantDocs = vectorStore.similaritySearch(message);
 
         log.info("检索到 {} 条相关文档", relevantDocs.size());
 
@@ -115,25 +113,12 @@ public class RagController {
         // 步骤 3: 使用 RAG 模式提问
         String answer = chatClient.prompt()
                 .system("你是一个技术专家助手。请基于提供的上下文信息回答用户的问题。如果上下文中没有相关信息，请明确说明。\n\n上下文：\n" + context)
-                .user(question)
+                .user(message)
                 .call()
                 .content();
 
         log.info("AI 回答: {}", answer);
-
-        // 构建返回结果
-        Map<String, Object> result = new HashMap<>();
-        result.put("question", question);
-        result.put("answer", answer);
-        result.put("relevantDocuments", relevantDocs.stream()
-                .map(doc -> Map.of(
-                        "content", doc.getText(),
-                        "score", doc.getScore()
-                ))
-                .collect(Collectors.toList()));
-        result.put("docCount", relevantDocs.size());
-
-        return result;
+        return new ChatResponse(message, answer);
     }
 
     /**
@@ -142,11 +127,9 @@ public class RagController {
      * @return 操作结果
      */
     @DeleteMapping("/documents")
-    public Map<String, String> clearDocuments() {
+    public ClearResult clearDocuments() {
         log.info("清空知识库");
         // SimpleVectorStore 不支持直接清空，实际项目中需要实现自定义逻辑
-        Map<String, String> result = new HashMap<>();
-        result.put("message", "知识库清空功能需要根据具体 VectorStore 实现");
-        return result;
+        return new ClearResult("知识库清空功能需要根据具体 VectorStore 实现");
     }
 }
