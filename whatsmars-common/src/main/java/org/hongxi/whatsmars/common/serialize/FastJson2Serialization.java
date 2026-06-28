@@ -17,6 +17,8 @@ import java.io.IOException;
  */
 public class FastJson2Serialization implements Serialization {
 
+    private final Fastjson2SecurityFilter securityFilter = new Fastjson2SecurityFilter();
+
     @Override
     public byte[] serialize(Object data) throws IOException {
         return JSONB.toBytes(
@@ -32,17 +34,25 @@ public class FastJson2Serialization implements Serialization {
     }
 
     @Override
-    public <T> T deserialize(byte[] data, Class<T> clz) throws IOException {
+    public <T> T deserialize(byte[] data, Class<T> clazz) throws IOException {
         return JSONB.parseObject(
                 data,
-                clz,
+                clazz,
+                securityFilter,
                 JSONReader.Feature.UseDefaultConstructorAsPossible,
                 JSONReader.Feature.ErrorOnNoneSerializable,
                 JSONReader.Feature.IgnoreAutoTypeNotMatch,
                 JSONReader.Feature.UseNativeObject,
-                JSONReader.Feature.FieldBased,
-                JSONReader.Feature.SupportSmartMatch,
-                JSONReader.Feature.SupportAutoType);
+                JSONReader.Feature.FieldBased);
+    }
+
+    /**
+     * 获取安全过滤器，可用于配置白名单/黑名单或切换检查模式。
+     *
+     * @return 安全过滤器实例
+     */
+    public Fastjson2SecurityFilter getSecurityFilter() {
+        return securityFilter;
     }
 
 }
