@@ -5,9 +5,6 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.HashMap;
-import java.util.Map;
-
 /**
  * 函数调用控制器
  * <p>
@@ -38,15 +35,11 @@ public class FunctionCallingController {
      * @param message 用户消息
      * @return AI 回复
      */
-    @PostMapping("/chat")
-    public Map<String, String> chat(@RequestParam String message) {
+    @RequestMapping("/chat")
+    public String chat(@RequestParam String message) {
         log.info("收到消息: {}", message);
         String response = assistant.chat(message);
         log.info("AI 回复: {}", response);
-
-        Map<String, String> result = new HashMap<>();
-        result.put("userMessage", message);
-        result.put("aiResponse", response);
-        return result;
+        return response;
     }
 }
