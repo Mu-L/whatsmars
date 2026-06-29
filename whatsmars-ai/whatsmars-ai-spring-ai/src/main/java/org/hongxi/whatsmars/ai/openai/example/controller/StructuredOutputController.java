@@ -1,10 +1,11 @@
 package org.hongxi.whatsmars.ai.openai.example.controller;
 
-import org.hongxi.whatsmars.ai.openai.example.vo.UserInfo;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.ai.chat.client.ChatClient;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 /**
  * 结构化输出控制器
@@ -36,8 +37,10 @@ public class StructuredOutputController {
      * @return 结构化的用户信息
      */
     @PostMapping("/extract-user")
-    public UserInfo extractUserInfo(@RequestParam String text) {
+    public Object extractUserInfo(@RequestParam String text) {
         log.info("提取用户信息: {}", text);
+
+        record UserInfo(String name, Integer age, String email, List<String> hobbies, String occupation) {}
 
         return chatClient.prompt()
                 .system("""
@@ -69,8 +72,10 @@ public class StructuredOutputController {
      * @return 结构化的评论摘要
      */
     @PostMapping("/review-summary")
-    public ReviewSummary reviewSummary(@RequestParam String review) {
+    public Object reviewSummary(@RequestParam String review) {
         log.info("分析产品评论: {}", review);
+
+        record ReviewSummary(String sentiment, Integer rating, List<String> pros, List<String> cons, String summary) {}
 
         return chatClient.prompt()
                 .system("""
@@ -86,70 +91,5 @@ public class StructuredOutputController {
                 .user(review)
                 .call()
                 .entity(ReviewSummary.class);
-    }
-
-    /**
-     * 评论摘要 DTO
-     */
-    public static class ReviewSummary {
-        private String sentiment;
-        private int rating;
-        private java.util.List<String> pros;
-        private java.util.List<String> cons;
-        private String summary;
-
-        public ReviewSummary() {
-        }
-
-        public String getSentiment() {
-            return sentiment;
-        }
-
-        public void setSentiment(String sentiment) {
-            this.sentiment = sentiment;
-        }
-
-        public int getRating() {
-            return rating;
-        }
-
-        public void setRating(int rating) {
-            this.rating = rating;
-        }
-
-        public java.util.List<String> getPros() {
-            return pros;
-        }
-
-        public void setPros(java.util.List<String> pros) {
-            this.pros = pros;
-        }
-
-        public java.util.List<String> getCons() {
-            return cons;
-        }
-
-        public void setCons(java.util.List<String> cons) {
-            this.cons = cons;
-        }
-
-        public String getSummary() {
-            return summary;
-        }
-
-        public void setSummary(String summary) {
-            this.summary = summary;
-        }
-
-        @Override
-        public String toString() {
-            return "ReviewSummary{" +
-                    "sentiment='" + sentiment + '\'' +
-                    ", rating=" + rating +
-                    ", pros=" + pros +
-                    ", cons=" + cons +
-                    ", summary='" + summary + '\'' +
-                    '}';
-        }
     }
 }

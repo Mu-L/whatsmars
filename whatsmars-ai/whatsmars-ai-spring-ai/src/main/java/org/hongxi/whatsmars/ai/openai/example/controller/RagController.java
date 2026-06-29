@@ -1,8 +1,5 @@
 package org.hongxi.whatsmars.ai.openai.example.controller;
 
-import org.hongxi.whatsmars.ai.openai.example.vo.ChatResponse;
-import org.hongxi.whatsmars.ai.openai.example.vo.DocumentAddResult;
-import org.hongxi.whatsmars.ai.openai.example.vo.ClearResult;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.ai.chat.client.ChatClient;
@@ -73,13 +70,13 @@ public class RagController {
      * @return 操作结果
      */
     @PostMapping("/document")
-    public DocumentAddResult addDocument(@RequestParam String content) {
+    public String addDocument(@RequestParam String content) {
         log.info("添加文档: {}", content.substring(0, Math.min(50, content.length())));
 
         Document document = new Document(content);
         vectorStore.add(List.of(document));
 
-        return new DocumentAddResult("文档添加成功", content.length());
+        return "文档添加成功，长度: " + content.length();
     }
 
     /**
@@ -97,7 +94,7 @@ public class RagController {
      * @return AI 回答
      */
     @GetMapping("/ask")
-    public ChatResponse askQuestion(@RequestParam String message) {
+    public String askQuestion(@RequestParam String message) {
         log.info("RAG 问答 - 问题: {}", message);
 
         // 步骤 1: 检索相关文档（简化版本）
@@ -118,7 +115,7 @@ public class RagController {
                 .content();
 
         log.info("AI 回答: {}", answer);
-        return new ChatResponse(message, answer);
+        return answer;
     }
 
     /**
@@ -127,9 +124,9 @@ public class RagController {
      * @return 操作结果
      */
     @DeleteMapping("/documents")
-    public ClearResult clearDocuments() {
+    public String clearDocuments() {
         log.info("清空知识库");
         // SimpleVectorStore 不支持直接清空，实际项目中需要实现自定义逻辑
-        return new ClearResult("知识库清空功能需要根据具体 VectorStore 实现");
+        return "知识库清空功能需要根据具体 VectorStore 实现";
     }
 }

@@ -14,12 +14,12 @@ import org.springframework.context.annotation.Bean;
  * @author hongxi
  */
 @SpringBootApplication
-public class Application {
+public class AiApplication {
 
-    private static final Logger log = LoggerFactory.getLogger(Application.class);
+    private static final Logger log = LoggerFactory.getLogger(AiApplication.class);
 
     public static void main(String[] args) {
-        SpringApplication.run(Application.class, args);
+        SpringApplication.run(AiApplication.class, args);
     }
 
     /**

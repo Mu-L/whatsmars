@@ -1,38 +1,25 @@
-package org.hongxi.whatsmars.ai.mcp.server;
+package org.hongxi.whatsmars.ai.openai.example.tool;
 
 import org.springframework.ai.tool.annotation.Tool;
-import org.springframework.stereotype.Service;
+import org.springframework.ai.tool.annotation.ToolParam;
+import org.springframework.stereotype.Component;
 
-import java.util.HashMap;
-import java.util.Map;
+import java.net.URLDecoder;
+import java.net.URLEncoder;
+import java.nio.charset.StandardCharsets;
+import java.util.Base64;
 
 /**
- * 数据转换工具服务
+ * 数据转换工具类
  * <p>
- * 提供常见数据格式转换功能
+ * 提供常见数据格式转换功能，既可用于内部 AI Tool Calling，
+ * 也可通过 MCP 协议对外暴露给 MCP Client 调用。
  * </p>
  *
  * @author hongxi
  */
-@Service
-public class ConversionToolService {
-
-    /**
-     * JSON 格式化
-     *
-     * @param jsonString JSON 字符串
-     * @return 格式化后的 JSON
-     */
-    @Tool(description = "将压缩的 JSON 字符串格式化为易读的格式（带缩进）")
-    public String formatJson(String jsonString) {
-        // 简单实现：实际项目中应该使用 Jackson 或 Gson
-        try {
-            // 这里只是示例，真实场景需要使用 JSON 库进行解析和格式化
-            return "格式化后的 JSON: " + jsonString;
-        } catch (Exception e) {
-            return "JSON 格式化失败: " + e.getMessage();
-        }
-    }
+@Component
+public class ConversionTools {
 
     /**
      * URL 编码
@@ -41,9 +28,9 @@ public class ConversionToolService {
      * @return URL 编码后的字符串
      */
     @Tool(description = "对 URL 或查询参数进行 URL 编码")
-    public String urlEncode(String url) {
+    public String urlEncode(@ToolParam(description = "需要进行 URL 编码的字符串") String url) {
         try {
-            return java.net.URLEncoder.encode(url, java.nio.charset.StandardCharsets.UTF_8);
+            return URLEncoder.encode(url, StandardCharsets.UTF_8);
         } catch (Exception e) {
             return "URL 编码失败: " + e.getMessage();
         }
@@ -56,9 +43,9 @@ public class ConversionToolService {
      * @return 解码后的 URL
      */
     @Tool(description = "对 URL 编码的字符串进行解码")
-    public String urlDecode(String encodedUrl) {
+    public String urlDecode(@ToolParam(description = "需要进行 URL 解码的字符串") String encodedUrl) {
         try {
-            return java.net.URLDecoder.decode(encodedUrl, java.nio.charset.StandardCharsets.UTF_8);
+            return URLDecoder.decode(encodedUrl, StandardCharsets.UTF_8);
         } catch (Exception e) {
             return "URL 解码失败: " + e.getMessage();
         }
@@ -71,9 +58,9 @@ public class ConversionToolService {
      * @return Base64 编码后的字符串
      */
     @Tool(description = "将文本转换为 Base64 编码")
-    public String base64Encode(String text) {
+    public String base64Encode(@ToolParam(description = "需要编码的原始文本") String text) {
         try {
-            return java.util.Base64.getEncoder().encodeToString(text.getBytes(java.nio.charset.StandardCharsets.UTF_8));
+            return Base64.getEncoder().encodeToString(text.getBytes(StandardCharsets.UTF_8));
         } catch (Exception e) {
             return "Base64 编码失败: " + e.getMessage();
         }
@@ -86,10 +73,10 @@ public class ConversionToolService {
      * @return 解码后的文本
      */
     @Tool(description = "将 Base64 编码的字符串解码为原始文本")
-    public String base64Decode(String encodedText) {
+    public String base64Decode(@ToolParam(description = "Base64 编码的字符串") String encodedText) {
         try {
-            byte[] decodedBytes = java.util.Base64.getDecoder().decode(encodedText);
-            return new String(decodedBytes, java.nio.charset.StandardCharsets.UTF_8);
+            byte[] decodedBytes = Base64.getDecoder().decode(encodedText);
+            return new String(decodedBytes, StandardCharsets.UTF_8);
         } catch (Exception e) {
             return "Base64 解码失败: " + e.getMessage();
         }
@@ -102,7 +89,7 @@ public class ConversionToolService {
      * @return 字符串长度
      */
     @Tool(description = "计算字符串的字符数量")
-    public int stringLength(String text) {
+    public int stringLength(@ToolParam(description = "要计算长度的字符串") String text) {
         return text.length();
     }
 
@@ -113,7 +100,7 @@ public class ConversionToolService {
      * @return 单词数量
      */
     @Tool(description = "统计英文文本中的单词数量（以空格分隔）")
-    public int wordCount(String text) {
+    public int wordCount(@ToolParam(description = "要统计单词数的英文文本") String text) {
         if (text == null || text.trim().isEmpty()) {
             return 0;
         }

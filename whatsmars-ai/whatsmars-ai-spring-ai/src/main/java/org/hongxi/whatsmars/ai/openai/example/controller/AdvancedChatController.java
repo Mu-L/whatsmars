@@ -1,12 +1,12 @@
 package org.hongxi.whatsmars.ai.openai.example.controller;
 
-import org.hongxi.whatsmars.ai.openai.example.vo.ChatResponse;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.ai.chat.client.ChatClient;
 import org.springframework.ai.chat.messages.AssistantMessage;
 import org.springframework.ai.chat.messages.Message;
 import org.springframework.ai.chat.messages.UserMessage;
+import org.springframework.ai.openai.OpenAiChatOptions;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.ArrayList;
@@ -28,6 +28,11 @@ public class AdvancedChatController {
 
     private final ChatClient chatClient;
 
+    // 缓存最近的用户消息
+    private final List<UserMessage> userMessages = new ArrayList<>();
+    // 缓存最近的 AI 回复
+    private final List<AssistantMessage> assistantMessages = new ArrayList<>();
+
     public AdvancedChatController(ChatClient.Builder builder) {
         this.chatClient = builder.build();
     }
@@ -39,18 +44,19 @@ public class AdvancedChatController {
      * @return AI 回复
      */
     @PostMapping("/system-message")
-    public ChatResponse chatWithSystemMessage(@RequestParam String message) {
+    public String chatWithSystemMessage(@RequestParam String message) {
         log.info("System Message 对话: {}", message);
 
         String response = chatClient.prompt()
                 .system("你是一个资深的 Java 架构师，擅长设计高并发、高可用的分布式系统。回答要专业、深入。")
+                .options(OpenAiChatOptions.builder().temperature(0.4).build()) // 低温度=更准确、更快回答
                 .user(message)
                 .call()
                 .content();
 
         log.info("AI 回复: {}", response);
 
-        return new ChatResponse(message, response);
+        return response;
     }
 
     /**
@@ -60,7 +66,7 @@ public class AdvancedChatController {
      * @return AI 回复
      */
     @PostMapping("/few-shot")
-    public ChatResponse fewShotPrompting(@RequestParam String message) {
+    public String fewShotPrompting(@RequestParam String message) {
         log.info("Few-shot 提示: {}", message);
 
         String response = chatClient.prompt()
@@ -83,36 +89,39 @@ public class AdvancedChatController {
 
         log.info("AI 回复: {}", response);
 
-        return new ChatResponse(message, response);
+        return response;
     }
 
     /**
      * 多轮对话（手动维护上下文）
      *
      * @param message 当前用户消息
-     * @param history 历史消息（可选）
      * @return AI 回复
      */
     @PostMapping("/conversation")
-    public ChatResponse conversation(
-            @RequestParam String message,
-            @RequestBody(required = false) List<String> history) {
+    public String conversation(@RequestParam String message) {
         log.info("多轮对话 - 当前消息: {}", message);
+
         List<Message> messages = new ArrayList<>();
-        messages.add(UserMessage.builder().text("你好").build());
-        messages.add(AssistantMessage.builder().content("你好！有什么可以帮助你的？").build());
-        if (history != null) {
-            for (String h : history) {
-                messages.add(UserMessage.builder().text(h).build());
-            }
-        }
+        messages.addAll(userMessages);
+        messages.addAll(assistantMessages);
+
         String response = chatClient.prompt()
                 .messages(messages)
                 .user(message)
                 .call()
                 .content();
         log.info("AI 回复: {}", response);
-        return new ChatResponse(message, response);
+
+        if (userMessages.size() > 10) {
+            userMessages.remove(0);
+            assistantMessages.remove(0);
+        } else {
+            userMessages.add(UserMessage.builder().text(message).build());
+            assistantMessages.add(AssistantMessage.builder().content(response).build());
+        }
+
+        return response;
     }
 
     /**
@@ -122,17 +131,18 @@ public class AdvancedChatController {
      * @return AI 回复
      */
     @PostMapping("/creative")
-    public ChatResponse creativeChat(@RequestParam String message) {
+    public String creativeChat(@RequestParam String message) {
         log.info("创意性对话: {}", message);
 
         String response = chatClient.prompt()
                 .system("你是一个富有创造力的作家，擅长写故事和诗歌。")
+                .options(OpenAiChatOptions.builder().temperature(0.9).build()) // 高温度=更有创造力
                 .user(message)
                 .call()
                 .content();
 
         log.info("AI 回复: {}", response);
 
-        return new ChatResponse(message, response);
+        return response;
     }
 }

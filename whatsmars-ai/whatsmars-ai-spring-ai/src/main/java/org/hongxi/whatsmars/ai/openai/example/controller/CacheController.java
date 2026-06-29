@@ -1,12 +1,9 @@
 package org.hongxi.whatsmars.ai.openai.example.controller;
 
 import org.hongxi.whatsmars.ai.openai.example.cache.CachedChatService;
-import org.hongxi.whatsmars.ai.openai.example.vo.ChatResponse;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 /**
  * AI 缓存功能演示控制器
@@ -36,11 +33,11 @@ public class CacheController {
      * @return AI 回答和缓存状态
      */
     @GetMapping("/chat")
-    public ChatResponse cachedChat(@RequestParam String message) {
+    public String cachedChat(@RequestParam String message) {
         long startTime = System.currentTimeMillis();
         String answer = cachedChatService.chatWithCache(message);
         long duration = System.currentTimeMillis() - startTime;
-        return new ChatResponse(message, answer);
+        return answer;
     }
 
     /**
@@ -51,11 +48,10 @@ public class CacheController {
      * @return AI 回答
      */
     @PostMapping("/chat-with-system")
-    public ChatResponse chatWithSystem(
+    public String chatWithSystem(
             @RequestParam String systemPrompt,
             @RequestParam String message) {
-        String answer = cachedChatService.chatWithSystemAndCache(systemPrompt, message);
-        return new ChatResponse(message, answer);
+        return cachedChatService.chatWithSystemAndCache(systemPrompt, message);
     }
 
     /**
@@ -66,10 +62,9 @@ public class CacheController {
      * @return AI 回答
      */
     @PostMapping("/rag-chat")
-    public ChatResponse ragChat(@RequestParam String message,
+    public String ragChat(@RequestParam String message,
                                        @RequestParam String context) {
-        String answer = cachedChatService.ragChatWithCache(message, context);
-        return new ChatResponse(message, answer);
+        return cachedChatService.ragChatWithCache(message, context);
     }
 
     /**
@@ -79,14 +74,9 @@ public class CacheController {
      * @return 操作结果
      */
     @DeleteMapping("/evict")
-    public Map<String, Object> evictCache(@RequestParam String message) {
+    public String evictCache(@RequestParam String message) {
         cachedChatService.evictQuestionCache(message);
-        
-        Map<String, Object> result = new HashMap<>();
-        result.put("status", "success");
-        result.put("message", "已清除问题 \"" + message + "\" 的缓存");
-        
-        return result;
+        return "已清除问题 \"" + message + "\" 的缓存";
     }
 
     /**
@@ -95,14 +85,9 @@ public class CacheController {
      * @return 操作结果
      */
     @DeleteMapping("/clear-all")
-    public Map<String, Object> clearAllCache() {
+    public String clearAllCache() {
         cachedChatService.clearAllChatCache();
-        
-        Map<String, Object> result = new HashMap<>();
-        result.put("status", "success");
-        result.put("message", "已清除所有聊天缓存");
-        
-        return result;
+        return "已清除所有聊天缓存";
     }
 
     /**
@@ -115,9 +100,7 @@ public class CacheController {
      * @return 性能对比结果
      */
     @GetMapping("/benchmark")
-    public Map<String, Object> benchmark(@RequestParam String message) {
-        Map<String, Object> result = new HashMap<>();
-        
+    public String benchmark(@RequestParam String message) {
         // 第一次调用（缓存未命中）
         long start1 = System.currentTimeMillis();
         String answer1 = cachedChatService.chatWithCache(message);
@@ -128,21 +111,23 @@ public class CacheController {
         String answer2 = cachedChatService.chatWithCache(message);
         long duration2 = System.currentTimeMillis() - start2;
         
-        result.put("question", message);
-        result.put("firstCall", Map.of(
-                "duration", duration1 + "ms",
-                "cached", false,
-                "answer", answer1
-        ));
-        result.put("secondCall", Map.of(
-                "duration", duration2 + "ms",
-                "cached", true,
-                "answer", answer2
-        ));
-        result.put("performanceGain", (duration1 - duration2) + "ms");
-        result.put("speedupRatio", duration2 > 0 ? String.format("%.2fx", (double) duration1 / duration2) : "N/A");
-        
-        return result;
+        return """
+                问题: %s
+                
+                第一次调用: %dms (缓存未命中)
+                回答: %s
+                
+                第二次调用: %dms (缓存命中)
+                回答: %s
+                
+                性能提升: %dms (%.2fx)
+                """.formatted(
+                message,
+                duration1, answer1,
+                duration2, answer2,
+                (duration1 - duration2),
+                duration2 > 0 ? (double) duration1 / duration2 : 0.0
+        );
     }
 
     /**
@@ -154,11 +139,10 @@ public class CacheController {
      * @return AI 回答
      */
     @PostMapping("/contextual-chat")
-    public ChatResponse contextualChat(
+    public String contextualChat(
             @RequestParam String contextId,
             @RequestParam String message,
             @RequestBody(required = false) List<String> history) {
-        String answer = cachedChatService.contextualChatWithCache(contextId, message, history);
-        return new ChatResponse(message, answer);
+        return cachedChatService.contextualChatWithCache(contextId, message, history);
     }
 }

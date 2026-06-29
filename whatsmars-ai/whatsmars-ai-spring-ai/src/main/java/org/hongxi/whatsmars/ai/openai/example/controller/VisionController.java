@@ -1,26 +1,14 @@
 package org.hongxi.whatsmars.ai.openai.example.controller;
 
-import org.hongxi.whatsmars.ai.openai.example.vo.ImageComparisonResult;
-import org.hongxi.whatsmars.ai.openai.example.vo.VisionResult;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.springframework.ai.chat.client.ChatClient;
-import org.springframework.core.io.Resource;
-import org.springframework.core.io.UrlResource;
-import org.springframework.http.MediaType;
+import org.hongxi.whatsmars.ai.openai.example.service.VisionService;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
-
-import java.io.IOException;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.util.List;
 
 /**
  * 多模态图像处理控制器
  * <p>
- * 演示如何使用 AI 模型理解和描述图片内容
- * !!!!! 请将 model 改为支持多模态的模型，如 qwen3.7-plus
+ * 演示如何使用 AI 模型理解和描述图片内容。
+ * 注意：请将 spring.ai.vision.model 配置为支持多模态的模型，如 qwen3.7-plus
  * </p>
  *
  * @author hongxi
@@ -29,12 +17,10 @@ import java.util.List;
 @RequestMapping("/ai/vision")
 public class VisionController {
 
-    private static final Logger log = LoggerFactory.getLogger(VisionController.class);
+    private final VisionService visionService;
 
-    private final ChatClient chatClient;
-
-    public VisionController(ChatClient.Builder builder) {
-        this.chatClient = builder.build();
+    public VisionController(VisionService visionService) {
+        this.visionService = visionService;
     }
 
     /**
@@ -45,26 +31,9 @@ public class VisionController {
      * @return 图片描述
      */
     @PostMapping("/analyze-url")
-    public VisionResult analyzeImageByUrl(@RequestParam String imageUrl,
-                                                   @RequestParam(defaultValue = "请详细描述这张图片的内容") String prompt) {
-        log.info("分析图片 URL: {}", imageUrl);
-
-        try {
-            Resource imageResource = new UrlResource(imageUrl);
-            
-            String description = chatClient.prompt()
-                    .user(userSpec -> userSpec
-                            .text(prompt)
-                            .media(MediaType.IMAGE_JPEG, imageResource))
-                    .call()
-                    .content();
-
-            log.info("图片描述: {}", description);
-            return new VisionResult(imageUrl, description);
-        } catch (Exception e) {
-            log.error("分析图片失败", e);
-            throw new RuntimeException("分析图片失败: " + e.getMessage(), e);
-        }
+    public String analyzeImageByUrl(@RequestParam String imageUrl,
+                                          @RequestParam(defaultValue = "请详细描述这张图片的内容") String prompt) {
+        return visionService.analyzeImageByUrl(imageUrl, prompt);
     }
 
     /**
@@ -75,31 +44,9 @@ public class VisionController {
      * @return 图片描述
      */
     @PostMapping("/analyze-upload")
-    public VisionResult analyzeUploadedFile(@RequestParam("file") MultipartFile file,
-                                                     @RequestParam(defaultValue = "请详细描述这张图片的内容") String prompt) {
-        log.info("上传并分析图片: {}", file.getOriginalFilename());
-
-        try {
-            Path tempFile = Files.createTempFile("upload-", "-" + file.getOriginalFilename());
-            file.transferTo(tempFile);
-
-            Resource imageResource = new UrlResource(tempFile.toUri());
-
-            String description = chatClient.prompt()
-                    .user(userSpec -> userSpec
-                            .text(prompt)
-                            .media(MediaType.IMAGE_JPEG, imageResource))
-                    .call()
-                    .content();
-
-            Files.deleteIfExists(tempFile);
-
-            log.info("图片描述: {}", description);
-            return new VisionResult(file.getOriginalFilename(), description);
-        } catch (IOException e) {
-            log.error("处理上传文件失败", e);
-            throw new RuntimeException("处理上传文件失败: " + e.getMessage(), e);
-        }
+    public String analyzeUploadedFile(@RequestParam("file") MultipartFile file,
+                                            @RequestParam(defaultValue = "请详细描述这张图片的内容") String prompt) {
+        return visionService.analyzeUploadedImage(file, prompt);
     }
 
     /**
@@ -109,25 +56,8 @@ public class VisionController {
      * @return 识别的文字
      */
     @PostMapping("/ocr")
-    public VisionResult ocrTextRecognition(@RequestParam String imageUrl) {
-        log.info("OCR 文字识别: {}", imageUrl);
-
-        try {
-            Resource imageResource = new UrlResource(imageUrl);
-            
-            String text = chatClient.prompt()
-                    .user(userSpec -> userSpec
-                            .text("请提取图片中的所有文字，保持原有格式")
-                            .media(MediaType.IMAGE_JPEG, imageResource))
-                    .call()
-                    .content();
-
-            log.info("识别结果: {}", text);
-            return new VisionResult(imageUrl, text);
-        } catch (Exception e) {
-            log.error("OCR 识别失败", e);
-            throw new RuntimeException("OCR 识别失败: " + e.getMessage(), e);
-        }
+    public String ocrTextRecognition(@RequestParam String imageUrl) {
+        return visionService.ocrTextRecognition(imageUrl);
     }
 
     /**
@@ -137,29 +67,8 @@ public class VisionController {
      * @return 图表分析结果
      */
     @PostMapping("/chart-analysis")
-    public VisionResult analyzeChart(@RequestParam String imageUrl) {
-        log.info("分析图表: {}", imageUrl);
-
-        try {
-            Resource imageResource = new UrlResource(imageUrl);
-            
-            String analysis = chatClient.prompt()
-                    .user(userSpec -> userSpec
-                            .text("请分析这个图表，包括：\n" +
-                                  "1. 图表类型\n" +
-                                  "2. 数据趋势\n" +
-                                  "3. 关键发现\n" +
-                                  "4. 结论建议")
-                            .media(MediaType.IMAGE_JPEG, imageResource))
-                    .call()
-                    .content();
-
-            log.info("图表分析: {}", analysis);
-            return new VisionResult(imageUrl, analysis);
-        } catch (Exception e) {
-            log.error("图表分析失败", e);
-            throw new RuntimeException("图表分析失败: " + e.getMessage(), e);
-        }
+    public String analyzeChart(@RequestParam String imageUrl) {
+        return visionService.analyzeChart(imageUrl);
     }
 
     /**
@@ -169,25 +78,8 @@ public class VisionController {
      * @return 转换后的代码
      */
     @PostMapping("/code-from-image")
-    public VisionResult codeFromImage(@RequestParam String imageUrl) {
-        log.info("代码截图转换: {}", imageUrl);
-
-        try {
-            Resource imageResource = new UrlResource(imageUrl);
-            
-            String code = chatClient.prompt()
-                    .user(userSpec -> userSpec
-                            .text("请将这张图片中的代码完整提取出来，保持格式和缩进")
-                            .media(MediaType.IMAGE_JPEG, imageResource))
-                    .call()
-                    .content();
-
-            log.info("提取的代码: {}", code);
-            return new VisionResult(imageUrl, code);
-        } catch (Exception e) {
-            log.error("代码提取失败", e);
-            throw new RuntimeException("代码提取失败: " + e.getMessage(), e);
-        }
+    public String codeFromImage(@RequestParam String imageUrl) {
+        return visionService.codeFromImage(imageUrl);
     }
 
     /**
@@ -198,27 +90,8 @@ public class VisionController {
      * @return 对比分析结果
      */
     @PostMapping("/compare")
-    public ImageComparisonResult compareImages(@RequestParam String imageUrl1,
+    public String compareImages(@RequestParam String imageUrl1,
                                                @RequestParam String imageUrl2) {
-        log.info("对比图片: {} vs {}", imageUrl1, imageUrl2);
-
-        try {
-            Resource image1 = new UrlResource(imageUrl1);
-            Resource image2 = new UrlResource(imageUrl2);
-            
-            String comparison = chatClient.prompt()
-                    .user(userSpec -> userSpec
-                            .text("请对比这两张图片，分析它们的相似点和不同点")
-                            .media(MediaType.IMAGE_JPEG, image1)
-                            .media(MediaType.IMAGE_JPEG, image2))
-                    .call()
-                    .content();
-
-            log.info("对比结果: {}", comparison);
-            return new ImageComparisonResult(List.of(imageUrl1, imageUrl2), comparison);
-        } catch (Exception e) {
-            log.error("图片对比失败", e);
-            throw new RuntimeException("图片对比失败: " + e.getMessage(), e);
-        }
+        return visionService.compareImages(imageUrl1, imageUrl2);
     }
 }

@@ -1,10 +1,5 @@
 package org.hongxi.whatsmars.ai.openai.example.controller;
 
-import org.hongxi.whatsmars.ai.openai.example.vo.ChatResponse;
-import org.hongxi.whatsmars.ai.openai.example.vo.DocInfo;
-import org.hongxi.whatsmars.ai.openai.example.vo.DocumentAddResult;
-import org.hongxi.whatsmars.ai.openai.example.vo.ClearResult;
-import org.hongxi.whatsmars.ai.openai.example.vo.SearchByCategoryResult;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.ai.chat.client.ChatClient;
@@ -80,7 +75,7 @@ public class RedisRagController {
      * @return 操作结果
      */
     @PostMapping("/document")
-    public DocumentAddResult addDocument(@RequestParam String content,
+    public String addDocument(@RequestParam String content,
                                             @RequestParam(required = false) String source,
                                             @RequestParam(required = false) String category) {
         log.info("添加文档: {}", content.substring(0, Math.min(50, content.length())));
@@ -96,7 +91,7 @@ public class RedisRagController {
         Document document = new Document(content, metadata);
         vectorStore.add(List.of(document));
 
-        return new DocumentAddResult("文档添加成功", content.length());
+        return "文档添加成功，长度: " + content.length();
     }
 
     /**
@@ -112,7 +107,7 @@ public class RedisRagController {
      * @return AI 回答
      */
     @GetMapping("/ask")
-    public ChatResponse askQuestion(@RequestParam String message,
+    public String askQuestion(@RequestParam String message,
                                             @RequestParam(defaultValue = "3") int topK) {
         log.info("Redis RAG 问答 - 问题: {}", message);
 
@@ -142,7 +137,7 @@ public class RedisRagController {
                 .content();
 
         log.info("AI 回答: {}", answer);
-        return new ChatResponse(message, answer);
+        return answer;
     }
 
     /**
@@ -154,7 +149,7 @@ public class RedisRagController {
      * @return 相关文档
      */
     @GetMapping("/search-by-category")
-    public SearchByCategoryResult searchByCategory(@RequestParam String category,
+    public String searchByCategory(@RequestParam String category,
                                                   @RequestParam String query,
                                                   @RequestParam(defaultValue = "5") int topK) {
         log.info("按分类检索 - 分类: {}, 查询: {}", category, query);
@@ -172,15 +167,14 @@ public class RedisRagController {
                 .limit(topK)
                 .toList();
 
-        return new SearchByCategoryResult(category, query,
-                filteredDocs.stream()
-                        .map(doc -> new DocInfo(
-                                doc.getText(),
-                                String.valueOf(doc.getMetadata().get("source")),
-                                doc.getScore()
-                        ))
-                        .toList(),
-                filteredDocs.size());
+        StringBuilder sb = new StringBuilder();
+        sb.append("分类: ").append(category).append(", 查询: ").append(query)
+          .append(", 找到 ").append(filteredDocs.size()).append(" 条文档\n\n");
+        for (Document doc : filteredDocs) {
+            sb.append("[").append(doc.getMetadata().getOrDefault("source", "unknown")).append("] ")
+              .append(doc.getText()).append(" (score: ").append(doc.getScore()).append(")\n\n");
+        }
+        return sb.toString();
     }
 
     /**
@@ -189,14 +183,8 @@ public class RedisRagController {
      * @return 操作结果
      */
     @DeleteMapping("/clear")
-    public ClearResult clearVectorStore() {
+    public String clearVectorStore() {
         log.info("清空 Redis 向量存储");
-        
-        // 注意：具体清空方式取决于 Redis Vector Store 的实现
-        // 可能需要删除特定的 key 或使用 FLUSHDB
-        return new ClearResult(
-                "请使用 Redis CLI 执行: DEL <vector-index-key>",
-                "查看 application.yml 中的 spring.ai.vectorstore.redis.index-name 配置"
-        );
+        return "请使用 Redis CLI 执行: DEL <vector-index-key>，查看 application.yml 中的 spring.ai.vectorstore.redis.index-name 配置";
     }
 }
