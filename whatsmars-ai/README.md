@@ -809,7 +809,7 @@ curl --get --data-urlencode "message=北京天气怎么样？适合出门吗？"
 #### 项目结构
 
 ```
-whatsmars-ai-spring-ai/
+whatsmars-ai-spring/
 ├── config/
 │   ├── AiConfig.java              # ChatClient Bean 配置（visionChatClient、deepSeekChatClient）
 │   └── McpServerConfig.java       # MCP Server 工具注册

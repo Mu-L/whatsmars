@@ -13,7 +13,7 @@
     <packaging>pom</packaging>
 
     <modules>
-        <module>whatsmars-ai-spring-ai</module>
+        <module>whatsmars-ai-spring</module>
         <module>whatsmars-ai-langchain4j</module>
     </modules>
 

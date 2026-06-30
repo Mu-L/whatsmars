@@ -9,7 +9,7 @@
         <version>2026.6.2-SNAPSHOT</version>
     </parent>
 
-    <artifactId>whatsmars-ai-spring-ai</artifactId>
+    <artifactId>whatsmars-ai-spring</artifactId>
 
     <dependencies>
         <dependency>
