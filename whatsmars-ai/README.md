@@ -374,28 +374,7 @@ public SseEmitter streamChat(@RequestParam String message) {
 }
 ```
 
-#### 3. 多轮对话 (@MemoryId)
-
-```java
-@AiService
-public interface ChatWithMemoryAssistant {
-    String chat(@MemoryId String sessionId, @UserMessage String userMessage);
-
-    static ChatMemory chatMemory() {
-        return MessageWindowChatMemory.withMaxMessages(10);
-    }
-}
-```
-
-```bash
-# 创建会话
-curl -X POST "http://localhost:8888/ai/memory/session"
-# 多轮对话（使用同一 sessionId）
-curl -X POST "http://localhost:8888/ai/memory/chat?sessionId=xxx&message=我叫张三"
-curl -X POST "http://localhost:8888/ai/memory/chat?sessionId=xxx&message=我叫什么？"
-```
-
-#### 4. 工具调用 (@Tool)
+#### 3. 工具调用 (@Tool)
 
 ```java
 @Service
@@ -427,8 +406,6 @@ whatsmars-ai-langchain4j/
 ├── SimpleController.java            # 基础聊天控制器
 ├── StreamingAssistant.java          # 流式响应接口
 ├── StreamingController.java         # 流式控制器
-├── ChatWithMemoryAssistant.java     # 多轮对话接口
-├── ChatWithMemoryController.java    # 多轮对话控制器
 ├── FunctionCallingAssistant.java    # 工具调用接口
 ├── FunctionCallingController.java   # 工具调用控制器
 └── ToolService.java                 # 工具定义
