@@ -2,7 +2,7 @@
 
 ### Spring AI 核心功能
 
-> 本项目基于 Spring AI 1.1.x，使用阿里通义千问（Qwen）作为大语言模型。
+> 本项目基于 Spring AI 1.1.x，支持多模型提供商：阿里通义千问（Qwen）+ DeepSeek。
 
 #### 1. 基础聊天 (ChatClient)
 
@@ -33,20 +33,29 @@ public class AiChatController {
 **配置示例 (application.yml)：**
 
 ```yaml
+server:
+  port: 8888
 spring:
   ai:
     openai:
       api-key: ${OPENAI_API_KEY}
-      base-url: https://dashscope.aliyuncs.com/compatible-mode/v1
+      base-url: https://dashscope.aliyuncs.com/compatible-mode
       chat:
         options:
-          model: qwen-plus          # 纯文本模型
-          temperature: 0.7          # 默认温度（0=确定性，1=创造力）
+          model: qwen-plus
+          temperature: 0.7
       embedding:
         options:
           model: text-embedding-v3
       vision:
-        model: qwen3.7-plus         # 多模态视觉模型
+        model: qwen3.7-plus
+    deepseek:
+      api-key: ${DEEPSEEK_API_KEY}
+      base-url: https://api.deepseek.com
+      chat:
+        options:
+          model: deepseek-v4-pro
+          temperature: 0.7
     mcp:
       server:
         name: whatsmars-mcp-server
@@ -56,7 +65,7 @@ spring:
 
 **测试：**
 ```bash
-curl "http://localhost:8080/ai/chat?message=讲个笑话"
+curl "http://localhost:8888/ai/chat?message=讲个笑话"
 ```
 
 ---
@@ -81,7 +90,7 @@ public ResponseEntity<Flux<String>> streamChat(@RequestParam String message) {
 
 **测试：**
 ```bash
-curl "http://localhost:8080/ai/chat/stream?message=介绍一下武汉"
+curl "http://localhost:8888/ai/chat/stream?message=介绍一下武汉"
 ```
 
 ---
@@ -168,13 +177,13 @@ public String conversation(@RequestParam String message) {
 **测试：**
 ```bash
 # System Message（专业回答）
-curl -X POST "http://localhost:8080/ai/advanced/system-message?message=如何设计一个秒杀系统？"
+curl -X POST "http://localhost:8888/ai/advanced/system-message?message=如何设计一个秒杀系统？"
 
 # 创意性对话
-curl -X POST "http://localhost:8080/ai/advanced/creative?message=写一首关于春天的诗"
+curl -X POST "http://localhost:8888/ai/advanced/creative?message=写一首关于春天的诗"
 
 # 多轮对话
-curl -X POST "http://localhost:8080/ai/advanced/conversation?message=今天天气怎么样？"
+curl -X POST "http://localhost:8888/ai/advanced/conversation?message=今天天气怎么样？"
 ```
 
 ---
@@ -227,7 +236,7 @@ public String reviewSummary(@RequestParam String review) {
 
 **测试：**
 ```bash
-curl -X POST "http://localhost:8080/ai/structured/extract-user" \
+curl -X POST "http://localhost:8888/ai/structured/extract-user" \
   -d "text=我叫张三，今年25岁，是一名软件工程师，喜欢编程和打篮球，邮箱是zhangsan@example.com"
 ```
 
@@ -341,14 +350,14 @@ public class ToolCallingController {
 **测试：**
 ```bash
 # 天气查询
-curl "http://localhost:8080/ai/tool/weather?message=北京今天的天气怎么样？"
+curl "http://localhost:8888/ai/tool/weather?message=北京今天的天气怎么样？"
 
 # 时间查询
-curl "http://localhost:8080/ai/tool/time?message=现在几点了？"
-curl "http://localhost:8080/ai/tool/time?message=距离国庆节还有多少天？"
+curl "http://localhost:8888/ai/tool/time?message=现在几点了？"
+curl "http://localhost:8888/ai/tool/time?message=距离国庆节还有多少天？"
 
 # 智能助手（自动选择工具）
-curl "http://localhost:8080/ai/tool/ask?message=帮我查一下上海的天气"
+curl "http://localhost:8888/ai/tool/ask?message=帮我查一下上海的天气"
 ```
 
 ---
@@ -387,22 +396,22 @@ public class ReactAgentController {
 **测试：**
 ```bash
 # 天气查询
-curl "http://localhost:8080/ai/react-agent/chat?message=北京今天的天气怎么样？"
+curl "http://localhost:8888/ai/react-agent/chat?message=北京今天的天气怎么样？"
 
 # 知识搜索
-curl "http://localhost:8080/ai/react-agent/chat?message=什么是Apache%20Dubbo？"
+curl "http://localhost:8888/ai/react-agent/chat?message=什么是Apache%20Dubbo？"
 
 # 时间计算
-curl "http://localhost:8080/ai/react-agent/chat?message=现在几点了？距离国庆节还有多少天？"
+curl "http://localhost:8888/ai/react-agent/chat?message=现在几点了？距离国庆节还有多少天？"
 
 # 数学计算
-curl "http://localhost:8080/ai/react-agent/chat?message=299打8折再减50是多少？"
+curl "http://localhost:8888/ai/react-agent/chat?message=299打8折再减50是多少？"
 
 # 复杂任务
-curl "http://localhost:8080/ai/react-agent/complex-task?message=我想去杭州旅游，帮我查天气和介绍著名景点"
+curl "http://localhost:8888/ai/react-agent/complex-task?message=我想去杭州旅游，帮我查天气和介绍著名景点"
 
 # Agent 决策演示（一次展示多个场景）
-curl "http://localhost:8080/ai/react-agent/demo"
+curl "http://localhost:8888/ai/react-agent/demo"
 ```
 
 ---
@@ -453,11 +462,11 @@ public class RagController {
 **测试：**
 ```bash
 # 添加文档
-curl -X POST "http://localhost:8080/ai/rag/document" \
+curl -X POST "http://localhost:8888/ai/rag/document" \
   -d "content=Nacos 是一个易于构建 AI Agent 应用的动态服务发现、配置管理平台"
 
 # 问答
-curl "http://localhost:8080/ai/rag/ask?message=国内最流行的RPC框架是哪一款"
+curl "http://localhost:8888/ai/rag/ask?message=国内最流行的RPC框架是哪一款"
 ```
 
 ##### 7.2 Redis 向量存储（生产环境推荐）
@@ -591,27 +600,27 @@ public class VisionController {
 **测试：**
 ```bash
 # 1/6 URL 图片分析（澎湃新闻：神舟十号海报）
-curl -X POST "http://localhost:8080/ai/vision/analyze-url" \
+curl -X POST "http://localhost:8888/ai/vision/analyze-url" \
   -d "imageUrl=https://imagecloud.thepaper.cn/thepaper/image/333/857/150.jpg"
 
 # 2/6 图片上传分析（项目根目录下的架构图）
-curl -X POST "http://localhost:8080/ai/vision/analyze-upload" \
+curl -X POST "http://localhost:8888/ai/vision/analyze-upload" \
   -F "file=@arch.png"
 
 # 3/6 OCR 文字识别（澎湃新闻：北京申奥成功）
-curl -X POST "http://localhost:8080/ai/vision/ocr" \
+curl -X POST "http://localhost:8888/ai/vision/ocr" \
   -d "imageUrl=https://imagecloud.thepaper.cn/thepaper/image/333/857/151.jpg"
 
 # 4/6 图表分析（今日头条：武汉市历年生产总值）
-curl -X POST "http://localhost:8080/ai/vision/chart-analysis" \
+curl -X POST "http://localhost:8888/ai/vision/chart-analysis" \
   -d "imageUrl=https://p3-search.byteimg.com/obj/pgc-image/94e63ee2f0f840b0813e3746d2a9590b"
 
 # 5/6 代码截图转代码（今日头条：Java代码图片）
-curl -X POST "http://localhost:8080/ai/vision/code-from-image" \
+curl -X POST "http://localhost:8888/ai/vision/code-from-image" \
   -d "imageUrl=https://p3-search.byteimg.com/obj/labis/624fb344cca59ed91d6ada99b45f41ca"
 
 # 6/6 多图片对比分析（今日头条：鞠婧祎 vs 陈都灵）
-curl -X POST "http://localhost:8080/ai/vision/compare" \
+curl -X POST "http://localhost:8888/ai/vision/compare" \
   -d "imageUrl1=https://p3-search.byteimg.com/obj/labis/9c78113c22823e91536fb63f8f599e13" \
   -d "imageUrl2=https://p3-search.byteimg.com/obj/labis/a7dd04c539c4515b6018e9a39a32be36"
 ```
@@ -705,13 +714,94 @@ public class CacheController {
 **测试：**
 ```bash
 # 第一次调用（请求 AI API）
-curl "http://localhost:8080/ai/cache/chat?message=什么是Spring%20Boot？"
+curl "http://localhost:8888/ai/cache/chat?message=什么是Spring%20Boot？"
 
 # 第二次调用（直接返回缓存）
-curl "http://localhost:8080/ai/cache/chat?message=什么是Spring%20Boot？"
+curl "http://localhost:8888/ai/cache/chat?message=什么是Spring%20Boot？"
 
 # 性能对比测试
-curl "http://localhost:8080/ai/cache/benchmark?message=什么是Spring%20Boot？"
+curl "http://localhost:8888/ai/cache/benchmark?message=什么是Spring%20Boot？"
+```
+
+---
+
+#### 11. DeepSeek 模型集成
+
+本项目支持多模型提供商共存，通过配置不同的 `ChatClient` Bean 实现模型切换。
+
+##### 11.1 DeepSeek 配置
+
+```yaml
+spring:
+  ai:
+    deepseek:
+      api-key: ${DEEPSEEK_API_KEY}
+      base-url: https://api.deepseek.com
+      chat:
+        options:
+          model: deepseek-v4-pro
+          temperature: 0.7
+```
+
+##### 11.2 DeepSeek ChatClient 配置
+
+```java
+@Bean
+public ChatClient deepSeekChatClient(ChatClient.Builder builder,
+                                     DeepSeekChatModel deepSeekChatModel) {
+    return builder
+            .defaultOptions(OpenAiChatOptions.builder().model(deepSeekChatModel.getDefaultOptions().getModel()).build())
+            .build();
+}
+```
+
+##### 11.3 DeepSeek 接口
+
+```java
+@RestController
+@RequestMapping("/deepseek")
+public class DeepSeekController {
+
+    private final ChatClient deepSeekChatClient;
+
+    // 简单聊天
+    @RequestMapping("/chat")
+    public String chat(@RequestParam String message) { ... }
+
+    // 流式输出 (SSE)
+    @RequestMapping("/chat/stream")
+    public ResponseEntity<Flux<String>> chatStream(@RequestParam String message) { ... }
+
+    // System Message 设定角色
+    @RequestMapping("/system-message")
+    public String chatWithSystemMessage(@RequestParam String message) { ... }
+
+    // 创意性对话（高温度）
+    @RequestMapping("/creative")
+    public String creativeChat(@RequestParam String message) { ... }
+
+    // ReAct Agent（自动调用工具）
+    @RequestMapping("/agent/chat")
+    public String agentChat(@RequestParam String message) { ... }
+}
+```
+
+**测试：**
+```bash
+# 简单聊天
+curl --get --data-urlencode "message=你好" "http://localhost:8888/deepseek/chat"
+
+# 流式输出
+curl --get --data-urlencode "message=武汉简介" "http://localhost:8888/deepseek/chat/stream"
+
+# 高级用法 - 使用 System Message 设定 AI 角色
+curl --get --data-urlencode "message=Dubbo 3.3 有哪些特性" "http://localhost:8888/deepseek/system-message"
+
+# 高级用法 - 带温度参数的创意性对话
+curl --get --data-urlencode "message=帮我写一篇春天的故事，不超过300字" "http://localhost:8888/deepseek/creative"
+
+# ReAct Agent
+curl --get --data-urlencode "message=北京天气怎么样？适合出门吗？" "http://localhost:8888/deepseek/agent/chat"
 ```
 
 ---
@@ -721,11 +811,11 @@ curl "http://localhost:8080/ai/cache/benchmark?message=什么是Spring%20Boot？
 ```
 whatsmars-ai-spring-ai/
 ├── config/
-│   ├── AiConfig.java              # ChatClient Bean 配置（visionChatClient）
+│   ├── AiConfig.java              # ChatClient Bean 配置（visionChatClient、deepSeekChatClient）
 │   └── McpServerConfig.java       # MCP Server 工具注册
 ├── controller/
-│   ├── AiChatController.java      # 基础聊天 + 流式响应
 │   ├── AdvancedChatController.java # 高级对话（System Message、Temperature）
+│   ├── DeepSeekController.java    # DeepSeek 模型接口
 │   ├── StructuredOutputController.java # 结构化输出
 │   ├── ToolCallingController.java # 工具调用（/ai/tool）
 │   ├── ReactAgentController.java  # ReAct Agent
@@ -733,7 +823,7 @@ whatsmars-ai-spring-ai/
 │   ├── RedisRagController.java    # RAG（Redis 向量存储）
 │   ├── VisionController.java      # 多模态视觉
 │   ├── CacheController.java       # AI 缓存
-│   └── QwenStreamController.java  # 千问流式
+│   ├── AiChatController.java      # 基础聊天（/ai/chat + 流式）
 ├── service/
 │   ├── ToolCallingService.java    # 工具调用服务
 │   └── VisionService.java         # 视觉处理服务
@@ -745,10 +835,9 @@ whatsmars-ai-spring-ai/
 │   ├── ConversionTools.java       # 数据转换工具
 │   ├── SystemTools.java           # 系统工具
 │   └── UserTools.java             # 用户信息工具
-├── cache/
-│   ├── CachedChatService.java     # 缓存聊天服务
-│   └── AiCacheConfig.java         # 缓存配置
-└── vo/                            # 响应 VO（保留但不再使用）
+└── cache/
+    ├── CachedChatService.java     # 缓存聊天服务
+    └── AiCacheConfig.java         # 缓存配置
 ```
 
 ---
@@ -840,7 +929,7 @@ public class StreamingController {
 
 **测试：**
 ```bash
-curl "http://localhost:8080/ai/stream/chat?message=介绍一下Java21虚拟线程"
+curl "http://localhost:8888/ai/stream/chat?message=介绍一下Java21虚拟线程"
 ```
 
 #### 3. 多轮对话 (@MemoryId 会话隔离)
@@ -881,12 +970,12 @@ public class ChatWithMemoryController {
 **测试：**
 ```bash
 # 1. 创建会话
-curl -X POST "http://localhost:8080/ai/memory/session"
+curl -X POST "http://localhost:8888/ai/memory/session"
 # 返回: "a1b2c3d4-..."
 
 # 2. 多轮对话（使用同一个 sessionId）
-curl -X POST "http://localhost:8080/ai/memory/chat?sessionId=a1b2c3d4&message=我叫张三"
-curl -X POST "http://localhost:8080/ai/memory/chat?sessionId=a1b2c3d4&message=我叫什么名字？"
+curl -X POST "http://localhost:8888/ai/memory/chat?sessionId=a1b2c3d4&message=我叫张三"
+curl -X POST "http://localhost:8888/ai/memory/chat?sessionId=a1b2c3d4&message=我叫什么名字？"
 # AI 会记住之前的对话内容
 ```
 
@@ -929,9 +1018,9 @@ public interface FunctionCallingAssistant {
 
 **测试：**
 ```bash
-curl "http://localhost:8080/ai/function/chat?message=现在几点了？"
-curl "http://localhost:8080/ai/function/chat?message=北京天气怎么样？"
-curl "http://localhost:8080/ai/function/chat?message=计算123+456"
+curl "http://localhost:8888/ai/function/chat?message=现在几点了？"
+curl "http://localhost:8888/ai/function/chat?message=北京天气怎么样？"
+curl "http://localhost:8888/ai/function/chat?message=计算123+456"
 ```
 
 #### 项目结构

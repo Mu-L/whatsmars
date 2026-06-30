@@ -1,3 +1,5 @@
+server:
+  port: 8888
 spring:
   ai:
     openai:
@@ -14,6 +16,13 @@ spring:
           # 或者使用 text-embedding-v2
       vision:
         model: qwen3.7-plus # 多模态视觉模型（需支持图像输入）
+    deepseek:
+      api-key: ${DEEPSEEK_API_KEY}
+      base-url: https://api.deepseek.com
+      chat:
+        options:
+          model: deepseek-v4-pro
+          temperature: 0.7
     vectorstore:
       redis:
         # Redis 向量索引名称
