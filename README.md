@@ -1,5 +1,5 @@
 # 🚀whatsmars
-*`./mvnw clean package`* [`java 17+`](https://adoptium.net/zh-CN/temurin/releases)
+*`./mvnw clean package`* [`java 17+`](https://adoptium.net/zh-CN/temurin/releases) | Spring Boot 3.5.x
 <br>Java生态研究(**Spring Boot**🔥 + **Redis**🔥 + **Dubbo**🔥 + **RocketMQ**🔥 + **Elasticsearch**🔥)
 - [Spring Boot](https://spring.io/projects/spring-boot) 提高生产力的利器
 - [Redis](https://redis.io/) 缓存，NoSQL 数据库，分布式锁，位图
@@ -27,11 +27,11 @@
 | whatsmars-spring-boot-samples | Spring Boot Samples    |
 
 ### Other projects
-- Spring Cloud 生态研究：[spring-cloud-samples](https://github.com/javahongxi/spring-cloud-samples)
-- 开发轻量级 RPC 框架：[jaws](https://github.com/javahongxi/jaws)
+- Spring Cloud 生产级实战：[spring-cloud-samples](https://github.com/javahongxi/spring-cloud-samples)
+- 实战开发轻量级RPC框架：[jaws](https://github.com/javahongxi/jaws)
 
 ### Friendship links
 - [*阿里巴巴Java开发手册*](https://github.com/alibaba/Alibaba-Java-Coding-Guidelines) 📚
-- [*Java诊断利器Arthas*](https://github.com/alibaba/arthas) 👀
+- [*Java 诊断利器 Arthas*](https://github.com/alibaba/arthas) 👀
 
 &copy; [hongxi.org](http://hongxi.org) | [java.hongxi.org](http://java.hongxi.org)

@@ -1,4 +1,5 @@
 ## AI 集成的"双轨策略"
+> 如需体验 Spring AI 2.0，请访问 https://github.com/javahongxi/spring-cloud-samples
 
 ### Spring AI 核心功能
 
