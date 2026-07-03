@@ -1,6 +1,10 @@
 server:
   port: 8888
 spring:
+  datasource:
+    url: jdbc:postgresql://localhost:5432/ai_demo
+    username: ai_user
+    password: ai_user
   ai:
     openai:
       api-key: ${OPENAI_API_KEY}
@@ -11,9 +15,7 @@ spring:
           temperature: 0.7
       embedding:
         options:
-          # Qwen 的嵌入模型
-          model: text-embedding-v3
-          # 或者使用 text-embedding-v2
+          model: text-embedding-v3 # Embedding 模型（用于 RAG 向量化）
       vision:
         model: qwen3.7-plus # 多模态视觉模型（需支持图像输入）
     deepseek:
@@ -24,20 +26,19 @@ spring:
           model: deepseek-v4-pro
           temperature: 0.7
     vectorstore:
-      redis:
-        # Redis 向量索引名称
-        index-name: spring-ai-vector-index
-        # 向量维度（text-embedding-v3 默认 1024 维）
-        dimensions: 1024
-        # 初始化 schema（首次启动时设为 true）
-        initialize-schema: true
-        # 相似度算法：COSINE, L2, IP
-        distance-type: COSINE
+      pgvector:
+        dimensions: 1024           # text-embedding-v3 向量维度
+        initialize-schema: false   # 设为false，手动执行 psql -U postgres -f init_ai_demo.sql
     mcp:
       server:
         name: whatsmars-mcp-server    # MCP 服务名称，Client 连接时使用
         version: 1.0.0                # 服务版本
         type: SYNC                    # 运行模式：SYNC（同步）或 ASYNC（异步）
+    chat:
+      memory:
+        repository:
+          jdbc:
+            initialize-schema: always  # 自动创建 spring_ai_chat_memory 表
 
   redis:
     host: localhost

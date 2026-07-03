@@ -3,6 +3,7 @@ package org.hongxi.whatsmars.ai.controller;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.ai.chat.client.ChatClient;
+import org.springframework.ai.chat.prompt.Prompt;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -12,14 +13,12 @@ import org.springframework.web.bind.annotation.RestController;
 import reactor.core.publisher.Flux;
 
 /**
- * OpenAI 聊天控制器
- * <p>
- * 演示如何使用 Spring AI 实现简单聊天和流式聊天
- * </p>
+ * AI 基础聊天控制器
  *
  * @author hongxi
  */
 @RestController
+@RequestMapping("/ai")
 public class AiChatController {
 
     private static final Logger log = LoggerFactory.getLogger(AiChatController.class);
@@ -33,7 +32,7 @@ public class AiChatController {
     /**
      * 简单聊天接口
      */
-    @RequestMapping("/ai/chat")
+    @RequestMapping("/chat")
     public String chat(@RequestParam String message) {
         log.info("收到聊天请求: {}", message);
         return chatClient.prompt()
@@ -53,7 +52,7 @@ public class AiChatController {
      * @param message 用户输入
      * @return 流式响应
      */
-    @GetMapping("/ai/chat/stream")
+    @GetMapping("/chat/stream")
     public ResponseEntity<Flux<String>> streamChat(@RequestParam String message) {
         log.info("开始流式对话: {}", message);
         
@@ -69,5 +68,27 @@ public class AiChatController {
                 .contentType(MediaType.valueOf("text/event-stream;charset=UTF-8"))
                 .header("Cache-Control", "no-cache")
                 .body(stream);
+    }
+
+    /**
+     * 结构化输出示例
+     * <p>
+     * eg. 我叫张三，今年25岁，是一名软件工程师，喜欢编程和打篮球，邮箱是zhangsan@example.com
+     * </p>
+     */
+    @RequestMapping("/extract")
+    public Object extractPersonInfo(@RequestParam String message) {
+        record PersonInfo(String name, Integer age, String email, String occupation) {}
+        log.info("提取人员信息: {}", message);
+        String prompt = """
+                从以下文本中提取人员信息，并以 JSON 格式返回：
+                %s
+                
+                需要提取的字段：name(姓名), age(年龄), email(邮箱), occupation(职业)
+                如果某个字段无法提取，请设置为 null。
+                """.formatted(message);
+        return chatClient.prompt(new Prompt(prompt))
+                .call()
+                .entity(PersonInfo.class);
     }
 }

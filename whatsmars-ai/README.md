@@ -165,43 +165,7 @@ curl "http://localhost:8888/ai/react-agent/chat?message=北京天气怎么样？
 
 ---
 
-#### 6. RAG (检索增强生成)
-
-结合向量数据库实现知识库问答。
-
-```java
-@RestController
-@RequestMapping("/ai/rag")
-public class RagController {
-    private final VectorStore vectorStore;
-
-    @PostMapping("/document")
-    public String addDocument(@RequestParam String content) {
-        vectorStore.add(List.of(new Document(content)));
-        return "文档添加成功";
-    }
-
-    @GetMapping("/ask")
-    public String askQuestion(@RequestParam String message) {
-        List<Document> docs = vectorStore.similaritySearch(message);
-        String context = docs.stream().map(Document::getText).collect(Collectors.joining("\n"));
-        return chatClient.prompt()
-                .system("基于以下上下文回答问题：\n" + context)
-                .user(message).call().content();
-    }
-}
-```
-
-支持 **内存向量存储**（开发）和 **Redis 向量存储**（生产）。
-
-```bash
-curl -X POST "http://localhost:8888/ai/rag/document" -d "content=Nacos 是动态服务发现平台"
-curl "http://localhost:8888/ai/rag/ask?message=国内流行的 RPC 框架"
-```
-
----
-
-#### 7. 多模态视觉理解
+#### 6. 多模态视觉理解
 
 支持图片分析、OCR、图表解读。
 
@@ -228,7 +192,7 @@ curl -X POST "http://localhost:8888/ai/vision/analyze-url" \
 
 ---
 
-#### 8. MCP Server
+#### 7. MCP Server
 
 通过 MCP 协议将工具暴露给外部 Client。
 
@@ -247,7 +211,7 @@ public class McpServerConfig {
 
 ---
 
-#### 9. AI 缓存
+#### 8. AI 缓存
 
 使用缓存优化 AI 响应性能。
 
@@ -259,7 +223,7 @@ public class McpServerConfig {
 
 ---
 
-#### 10. DeepSeek 模型集成
+#### 9. DeepSeek 模型集成
 
 多模型提供商共存，通过不同 `ChatClient` Bean 实现模型切换。
 
@@ -300,20 +264,97 @@ curl "http://localhost:8888/deepseek/agent/chat?message=北京天气怎么样？
 
 ---
 
-#### 项目结构
+#### 12. ChatMemory 多轮对话记忆
 
-```
-whatsmars-ai-spring/
-├── config/          # AiConfig, McpServerConfig
-├── controller/      # AiChatController, AdvancedChatController, DeepSeekController, 
-│                    # StructuredOutputController, ToolCallingController, ReactAgentController,
-│                    # RagController, RedisRagController, VisionController, CacheController
-├── service/         # ToolCallingService, VisionService
-├── tool/            # WeatherTools, TimeTools, SearchTools, CalculatorTools, ...
-└── cache/           # CachedChatService, AiCacheConfig
+基于 `spring-ai-starter-model-chat-memory-repository-jdbc`，对话历史持久化到 PostgreSQL，支持会话隔离。需前置 PostgreSQL（同 RAG 模块）。
+
+| 接口                                   | 说明       |
+|--------------------------------------|----------|
+| `POST /ai/memory/chat`               | 带记忆的多轮对话 |
+| `DELETE /ai/memory/{conversationId}` | 清除会话记忆   |
+
+```shell
+# 第 1 轮：告诉 AI 你的名字
+curl -X POST http://localhost:8888/ai/memory/chat \
+  -H "Content-Type: application/json" \
+  -d '{"conversationId":"session-001","message":"你好，我叫小明"}'
+
+# 第 2 轮：追问，AI 会记住上下文
+curl -X POST http://localhost:8888/ai/memory/chat \
+  -H "Content-Type: application/json" \
+  -d '{"conversationId":"session-001","message":"我叫什么名字？"}'
+
+# 不同会话完全隔离
+curl -X POST http://localhost:8888/ai/memory/chat \
+  -H "Content-Type: application/json" \
+  -d '{"conversationId":"session-002","message":"我叫什么名字？"}'
+
+# 清除会话记忆
+curl -X DELETE http://localhost:8888/ai/memory/session-001
 ```
 
-**接口规范：** 所有接口统一返回 `String`，参数统一使用 `message`。
+---
+
+#### 11. PromptTemplate 提示词模板
+
+使用 Spring AI 的 `PromptTemplate` 进行 `{variable}` 占位符替换，演示三种模板场景。
+
+| 接口                        | 说明          |
+|---------------------------|-------------|
+| `POST /ai/prompt/product` | 产品描述生成      |
+| `POST /ai/prompt/code`    | 代码解释        |
+| `POST /ai/prompt/custom`  | 自定义模板（通用入口） |
+
+```shell
+# 产品描述生成
+curl -X POST http://localhost:8888/ai/prompt/product \
+  -H "Content-Type: application/json" \
+  -d '{"product":"Spring AI 实战手册","category":"技术书籍","tone":"专业且幽默"}'
+
+# 代码解释
+curl -X POST http://localhost:8888/ai/prompt/code \
+  -H "Content-Type: application/json" \
+  -d '{"code":"public record Point(int x, int y) {}","language":"Java","level":"初学者"}'
+
+# 自定义模板
+curl -X POST http://localhost:8888/ai/prompt/custom \
+  -H "Content-Type: application/json" \
+  -d '{"template":"请用{language}写一个{function}的示例代码","variables":{"language":"Python","function":"快速排序"}}'
+```
+
+---
+
+#### 12. RAG（检索增强生成）
+
+前置条件：PostgreSQL + pgvector
+```shell
+brew install postgresql
+brew install pgvector
+# 初始化数据库（创建用户、数据库、启用 pgvector 扩展、建表）
+psql -U postgres -f cloud-ai-rag-sample/init_ai_demo.sql
+```
+
+
+| 接口                         | 说明            |
+|----------------------------|---------------|
+| `POST /ai/rag/ingest`      | 摄入文档到向量数据库    |
+| `GET /ai/rag/query`        | 基于知识库的 RAG 问答 |
+| `DELETE /ai/rag/documents` | 删除指定来源的文档     |
+
+```shell
+# 摄入文档
+curl -X POST http://localhost:8888/ai/rag/ingest \
+  -H "Content-Type: application/json" \
+  -d '{"content":"Spring AI is a framework for building AI-native applications...","source":"spring-ai-docs"}'
+
+# RAG 查询（topK 控制检索文档数量，默认 3）
+curl --get --data-urlencode "question=What is Spring AI?" "http://localhost:8888/ai/rag/query?topK=3"
+
+# 删除指定来源文档
+curl -X DELETE "http://localhost:8888/ai/rag/documents?source=spring-ai-docs"
+```
+
+> 完整 RAG 流程：文档摄入 → TokenTextSplitter 自动分块 → PgVector 向量化存储 → 相似性检索 → 上下文增强 Prompt → LLM 生成。当知识库无相关文档时自动降级为纯 LLM 回答。
 
 ---
 
@@ -398,16 +439,3 @@ curl "http://localhost:8888/ai/function/chat?message=北京天气怎么样？"
 ```
 
 ---
-
-#### 项目结构
-
-```
-whatsmars-ai-langchain4j/
-├── SimpleAssistant.java             # 基础聊天接口
-├── SimpleController.java            # 基础聊天控制器
-├── StreamingAssistant.java          # 流式响应接口
-├── StreamingController.java         # 流式控制器
-├── FunctionCallingAssistant.java    # 工具调用接口
-├── FunctionCallingController.java   # 工具调用控制器
-└── ToolService.java                 # 工具定义
-```
