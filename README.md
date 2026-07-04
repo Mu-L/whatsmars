@@ -13,7 +13,7 @@
 | whatsmars-ai                  | Spring AI, langchain4j |
 | whatsmars-arthas              | Java 应用诊断利器            |
 | whatsmars-common              | 通用公共模块                 |
-| whatsmars-curator             | 最好用的zk客户端              |
+| whatsmars-curator             | ZooKeeper 最佳客户端        |
 | whatsmars-dubbo               | 高性能分布式RPC框架            |
 | whatsmars-elasticsearch       | Elasticsearch          |
 | whatsmars-grpc                | 跨语言的RPC框架              |
