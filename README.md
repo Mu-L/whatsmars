@@ -1,5 +1,5 @@
 # 🚀whatsmars
-*`./mvnw clean package`* [`java 17+`](https://adoptium.net/zh-CN/temurin/releases) | Spring Boot 3.5.x
+*`./mvnw clean package`* [`java 17+`](https://adoptium.net/zh-CN/temurin/releases)
 <br>Java生态研究(**Spring Boot**🔥 + **Redis**🔥 + **Dubbo**🔥 + **RocketMQ**🔥 + **Elasticsearch**🔥)
 - [Spring Boot](https://spring.io/projects/spring-boot) 提高生产力的利器
 - [Redis](https://redis.io/) 缓存，NoSQL 数据库，分布式锁，位图
@@ -11,6 +11,7 @@
 | Module                        | Intro                  |
 |-------------------------------|------------------------|
 | whatsmars-ai                  | Spring AI, langchain4j |
+| whatsmars-arthas              | Java 应用诊断利器            |
 | whatsmars-common              | 通用公共模块                 |
 | whatsmars-curator             | 最好用的zk客户端              |
 | whatsmars-dubbo               | 高性能分布式RPC框架            |
@@ -29,9 +30,5 @@
 ### Other projects
 - Spring Cloud 生产级实战：[spring-cloud-samples](https://github.com/javahongxi/spring-cloud-samples)
 - 实战开发轻量级RPC框架：[jaws](https://github.com/javahongxi/jaws)
-
-### Friendship links
-- [*阿里巴巴Java开发手册*](https://github.com/alibaba/Alibaba-Java-Coding-Guidelines) 📚
-- [*Java 诊断利器 Arthas*](https://github.com/alibaba/arthas) 👀
 
 &copy; [hongxi.org](http://hongxi.org) | [java.hongxi.org](http://java.hongxi.org)
