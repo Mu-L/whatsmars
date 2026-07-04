@@ -1,3 +1,11 @@
+## 2026.7.1
+- AI 模块重构并增加 `RAG` `ChatMemory` `PromptTemplate` 示例，以及引入 DeepSeek 模型
+- `whatsmars-sentinel` demo optimise
+- FastJson2Serialization optimise
+- Remove lombok
+- New internal package in `whatsmars-common`
+- Add module `whatsmars-arthas`
+
 ## 2026.6.1
 - RocketMQ v5 核心功能演示
 - Dubbo 3.3 核心功能演示

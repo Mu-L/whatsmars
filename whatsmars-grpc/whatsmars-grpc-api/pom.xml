@@ -6,7 +6,7 @@
     <parent>
         <groupId>org.hongxi</groupId>
         <artifactId>whatsmars-grpc</artifactId>
-        <version>2026.6.2-SNAPSHOT</version>
+        <version>2026.7.1</version>
     </parent>
 
     <artifactId>whatsmars-grpc-api</artifactId>
