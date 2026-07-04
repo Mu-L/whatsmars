@@ -29,6 +29,6 @@
 
 ### Other projects
 - Spring Cloud 生产级实战：[spring-cloud-samples](https://github.com/javahongxi/spring-cloud-samples)
-- 实战开发轻量级RPC框架：[jaws](https://github.com/javahongxi/jaws)
+- 基于 Java 17 和 Netty 的高性能 RPC 框架：[jaws](https://github.com/javahongxi/jaws)
 
 &copy; [hongxi.org](http://hongxi.org) | [java.hongxi.org](http://java.hongxi.org)
