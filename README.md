@@ -28,7 +28,8 @@
 | whatsmars-spring-boot-samples | Spring Boot Samples    |
 
 ### Other projects
-- Spring Cloud 生产级实战：[spring-cloud-samples](https://github.com/javahongxi/spring-cloud-samples)
-- 基于 Java 17 和 Netty 的高性能 RPC 框架：[jaws](https://github.com/javahongxi/jaws)
+- Spring Cloud Alibaba Full-Stack Microservices Sample: [spring-cloud-samples](https://github.com/javahongxi/spring-cloud-samples)
+- High-performance Java 17 RPC framework built on Netty: [jaws](https://github.com/javahongxi/jaws)
+- Spring Boot Starter for multiple Redis clusters: [multi-redis-spring-boot-starter](https://github.com/javahongxi/multi-redis-spring-boot-starter)
 
 &copy; [hongxi.org](http://hongxi.org) | [java.hongxi.org](http://java.hongxi.org)
