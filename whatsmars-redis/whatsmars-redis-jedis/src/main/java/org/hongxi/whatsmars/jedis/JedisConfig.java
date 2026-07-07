@@ -1,4 +1,4 @@
-package org.hongxi.whatsmars.redis;
+package org.hongxi.whatsmars.jedis;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;

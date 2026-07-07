@@ -10,17 +10,12 @@
     <modelVersion>4.0.0</modelVersion>
 
     <artifactId>whatsmars-redis</artifactId>
-    <description>Redis demo</description>
+    <packaging>pom</packaging>
 
-    <dependencies>
-        <dependency>
-            <groupId>org.springframework.boot</groupId>
-            <artifactId>spring-boot-starter</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>redis.clients</groupId>
-            <artifactId>jedis</artifactId>
-        </dependency>
-    </dependencies>
+    <modules>
+        <module>whatsmars-redis-jedis</module>
+        <module>whatsmars-redis-redission</module>
+        <module>whatsmars-redis-lettuce</module>
+    </modules>
 
 </project>

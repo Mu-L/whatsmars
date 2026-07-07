@@ -1,6 +1,6 @@
-package org.hongxi.whatsmars.redis;
+package org.hongxi.whatsmars.jedis;
 
-import org.hongxi.whatsmars.redis.sample.*;
+import org.hongxi.whatsmars.jedis.sample.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;

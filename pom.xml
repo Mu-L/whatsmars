@@ -63,6 +63,7 @@
         <nacos-spring.version>2025.0.0.0</nacos-spring.version>
         <pagehelper-spring.version>2.1.1</pagehelper-spring.version>
         <protobuf.version>4.34.1</protobuf.version>
+        <redisson.version>4.6.1</redisson.version>
         <rocketmq.version>5.5.0</rocketmq.version>
         <rocketmq-java.version>5.2.0</rocketmq-java.version>
         <rocketmq-spring.version>2.3.5</rocketmq-spring.version>
@@ -123,6 +124,12 @@
                 <groupId>org.apache.rocketmq</groupId>
                 <artifactId>rocketmq-v5-client-spring-boot-starter</artifactId>
                 <version>${rocketmq-spring.version}</version>
+            </dependency>
+
+            <dependency>
+                <groupId>org.redisson</groupId>
+                <artifactId>redisson-spring-boot-starter</artifactId>
+                <version>${redisson.version}</version>
             </dependency>
 
             <dependency>
