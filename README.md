@@ -31,5 +31,6 @@
 - Spring Cloud Alibaba Full-Stack Microservices Sample: [spring-cloud-samples](https://github.com/javahongxi/spring-cloud-samples)
 - High-performance Java 17 RPC framework built on Netty: [jaws](https://github.com/javahongxi/jaws)
 - Spring Boot Starter for multiple Redis clusters: [multi-redis-spring-boot-starter](https://github.com/javahongxi/multi-redis-spring-boot-starter)
+- Spring Boot Samples for 4.x: [spring-boot4-samples](https://github.com/javahongxi/spring-boot4-samples)
 
 &copy; [hongxi.org](http://hongxi.org) | [java.hongxi.org](http://java.hongxi.org)
