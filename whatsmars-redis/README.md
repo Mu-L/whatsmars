@@ -65,8 +65,8 @@ public class SampleConfig {
     }
 
     @Bean
-    public ReactiveRedisTemplate<String, Object> orderReactiveRedisTemplate(RedisTemplateBuilder builder) {
-        return builder.reactiveTemplate("order");
+    public RedisTemplate<String, Object> userRedisTemplate(RedisTemplateBuilder builder) {
+        return builder.cluster("user").build();
     }
 }
 ```
@@ -89,12 +89,13 @@ public class MyController {
 
 #### 示例 Runner
 
-| Runner                      | 说明                                 |
-|-----------------------------|------------------------------------|
-| `ConnectionSampleRunner`    | 连接验证：查询各实例的 `INFO server`，证明实际连接目标 |
-| `ReadWriteSampleRunner`     | 读写验证：set/get/delete 往返测试           |
-| `AnnotationSampleRunner`    | `@RedisCluster` 注解注入演示（Mode 1）     |
-| `ReactiveRedisSampleRunner` | 响应式 `ReactiveRedisTemplate` 操作演示   |
+| Runner                         | 说明                                     |
+|--------------------------------|----------------------------------------|
+| `ConnectionSampleRunner`       | 连接验证：查询各实例的 `INFO server`，证明实际连接目标     |
+| `StringSampleRunner`           | 读写验证：set/get/delete 往返测试               |
+| `ObjectSampleRunner`           | 读写验证：set/get/delete 往返测试，JSON序列化       |
+| `AnnotationStringSampleRunner` | `@RedisCluster` 注解注入演示（Mode 1）         |
+| `AnnotationObjectSampleRunner` | `@RedisCluster` 注解注入演示（Mode 1），JSON序列化 |
 
 #### 配置示例
 
@@ -112,11 +113,6 @@ spring:
             value: json
             hash-key: string
             hash-value: json
-          lettuce:
-            pool:
-              max-active: 16
-              max-idle: 8
-              min-idle: 2
         user:                      # Standalone → userRedisTemplate
           host: localhost
           port: 6380
@@ -124,20 +120,10 @@ spring:
           cluster:
             nodes: localhost:7001,localhost:7002,localhost:7003
             max-redirects: 3
-          timeout: 5000ms
-          lettuce:
-            pool:
-              max-active: 16
-              max-idle: 8
-              min-idle: 2
-              max-wait: 10000ms
-            cluster:
-              refresh:
-                adaptive: true
-                period: 2000ms
         session:                   # Redis Cluster → sessionRedisTemplate
           cluster:
             nodes: localhost:7011,localhost:7012,localhost:7013
+            max-redirects: 3
 ```
 
 > 更多配置说明请参考 [multi-redis-spring-boot-starter README](https://github.com/javahongxi/multi-redis-spring-boot-starter)
@@ -158,13 +144,13 @@ spring:
 ### 单机 Redis（order & user）
 
 ```bash
-brew install redis
-
 # 启动默认 Redis（端口 6379）
 brew services start redis
 
 # 启动第二个实例（端口 6380）
 redis-server --port 6380 --daemonize yes --logfile /tmp/redis-6380.log
+# 启动第三个实例（端口 6381）
+redis-server --port 6381 --daemonize yes --logfile /tmp/redis-6381.log
 
 # 停止
 redis-cli -p 6380 shutdown
@@ -185,44 +171,6 @@ redis-cli -p 6380 shutdown
 
 # 停止集群
 ./redis-cluster.sh stop all
-```
-
-## 运行示例
-
-```bash
-# Jedis 示例
-cd whatsmars-redis-jedis
-mvn spring-boot:run
-
-# Lettuce 多集群示例（需先启动 Redis 实例）
-cd whatsmars-redis-lettuce
-mvn spring-boot:run
-
-# Redisson 示例
-cd whatsmars-redis-redission
-mvn spring-boot:run
-```
-
-### 预期输出（Lettuce 模块）
-
-```
-========== Multi-Redis Connection Verification ==========
-[order]   Config -> localhost:6379
-[order]   Server -> tcp_port=6379, redis_version=8.0.1
-[user]    Config -> localhost:6380
-[user]    Server -> tcp_port=6380, redis_version=8.0.1
-[cache]   Config -> CLUSTER nodes=[localhost:7001, localhost:7002, localhost:7003]
-[cache]   Server -> CLUSTER nodes={127.0.0.1:7001=7001, 127.0.0.1:7002=7002, 127.0.0.1:7003=7003}, redis_version=8.0.1
-[session] Config -> CLUSTER nodes=[localhost:7011, localhost:7012, localhost:7013]
-[session] Server -> CLUSTER nodes={127.0.0.1:7011=7011, 127.0.0.1:7012=7012, 127.0.0.1:7013=7013}, redis_version=8.0.1
-========== Connection verification complete ==========
-
-========== Multi-Redis Read/Write Verification ==========
-[order]   Read/Write OK: set=User[name=order-user, age=20, ...], get=User[name=order-user, age=20, ...]
-[user]    Read/Write OK: set=hello-user-..., get=hello-user-...
-[cache]   Read/Write OK: set=User[name=cache-user, age=20, ...], get=User[name=cache-user, age=20, ...]
-[session] Read/Write OK: set=hello-session-..., get=hello-session-...
-========== All read/write verifications passed! ==========
 ```
 
 ## 三大客户端对比
