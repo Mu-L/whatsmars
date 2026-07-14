@@ -7,7 +7,7 @@
 - [Apache RocketMQ](https://rocketmq.apache.org/) / [Apache Kafka](http://kafka.apache.org/) 削峰填谷，异步解耦，顺序消息，延迟消息，事务消息
 - [Elasticsearch](https://www.elastic.co) *搜索、分析和存储您的数据*
 
-本项目基于 Spring Boot 3.5.x，且不涉及 Spring Cloud，如需体验**全新实战技术**，请访问 [spring-cloud-samples](https://github.com/javahongxi/spring-cloud-samples)
+本项目基于 Spring Boot 3.5.x，且不涉及 Spring Cloud，如需**体验全新实战技术，请访问** [**spring-cloud-samples**](https://github.com/javahongxi/spring-cloud-samples)
 
 ### Modules intro
 | Module                        | Intro                                     |
