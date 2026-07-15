@@ -9,8 +9,8 @@
 
 本项目基于 Spring Boot 3.5.x，不涉及 Spring Cloud。如需 Spring Cloud 全栈微服务实战，请访问 [spring-cloud-samples](https://github.com/javahongxi/spring-cloud-samples)
 
-### Modules intro
-| Module                        | Intro                                     |
+### Module Overview
+| Module                        | Description                               |
 |-------------------------------|-------------------------------------------|
 | whatsmars-ai                  | Spring AI, langchain4j, Spring AI Alibaba |
 | whatsmars-arthas              | Java 应用诊断利器                               |
