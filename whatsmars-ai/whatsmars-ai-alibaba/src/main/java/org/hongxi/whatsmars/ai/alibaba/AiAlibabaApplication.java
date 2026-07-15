@@ -7,6 +7,9 @@ import org.springframework.context.ApplicationListener;
 import org.springframework.context.annotation.Bean;
 import org.springframework.core.env.Environment;
 
+/**
+ * 必须先启动whatsmars-ai-spring，因为依赖了它 的 MCP Server
+ */
 @SpringBootApplication
 public class AiAlibabaApplication {
 

@@ -427,6 +427,7 @@ public class MyAgentController {
     }
 }
 ```
+必须先启动whatsmars-ai-spring，因为依赖了它 的 MCP Server
 
 程序启动完成后会输出：
 
