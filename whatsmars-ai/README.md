@@ -1,5 +1,13 @@
-## AI 集成的"双轨策略"
+## AI 集成的"三轨策略"
 > 如需体验 Spring AI 2.0，请访问 https://github.com/javahongxi/spring-cloud-samples
+
+### 模块概览
+
+| 模块 | 框架 | 说明 |
+|------|------|------|
+| whatsmars-ai-spring | Spring AI 1.1.x | Spring AI 核心功能演示（Chat/Tool/RAG/MCP/Memory 等） |
+| whatsmars-ai-alibaba | Spring AI Alibaba 1.x | Spring AI Alibaba Agent Graph 框架演示（ReactAgent） |
+| whatsmars-ai-langchain4j | LangChain4j | LangChain4j 对比实验 |
 
 ### Spring AI 核心功能
 
@@ -264,7 +272,7 @@ curl "http://localhost:8888/deepseek/agent/chat?message=北京天气怎么样？
 
 ---
 
-#### 12. ChatMemory 多轮对话记忆
+#### 10. ChatMemory 多轮对话记忆
 
 基于 `spring-ai-starter-model-chat-memory-repository-jdbc`，对话历史持久化到 PostgreSQL，支持会话隔离。需前置 PostgreSQL（同 RAG 模块）。
 
@@ -331,7 +339,7 @@ curl -X POST http://localhost:8888/ai/prompt/custom \
 brew install postgresql
 brew install pgvector
 # 初始化数据库（创建用户、数据库、启用 pgvector 扩展、建表）
-psql -U postgres -f cloud-ai-rag-sample/init_ai_demo.sql
+psql -U postgres -f whatsmars-ai/init_ai_demo.sql
 ```
 
 
@@ -355,6 +363,82 @@ curl -X DELETE "http://localhost:8888/ai/rag/documents?source=spring-ai-docs"
 ```
 
 > 完整 RAG 流程：文档摄入 → TokenTextSplitter 自动分块 → PgVector 向量化存储 → 相似性检索 → 上下文增强 Prompt → LLM 生成。当知识库无相关文档时自动降级为纯 LLM 回答。
+
+---
+
+### Spring AI Alibaba Agent
+
+> 基于 Spring AI Alibaba 1.x 的 Agent Graph 框架，演示如何构建有状态的 ReAct 智能体。
+
+#### 核心特性
+
+- **ReactAgent**：基于 Graph 有状态工作流的 ReAct 推理循环
+- **MemorySaver**：内置记忆管理，支持多轮会话上下文保持
+- **线程隔离**：通过 `threadId` 实现多会话完全隔离
+- **工具集成**：复用 Spring AI `@Tool` 注解注册工具
+
+#### Agent 配置
+
+```java
+@Configuration
+public class AgentConfig {
+
+    @Bean
+    public ReactAgent chatbotReactAgent(ChatModel chatModel,
+                                        WhatsMarsTools whatsMarsTools,
+                                        MemorySaver memorySaver) {
+        ToolCallbackProvider toolCallbackProvider = MethodToolCallbackProvider.builder()
+                .toolObjects(whatsMarsTools)
+                .build();
+        ToolCallback[] tools = toolCallbackProvider.getToolCallbacks();
+        return ReactAgent.builder()
+                .name("WhatsMarsAgent")
+                .model(chatModel)
+                .instruction("You are a helpful assistant named WhatsMars AI.")
+                .enableLogging(true)
+                .saver(memorySaver)
+                .tools(tools)
+                .build();
+    }
+}
+```
+
+#### Agent 对话接口
+
+```java
+@RestController
+@RequestMapping("/api/agent")
+public class MyAgentController {
+
+    private final ReactAgent reactAgent;
+
+    // 简单对话
+    @GetMapping("/chat")
+    public String chat(@RequestParam String message) {
+        return reactAgent.call(message).getText();
+    }
+
+    // 带线程的多轮对话（会话隔离）
+    @GetMapping("/chat/thread")
+    public String chatWithThread(@RequestParam String message,
+                                 @RequestParam(defaultValue = "default") String threadId) {
+        RunnableConfig config = RunnableConfig.builder().threadId(threadId).build();
+        return reactAgent.call(message, config).getText();
+    }
+}
+```
+
+程序启动完成后会输出：
+
+```
+Application is ready!
+Chat with your agent: http://localhost:8888/chatui/index.html
+```
+
+直接在浏览器打开上述地址即可进行测试。
+
+> 与 Spring AI 原生 ReAct Agent 的区别：Spring AI Alibaba 的 ReactAgent 基于 Graph 有状态工作流，
+> 支持条件路由、中断恢复、多智能体编排等高级特性，更适合构建复杂 Agent 应用。
 
 ---
 
