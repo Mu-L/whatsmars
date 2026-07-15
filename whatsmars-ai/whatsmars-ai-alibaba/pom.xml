@@ -13,13 +13,11 @@
     <description>Spring AI Alibaba 功能演示模块</description>
 
     <dependencies>
-        <!-- Spring AI Alibaba Agent Framework -->
         <dependency>
             <groupId>com.alibaba.cloud.ai</groupId>
             <artifactId>spring-ai-alibaba-agent-framework</artifactId>
         </dependency>
 
-        <!-- DashScope Model Starter -->
         <dependency>
             <groupId>com.alibaba.cloud.ai</groupId>
             <artifactId>spring-ai-alibaba-starter-dashscope</artifactId>
@@ -29,6 +27,11 @@
         <dependency>
             <groupId>com.alibaba.cloud.ai</groupId>
             <artifactId>spring-ai-alibaba-studio</artifactId>
+        </dependency>
+
+        <dependency>
+            <groupId>org.springframework.ai</groupId>
+            <artifactId>spring-ai-starter-mcp-client</artifactId>
         </dependency>
 
         <dependency>

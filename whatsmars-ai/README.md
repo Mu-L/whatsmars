@@ -17,7 +17,7 @@
 
 ```yaml
 server:
-  port: 8888
+  port: 8083
 spring:
   ai:
     openai:
@@ -67,8 +67,8 @@ public class AiChatController {
 ```
 
 ```bash
-curl "http://localhost:8888/ai/chat?message=你好"
-curl "http://localhost:8888/ai/chat/stream?message=介绍一下武汉"
+curl "http://localhost:8083/ai/chat?message=你好"
+curl "http://localhost:8083/ai/chat/stream?message=介绍一下武汉"
 ```
 
 ---
@@ -96,8 +96,8 @@ public String creativeChat(@RequestParam String message) {
 ```
 
 ```bash
-curl "http://localhost:8888/ai/advanced/system-message?message=如何设计秒杀系统？"
-curl "http://localhost:8888/ai/advanced/creative?message=写一首春天的诗"
+curl "http://localhost:8083/ai/advanced/system-message?message=如何设计秒杀系统？"
+curl "http://localhost:8083/ai/advanced/creative?message=写一首春天的诗"
 ```
 
 ---
@@ -117,7 +117,7 @@ public String extractUserInfo(@RequestParam String text) {
 ```
 
 ```bash
-curl -X POST "http://localhost:8888/ai/structured/extract-user" \
+curl -X POST "http://localhost:8083/ai/structured/extract-user" \
   -d "text=我叫张三，今年25岁，软件工程师，喜欢编程和篮球"
 ```
 
@@ -147,7 +147,7 @@ public class ToolCallingService {
 **可用工具类：** `WeatherTools`（天气）、`TimeTools`（时间）、`SearchTools`（搜索）、`CalculatorTools`（计算）等
 
 ```bash
-curl "http://localhost:8888/ai/tool/weather?message=北京今天天气怎么样？"
+curl "http://localhost:8083/ai/tool/weather?message=北京今天天气怎么样？"
 ```
 
 ---
@@ -168,7 +168,7 @@ public String agentChat(@RequestParam String message) {
 ```
 
 ```bash
-curl "http://localhost:8888/ai/react-agent/chat?message=北京天气怎么样？适合出门吗？"
+curl "http://localhost:8083/ai/react-agent/chat?message=北京天气怎么样？适合出门吗？"
 ```
 
 ---
@@ -194,7 +194,7 @@ public String analyzeImageByUrl(@RequestParam String imageUrl) {
 ```
 
 ```bash
-curl -X POST "http://localhost:8888/ai/vision/analyze-url" \
+curl -X POST "http://localhost:8083/ai/vision/analyze-url" \
   -d "imageUrl=https://example.com/image.jpg"
 ```
 
@@ -265,9 +265,9 @@ public class DeepSeekController {
 ```
 
 ```bash
-curl "http://localhost:8888/deepseek/chat?message=你好"
-curl "http://localhost:8888/deepseek/chat/stream?message=武汉简介"
-curl "http://localhost:8888/deepseek/agent/chat?message=北京天气怎么样？"
+curl "http://localhost:8083/deepseek/chat?message=你好"
+curl "http://localhost:8083/deepseek/chat/stream?message=武汉简介"
+curl "http://localhost:8083/deepseek/agent/chat?message=北京天气怎么样？"
 ```
 
 ---
@@ -283,22 +283,22 @@ curl "http://localhost:8888/deepseek/agent/chat?message=北京天气怎么样？
 
 ```shell
 # 第 1 轮：告诉 AI 你的名字
-curl -X POST http://localhost:8888/ai/memory/chat \
+curl -X POST http://localhost:8083/ai/memory/chat \
   -H "Content-Type: application/json" \
   -d '{"conversationId":"session-001","message":"你好，我叫小明"}'
 
 # 第 2 轮：追问，AI 会记住上下文
-curl -X POST http://localhost:8888/ai/memory/chat \
+curl -X POST http://localhost:8083/ai/memory/chat \
   -H "Content-Type: application/json" \
   -d '{"conversationId":"session-001","message":"我叫什么名字？"}'
 
 # 不同会话完全隔离
-curl -X POST http://localhost:8888/ai/memory/chat \
+curl -X POST http://localhost:8083/ai/memory/chat \
   -H "Content-Type: application/json" \
   -d '{"conversationId":"session-002","message":"我叫什么名字？"}'
 
 # 清除会话记忆
-curl -X DELETE http://localhost:8888/ai/memory/session-001
+curl -X DELETE http://localhost:8083/ai/memory/session-001
 ```
 
 ---
@@ -315,17 +315,17 @@ curl -X DELETE http://localhost:8888/ai/memory/session-001
 
 ```shell
 # 产品描述生成
-curl -X POST http://localhost:8888/ai/prompt/product \
+curl -X POST http://localhost:8083/ai/prompt/product \
   -H "Content-Type: application/json" \
   -d '{"product":"Spring AI 实战手册","category":"技术书籍","tone":"专业且幽默"}'
 
 # 代码解释
-curl -X POST http://localhost:8888/ai/prompt/code \
+curl -X POST http://localhost:8083/ai/prompt/code \
   -H "Content-Type: application/json" \
   -d '{"code":"public record Point(int x, int y) {}","language":"Java","level":"初学者"}'
 
 # 自定义模板
-curl -X POST http://localhost:8888/ai/prompt/custom \
+curl -X POST http://localhost:8083/ai/prompt/custom \
   -H "Content-Type: application/json" \
   -d '{"template":"请用{language}写一个{function}的示例代码","variables":{"language":"Python","function":"快速排序"}}'
 ```
@@ -351,15 +351,15 @@ psql -U postgres -f whatsmars-ai/init_ai_demo.sql
 
 ```shell
 # 摄入文档
-curl -X POST http://localhost:8888/ai/rag/ingest \
+curl -X POST http://localhost:8083/ai/rag/ingest \
   -H "Content-Type: application/json" \
   -d '{"content":"Spring AI is a framework for building AI-native applications...","source":"spring-ai-docs"}'
 
 # RAG 查询（topK 控制检索文档数量，默认 3）
-curl --get --data-urlencode "question=What is Spring AI?" "http://localhost:8888/ai/rag/query?topK=3"
+curl --get --data-urlencode "question=What is Spring AI?" "http://localhost:8083/ai/rag/query?topK=3"
 
 # 删除指定来源文档
-curl -X DELETE "http://localhost:8888/ai/rag/documents?source=spring-ai-docs"
+curl -X DELETE "http://localhost:8083/ai/rag/documents?source=spring-ai-docs"
 ```
 
 > 完整 RAG 流程：文档摄入 → TokenTextSplitter 自动分块 → PgVector 向量化存储 → 相似性检索 → 上下文增强 Prompt → LLM 生成。当知识库无相关文档时自动降级为纯 LLM 回答。
@@ -432,7 +432,7 @@ public class MyAgentController {
 
 ```
 Application is ready!
-Chat with your agent: http://localhost:8888/chatui/index.html
+Chat with your agent: http://localhost:8081/chatui/index.html
 ```
 
 直接在浏览器打开上述地址即可进行测试。
@@ -518,8 +518,8 @@ public class ToolService {
 ```
 
 ```bash
-curl "http://localhost:8888/ai/function/chat?message=现在几点了？"
-curl "http://localhost:8888/ai/function/chat?message=北京天气怎么样？"
+curl "http://localhost:8083/ai/function/chat?message=现在几点了？"
+curl "http://localhost:8083/ai/function/chat?message=北京天气怎么样？"
 ```
 
 ---

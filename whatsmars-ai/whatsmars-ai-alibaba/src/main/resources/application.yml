@@ -1,5 +1,5 @@
 server:
-  port: 8082
+  port: 8081
 
 spring:
   application:
@@ -10,3 +10,11 @@ spring:
       chat:
         options:
           model: qwen-plus
+    mcp:
+      client:
+        enabled: true
+        type: SYNC
+        sse:
+          connections:
+            whatsmars-ai-spring:
+              url: http://localhost:8083/sse
