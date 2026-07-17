@@ -1,6 +1,7 @@
 package org.hongxi.whatsmars.ai.langchain4j;
 
 import dev.langchain4j.service.SystemMessage;
+import dev.langchain4j.service.TokenStream;
 import dev.langchain4j.service.spring.AiService;
 
 /**
@@ -21,5 +22,5 @@ public interface FunctionCallingAssistant {
      * @return AI 回复（可能包含工具调用结果）
      */
     @SystemMessage("你是一个智能助手，可以使用提供的工具来帮助用户。如果工具能提供准确信息，优先使用工具。")
-    String chat(String userMessage);
+    TokenStream chat(String userMessage);
 }

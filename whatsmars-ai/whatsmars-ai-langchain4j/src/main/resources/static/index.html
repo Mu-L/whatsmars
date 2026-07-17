@@ -1,0 +1,365 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>LangChain4j Demo - whatsmars</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/highlight.js@11/styles/github.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/marked@12/marked.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/highlight.js@11/highlight.min.js"></script>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; background: #f5f5f5; height: 100vh; display: flex; flex-direction: column; }
+        header { background: #1a1a2e; color: #fff; padding: 14px 24px; display: flex; align-items: center; gap: 12px; justify-content: center; }
+        header .header-inner { max-width: 900px; width: 100%; display: flex; align-items: center; gap: 12px; }
+        header h1 { font-size: 18px; font-weight: 600; }
+        header .badge { background: #00d2ff33; color: #00d2ff; font-size: 12px; padding: 2px 8px; border-radius: 10px; }
+
+        /* Tabs */
+        .tab-bar { background: #fff; border-bottom: 1px solid #e0e0e0; padding: 0 24px; display: flex; gap: 0; overflow-x: auto; justify-content: center; }
+        .tab-bar .tab-inner { max-width: 900px; width: 100%; display: flex; gap: 0; }
+        .tab-btn { padding: 12px 18px; font-size: 13px; font-weight: 500; color: #666; background: none; border: none; border-bottom: 2px solid transparent; cursor: pointer; white-space: nowrap; transition: all 0.2s; }
+        .tab-btn:hover { color: #333; }
+        .tab-btn.active { color: #1a73e8; border-bottom-color: #1a73e8; }
+
+        /* Tab content */
+        .tab-content { flex: 1; overflow-y: auto; padding: 24px; display: none; flex-direction: column; }
+        .tab-content.active { display: flex; }
+        .tab-content .content-inner { max-width: 900px; width: 100%; margin: 0 auto; display: flex; flex-direction: column; gap: 16px; }
+
+        /* Description */
+        .desc { background: #e8f0fe; border-radius: 8px; padding: 12px 16px; font-size: 13px; color: #1a4a8a; line-height: 1.6; }
+        .desc code { background: #d2e3fc; padding: 1px 5px; border-radius: 3px; font-size: 12px; }
+
+        /* Chat messages */
+        .msg-area { flex: 1; min-height: 200px; display: flex; flex-direction: column; gap: 12px; }
+        .msg { padding: 12px 16px; border-radius: 12px; line-height: 1.6; font-size: 14px; word-break: break-word; }
+        .msg.user { max-width: 75%; align-self: flex-end; background: #1a73e8; color: #fff; border-bottom-right-radius: 4px; white-space: pre-wrap; }
+        .msg.assistant { width: 100%; background: #fff; color: #333; border-bottom-left-radius: 4px; box-shadow: 0 1px 3px rgba(0,0,0,0.1); }
+        .msg.error { background: #fce8e6; color: #c5221f; }
+
+        /* Markdown */
+        .md-content h1, .md-content h2, .md-content h3 { margin: 12px 0 6px; font-weight: 600; }
+        .md-content h1 { font-size: 1.4em; } .md-content h2 { font-size: 1.2em; } .md-content h3 { font-size: 1.1em; }
+        .md-content p { margin: 6px 0; }
+        .md-content ul, .md-content ol { padding-left: 1.8em; margin: 6px 0; }
+        .md-content pre { background: #f6f8fa; border-radius: 6px; padding: 10px; overflow-x: auto; margin: 6px 0; font-size: 13px; }
+        .md-content code { font-family: "SFMono-Regular", Consolas, monospace; font-size: 0.9em; }
+        .md-content :not(pre) > code { background: #f0f0f0; padding: 2px 5px; border-radius: 3px; }
+        .md-content table { border-collapse: collapse; margin: 6px 0; width: 100%; }
+        .md-content th, .md-content td { border: 1px solid #ddd; padding: 5px 10px; text-align: left; }
+        .md-content th { background: #f6f8fa; }
+
+        /* Input area */
+        .input-area { padding: 16px 24px; background: #fff; border-top: 1px solid #e0e0e0; display: flex; gap: 10px; align-items: flex-end; justify-content: center; }
+        .input-area .input-inner { max-width: 900px; width: 100%; display: flex; gap: 10px; align-items: flex-end; }
+        .input-area textarea { flex: 1; border: 1px solid #ddd; border-radius: 8px; padding: 10px 14px; font-size: 14px; font-family: inherit; resize: none; outline: none; min-height: 44px; max-height: 120px; line-height: 1.5; }
+        .input-area textarea:focus { border-color: #1a73e8; }
+        .input-area button { background: #1a73e8; color: #fff; border: none; border-radius: 8px; padding: 10px 20px; font-size: 14px; cursor: pointer; white-space: nowrap; height: 44px; }
+        .input-area button:hover { background: #1557b0; }
+        .input-area button:disabled { background: #ccc; cursor: not-allowed; }
+
+        /* Session bar for memory tab */
+        .session-bar { padding: 8px 24px; background: #fff; border-bottom: 1px solid #e0e0e0; display: flex; align-items: center; gap: 8px; font-size: 13px; color: #666; justify-content: center; }
+        .session-bar .session-inner { max-width: 900px; width: 100%; display: flex; align-items: center; gap: 8px; }
+        .session-bar input { border: 1px solid #ddd; border-radius: 4px; padding: 4px 8px; font-size: 13px; width: 160px; outline: none; }
+        .session-bar input:focus { border-color: #1a73e8; }
+        .session-bar button { background: none; border: 1px solid #ddd; border-radius: 4px; padding: 4px 10px; font-size: 13px; cursor: pointer; color: #666; }
+        .session-bar button:hover { background: #f5f5f5; }
+
+        .typing-indicator { display: inline-block; }
+        .typing-indicator span { display: inline-block; width: 6px; height: 6px; background: #999; border-radius: 50%; margin: 0 2px; animation: bounce 1.4s infinite both; }
+        .typing-indicator span:nth-child(2) { animation-delay: 0.2s; }
+        .typing-indicator span:nth-child(3) { animation-delay: 0.4s; }
+        @keyframes bounce { 0%, 80%, 100% { transform: scale(0); } 40% { transform: scale(1); } }
+
+        /* Quick examples */
+        .examples { display: flex; flex-wrap: wrap; gap: 8px; }
+        .examples button { background: #f0f4ff; border: 1px solid #d2e3fc; border-radius: 16px; padding: 6px 14px; font-size: 12px; color: #1a73e8; cursor: pointer; transition: all 0.2s; }
+        .examples button:hover { background: #d2e3fc; }
+    </style>
+</head>
+<body>
+    <header><div class="header-inner">
+        <h1>LangChain4j Demo</h1>
+        <span class="badge">whatsmars-ai</span>
+    </div></header>
+
+    <div class="tab-bar"><div class="tab-inner">
+        <button class="tab-btn active" onclick="switchTab('simple')">基础对话</button>
+        <button class="tab-btn" onclick="switchTab('stream')">流式对话</button>
+        <button class="tab-btn" onclick="switchTab('function')">函数调用</button>
+        <button class="tab-btn" onclick="switchTab('rag')">RAG 问答</button>
+        <button class="tab-btn" onclick="switchTab('memory')">对话记忆</button>
+    </div></div>
+
+    <!-- 基础对话 -->
+    <div id="tab-simple" class="tab-content active">
+        <div class="content-inner">
+            <div class="desc">基础 AI 对话接口，调用 <code>GET /ai/chat?message=...</code> 返回完整回复。</div>
+            <div class="examples">
+                <button onclick="quickSend('simple','你好，请介绍一下你自己')">你好，介绍下自己</button>
+                <button onclick="quickSend('simple','Java 17 有哪些新特性？')">Java 17 新特性</button>
+                <button onclick="quickSend('simple','用一句话解释什么是微服务')">什么是微服务</button>
+            </div>
+            <div class="msg-area" id="msgs-simple"></div>
+        </div>
+    </div>
+
+    <!-- 流式对话 -->
+    <div id="tab-stream" class="tab-content">
+        <div class="content-inner">
+            <div class="desc">基于 TokenStream + SSE 实现流式输出，调用 <code>GET /ai/stream/chat?message=...</code>，实时显示 AI 逐字回复。</div>
+            <div class="examples">
+                <button onclick="quickSend('stream','写一首关于编程的短诗')">写一首编程诗</button>
+                <button onclick="quickSend('stream','用200字介绍 Spring Boot')">介绍 Spring Boot</button>
+            </div>
+            <div class="msg-area" id="msgs-stream"></div>
+        </div>
+    </div>
+
+    <!-- 函数调用 -->
+    <div id="tab-function" class="tab-content">
+        <div class="content-inner">
+            <div class="desc">AI 根据问题自动调用工具函数，调用 <code>GET /ai/function/chat?message=...</code>，流式输出。<br>
+            可用工具：获取当前时间/日期、加减乘除、天气查询、字符串操作等。</div>
+            <div class="examples">
+                <button onclick="quickSend('function','现在几点了？')">现在几点了？</button>
+                <button onclick="quickSend('function','今天日期是多少？')">今天日期</button>
+                <button onclick="quickSend('function','计算 123 + 456')">计算 123+456</button>
+                <button onclick="quickSend('function','北京天气怎么样？')">北京天气</button>
+                <button onclick="quickSend('function','把 hello world 反转')">反转字符串</button>
+            </div>
+            <div class="msg-area" id="msgs-function"></div>
+        </div>
+    </div>
+
+    <!-- RAG 问答 -->
+    <div id="tab-rag" class="tab-content">
+        <div class="content-inner">
+            <div class="desc">基于知识库的检索增强生成（RAG），调用 <code>GET /ai/rag/chat?message=...</code>，流式实时输出。<br>
+            知识库包含 Spring Boot 核心知识和 Java 并发编程文档，AI 先检索相关内容再逐字回答。</div>
+            <div class="examples">
+                <button onclick="quickSend('rag','Spring Boot 有哪些核心特性？')">Spring Boot 核心特性</button>
+                <button onclick="quickSend('rag','什么是 ConcurrentHashMap？')">ConcurrentHashMap</button>
+                <button onclick="quickSend('rag','线程池的核心参数有哪些？')">线程池参数</button>
+                <button onclick="quickSend('rag','阿里巴巴规范为什么不推荐用 Executors？')">Executors 问题</button>
+            </div>
+            <div class="msg-area" id="msgs-rag"></div>
+        </div>
+    </div>
+
+    <!-- 对话记忆 -->
+    <div id="tab-memory" class="tab-content">
+        <div class="content-inner">
+            <div class="desc">基于 <code>@MemoryId</code> 的多轮对话记忆，流式输出，调用 <code>GET /ai/memory/chat?sessionId=...&message=...</code>。<br>
+            相同 sessionId 的对话会保留上下文，不同 sessionId 互相隔离。</div>
+            <div class="examples">
+                <button onclick="quickSend('memory','你好，我叫张三')">你好，我叫张三</button>
+                <button onclick="quickSend('memory','我叫什么名字？')">我叫什么名字？</button>
+                <button onclick="quickSend('memory','我最擅长什么技术？')">我最擅长什么？</button>
+            </div>
+            <div class="msg-area" id="msgs-memory"></div>
+        </div>
+    </div>
+
+    <!-- Session bar (only for memory tab) -->
+    <div class="session-bar" id="session-bar" style="display:none;">
+        <div class="session-inner">
+            <label>Session ID:</label>
+            <input type="text" id="session-id" value="user1" placeholder="session id">
+            <button onclick="clearChat('memory')">清空对话</button>
+        </div>
+    </div>
+
+    <!-- Input area -->
+    <div class="input-area">
+        <div class="input-inner">
+            <textarea id="user-input" placeholder="输入消息，Enter 发送，Shift+Enter 换行..." rows="1"></textarea>
+            <button id="send-btn" onclick="sendMessage()">发送</button>
+            <button onclick="clearCurrentTab()" style="background:#f5f5f5;color:#666;border:1px solid #ddd;">清空</button>
+        </div>
+    </div>
+
+    <script>
+        let currentTab = 'simple';
+        const userInput = document.getElementById('user-input');
+        const sendBtn = document.getElementById('send-btn');
+
+        // Configure marked
+        if (typeof marked !== 'undefined') { marked.setOptions({ breaks: true }); }
+
+        // Auto-resize textarea
+        userInput.addEventListener('input', function() {
+            this.style.height = 'auto';
+            this.style.height = Math.min(this.scrollHeight, 120) + 'px';
+        });
+
+        // Enter to send
+        userInput.addEventListener('keydown', function(e) {
+            if (e.key === 'Enter' && !e.shiftKey) { e.preventDefault(); sendMessage(); }
+        });
+
+        function switchTab(tab) {
+            currentTab = tab;
+            document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+            document.querySelectorAll('.tab-content').forEach(c => c.classList.remove('active'));
+            document.querySelector('.tab-btn[onclick*="\'' + tab + '\'"]').classList.add('active');
+            document.getElementById('tab-' + tab).classList.add('active');
+            document.getElementById('session-bar').style.display = tab === 'memory' ? 'flex' : 'none';
+            userInput.focus();
+        }
+
+        function quickSend(tab, message) {
+            switchTab(tab);
+            userInput.value = message;
+            sendMessage();
+        }
+
+        function clearCurrentTab() {
+            const msgArea = document.getElementById('msgs-' + currentTab);
+            if (msgArea) msgArea.innerHTML = '';
+        }
+
+        function clearChat(tab) {
+            const msgArea = document.getElementById('msgs-' + tab);
+            if (msgArea) msgArea.innerHTML = '';
+        }
+
+        function addMessage(tab, role, text) {
+            const msgArea = document.getElementById('msgs-' + tab);
+            const div = document.createElement('div');
+            div.className = 'msg ' + role;
+            if (role === 'user') {
+                div.textContent = text;
+            } else if (role === 'error') {
+                div.textContent = '⚠️ ' + text;
+            } else {
+                renderMarkdown(div, text);
+            }
+            msgArea.appendChild(div);
+            msgArea.scrollTop = msgArea.scrollHeight;
+            return div;
+        }
+
+        function renderMarkdown(el, text) {
+            if (typeof marked !== 'undefined') {
+                el.innerHTML = '<div class="md-content">' + marked.parse(text) + '</div>';
+                if (typeof hljs !== 'undefined') {
+                    el.querySelectorAll('pre code').forEach(function(block) { hljs.highlightElement(block); });
+                }
+            } else {
+                el.textContent = text;
+            }
+        }
+
+        function sendMessage() {
+            const message = userInput.value.trim();
+            if (!message) return;
+
+            const tab = currentTab;
+            addMessage(tab, 'user', message);
+            userInput.value = '';
+            userInput.style.height = 'auto';
+            sendBtn.disabled = true;
+
+            if (tab === 'stream' || tab === 'rag' || tab === 'function' || tab === 'memory') {
+                let url;
+                if (tab === 'memory') {
+                    const sessionId = document.getElementById('session-id').value.trim() || 'default';
+                    url = '/ai/memory/chat?sessionId=' + encodeURIComponent(sessionId) + '&message=' + encodeURIComponent(message);
+                } else {
+                    const endpoints = { stream: '/ai/stream/chat', rag: '/ai/rag/chat', function: '/ai/function/chat' };
+                    url = endpoints[tab] + '?message=' + encodeURIComponent(message);
+                }
+                sendStreamRequest(message, url, tab);
+            } else {
+                sendSimpleRequest(tab, message);
+            }
+        }
+
+        // Simple - single request
+        function sendSimpleRequest(tab, message) {
+            const endpoints = { simple: '/ai/chat' };
+            const url = endpoints[tab] + '?message=' + encodeURIComponent(message);
+
+            // Show typing indicator
+            const msgDiv = addMessage(tab, 'assistant', '');
+            const indicator = document.createElement('div');
+            indicator.className = 'typing-indicator';
+            indicator.innerHTML = '<span></span><span></span><span></span>';
+            msgDiv.appendChild(indicator);
+
+            fetch(url)
+                .then(r => { if (!r.ok) throw new Error('HTTP ' + r.status); return r.text(); })
+                .then(text => {
+                    indicator.remove();
+                    renderMarkdown(msgDiv, text);
+                    sendBtn.disabled = false;
+                    userInput.focus();
+                })
+                .catch(err => {
+                    indicator.remove();
+                    msgDiv.className = 'msg error';
+                    msgDiv.textContent = '⚠️ 请求失败: ' + err.message;
+                    sendBtn.disabled = false;
+                    userInput.focus();
+                });
+        }
+
+        // Stream - SSE (reusable for stream / rag / function / memory tabs)
+        // url is already built by caller (some tabs need extra params like sessionId)
+        function sendStreamRequest(message, url, tab) {
+            const msgArea = document.getElementById('msgs-' + tab);
+
+            const msgDiv = document.createElement('div');
+            msgDiv.className = 'msg assistant';
+            msgArea.appendChild(msgDiv);
+
+            const indicator = document.createElement('div');
+            indicator.className = 'typing-indicator';
+            indicator.innerHTML = '<span></span><span></span><span></span>';
+            msgDiv.appendChild(indicator);
+
+            let rawText = '';
+            const eventSource = new EventSource(url);
+
+            eventSource.onmessage = function(e) {
+                if (indicator.parentNode) indicator.remove();
+                rawText += e.data;
+                renderMarkdown(msgDiv, rawText);
+                msgArea.scrollTop = msgArea.scrollHeight;
+            };
+
+            eventSource.addEventListener('error', function() {
+                if (indicator.parentNode) indicator.remove();
+                if (!rawText.trim()) {
+                    msgDiv.className = 'msg error';
+                    msgDiv.textContent = '⚠️ 连接中断，请重试';
+                }
+                eventSource.close();
+                sendBtn.disabled = false;
+                userInput.focus();
+            });
+
+            // SSE complete: EventSource will fire error when server closes
+            // We use a workaround: check if connection is closed
+            const origOnError = eventSource.onerror;
+            eventSource.onerror = function(e) {
+                if (indicator.parentNode) indicator.remove();
+                if (rawText) {
+                    renderMarkdown(msgDiv, rawText);
+                } else {
+                    msgDiv.className = 'msg error';
+                    msgDiv.textContent = '⚠️ 连接失败';
+                }
+                eventSource.close();
+                sendBtn.disabled = false;
+                userInput.focus();
+            };
+        }
+
+        userInput.focus();
+    </script>
+</body>
+</html>
