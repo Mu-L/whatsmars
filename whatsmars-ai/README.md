@@ -195,7 +195,7 @@ public String analyzeImageByUrl(@RequestParam String imageUrl) {
 
 ```bash
 curl -X POST "http://localhost:8083/ai/vision/analyze-url" \
-  -d "imageUrl=https://example.com/image.jpg"
+  -d "imageUrl=https://imagecloud.thepaper.cn/thepaper/image/333/857/150.jpg"
 ```
 
 ---
