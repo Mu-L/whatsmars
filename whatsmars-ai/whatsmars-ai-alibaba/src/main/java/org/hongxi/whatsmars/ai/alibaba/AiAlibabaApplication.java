@@ -7,6 +7,7 @@ import org.springframework.context.ApplicationListener;
 import org.springframework.context.annotation.Bean;
 import org.springframework.core.env.Environment;
 
+import java.awt.*;
 import java.net.HttpURLConnection;
 import java.net.URI;
 
@@ -76,6 +77,18 @@ public class AiAlibabaApplication {
             System.out.println("Application is ready!");
             System.out.println("Chat with your agent: " + accessUrl);
             System.out.println("========================================\n");
+            try {
+                String os = System.getProperty("os.name").toLowerCase();
+                if (os.contains("mac")) {
+                    Runtime.getRuntime().exec(new String[]{"open", accessUrl});
+                } else if (os.contains("win")) {
+                    Runtime.getRuntime().exec(new String[]{"cmd", "/c", "start", accessUrl});
+                } else if (Desktop.isDesktopSupported()) {
+                    Desktop.getDesktop().browse(new URI(accessUrl));
+                }
+            } catch (Exception e) {
+                System.out.println("自动打开浏览器失败，请手动访问: " + accessUrl);
+            }
         };
     }
 }
