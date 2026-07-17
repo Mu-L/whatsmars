@@ -494,24 +494,63 @@
                 const reader = response.body.getReader();
                 const decoder = new TextDecoder();
                 let rawText = '';
+                let sseBuffer = '';
+                let eventData = '';  // accumulated data for current SSE event
+                let inDataEvent = false;
+
+                function processLines(lines, isLast) {
+                    for (let i = 0; i < lines.length; i++) {
+                        const line = lines[i];
+                        if (line.startsWith('data:')) {
+                            const content = line.substring(5);
+                            if (inDataEvent) {
+                                // continuation of multi-line data field
+                                eventData += '\n' + content;
+                            } else {
+                                // start of new data event
+                                eventData = content;
+                                inDataEvent = true;
+                            }
+                        } else if (line.trim() === '') {
+                            // empty line = event boundary
+                            if (inDataEvent) {
+                                rawText += eventData;
+                                eventData = '';
+                                inDataEvent = false;
+                            }
+                        } else {
+                            // non-SSE line (comment, event:, id:, etc.) - skip
+                            // but if we're in a data event, this might be continuation
+                            if (inDataEvent) {
+                                eventData += '\n' + line;
+                            }
+                        }
+                    }
+                }
 
                 function read() {
                     reader.read().then(({ done, value }) => {
                         if (indicator.parentNode) indicator.remove();
                         if (done) {
+                            // flush remaining buffer
+                            if (sseBuffer.length > 0) {
+                                processLines([sseBuffer], true);
+                                sseBuffer = '';
+                            }
+                            // flush any pending event data
+                            if (inDataEvent) {
+                                rawText += eventData;
+                            }
                             renderMarkdown(msgDiv, rawText);
                             sendBtn.disabled = false;
                             userInput.focus();
                             return;
                         }
-                        const chunk = decoder.decode(value, { stream: true });
-                        // Parse SSE lines
-                        const lines = chunk.split('\n');
-                        for (const line of lines) {
-                            if (line.startsWith('data:')) {
-                                rawText += line.substring(5).trimStart();
-                            }
-                        }
+                        sseBuffer += decoder.decode(value, { stream: true });
+                        const lines = sseBuffer.split('\n');
+                        sseBuffer = lines.pop(); // keep incomplete line
+
+                        processLines(lines, false);
                         renderMarkdown(msgDiv, rawText);
                         msgArea.scrollTop = msgArea.scrollHeight;
                         read();
@@ -630,23 +669,56 @@
                 const reader = response.body.getReader();
                 const decoder = new TextDecoder();
                 let rawText = '';
+                let sseBuffer = '';
+                let eventData = '';
+                let inDataEvent = false;
+
+                function processLines(lines) {
+                    for (let i = 0; i < lines.length; i++) {
+                        const line = lines[i];
+                        if (line.startsWith('data:')) {
+                            const content = line.substring(5);
+                            if (inDataEvent) {
+                                eventData += '\n' + content;
+                            } else {
+                                eventData = content;
+                                inDataEvent = true;
+                            }
+                        } else if (line.trim() === '') {
+                            if (inDataEvent) {
+                                rawText += eventData;
+                                eventData = '';
+                                inDataEvent = false;
+                            }
+                        } else {
+                            if (inDataEvent) {
+                                eventData += '\n' + line;
+                            }
+                        }
+                    }
+                }
 
                 function read() {
                     reader.read().then(({ done, value }) => {
                         if (indicator.parentNode) indicator.remove();
                         if (done) {
+                            if (sseBuffer.length > 0) {
+                                processLines([sseBuffer]);
+                                sseBuffer = '';
+                            }
+                            if (inDataEvent) {
+                                rawText += eventData;
+                            }
                             renderMarkdown(msgDiv, rawText);
                             sendBtn.disabled = false;
                             userInput.focus();
                             return;
                         }
-                        const chunk = decoder.decode(value, { stream: true });
-                        const lines = chunk.split('\n');
-                        for (const line of lines) {
-                            if (line.startsWith('data:')) {
-                                rawText += line.substring(5).trimStart();
-                            }
-                        }
+                        sseBuffer += decoder.decode(value, { stream: true });
+                        const lines = sseBuffer.split('\n');
+                        sseBuffer = lines.pop();
+
+                        processLines(lines);
                         renderMarkdown(msgDiv, rawText);
                         msgArea.scrollTop = msgArea.scrollHeight;
                         read();
