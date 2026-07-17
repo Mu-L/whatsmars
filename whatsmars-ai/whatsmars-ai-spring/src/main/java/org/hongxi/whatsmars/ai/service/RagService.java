@@ -9,6 +9,7 @@ import org.springframework.ai.transformer.splitter.TokenTextSplitter;
 import org.springframework.ai.vectorstore.SearchRequest;
 import org.springframework.ai.vectorstore.VectorStore;
 import org.springframework.stereotype.Service;
+import reactor.core.publisher.Flux;
 
 import java.util.List;
 import java.util.stream.Collectors;
@@ -104,6 +105,53 @@ public class RagService {
                 .user(augmentedPrompt)
                 .options(OpenAiChatOptions.builder().temperature(0.2).build())
                 .call()
+                .content();
+    }
+
+    /**
+     * RAG 查询（流式）：检索相关文档并增强 LLM 回答，流式输出
+     *
+     * @param question 用户问题
+     * @param topK     返回的最相关文档数量
+     * @return 流式 LLM 回答
+     */
+    public Flux<String> queryStream(String question, int topK) {
+        List<Document> docs = vectorStore.similaritySearch(
+                SearchRequest.builder()
+                        .query(question)
+                        .topK(topK)
+                        .build()
+        );
+
+        String context;
+        if (docs.isEmpty()) {
+            log.info("未找到相关文档，question={}", question);
+            context = "";
+        } else {
+            context = docs.stream()
+                    .map(Document::getText)
+                    .collect(Collectors.joining("\n\n---\n\n"));
+            log.info("RAG 检索到 {} 个文档片段，question={}", docs.size(), question);
+        }
+
+        String augmentedPrompt = context.isEmpty()
+                ? "基于已有知识回答：" + question
+                : """
+                你是一个知识问答助手。请基于以下参考资料回答用户问题。
+                尽量从参考资料中提取有用信息进行回答，如果参考资料与问题的关联度较低，
+                可以结合你的知识补充回答，但需注明哪些内容来自参考资料、哪些是你的补充。
+                
+                【参考资料】
+                %s
+                
+                【用户问题】
+                %s
+                """.formatted(context, question);
+
+        return chatClient.prompt()
+                .user(augmentedPrompt)
+                .options(OpenAiChatOptions.builder().temperature(0.2).build())
+                .stream()
                 .content();
     }
 

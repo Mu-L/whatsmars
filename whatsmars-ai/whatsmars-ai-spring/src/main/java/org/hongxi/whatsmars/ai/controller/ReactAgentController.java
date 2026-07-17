@@ -7,10 +7,13 @@ import org.hongxi.whatsmars.ai.tool.WeatherTools;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.ai.chat.client.ChatClient;
+import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
+import reactor.core.publisher.Flux;
 
 /**
  * ReAct Agent 控制器
@@ -71,9 +74,9 @@ public class ReactAgentController {
      * @return Agent 的回答和思考过程
      */
     @GetMapping("/chat")
-    public String agentChat(@RequestParam String message) {
+    public ResponseEntity<Flux<String>> agentChat(@RequestParam String message) {
         log.info("Agent 收到问题: {}", message);
-        String response = chatClient.prompt()
+        Flux<String> stream = chatClient.prompt()
                 .system("""
                         你是一个智能助手，可以使用各种工具来帮助用户解决问题。
                         
@@ -92,10 +95,13 @@ public class ReactAgentController {
                         """)
                 .user(message)
                 .tools(weatherTools, searchTools, timeTools, calculatorTools)
-                .call()
-                .content();
-        log.info("Agent 回复: {}", response);
-        return response;
+                .stream()
+                .content()
+                .doOnComplete(() -> log.info("Agent 流式回复完成"));
+        return ResponseEntity.ok()
+                .contentType(MediaType.valueOf("text/event-stream;charset=UTF-8"))
+                .header("Cache-Control", "no-cache")
+                .body(stream);
     }
 
     /**
@@ -108,9 +114,9 @@ public class ReactAgentController {
      * @return 任务执行结果
      */
     @GetMapping("/complex-task")
-    public String handleComplexTask(@RequestParam String message) {
+    public ResponseEntity<Flux<String>> handleComplexTask(@RequestParam String message) {
         log.info("Agent 收到复杂任务: {}", message);
-        String response = chatClient.prompt()
+        Flux<String> stream = chatClient.prompt()
                 .system("""
                         你是一个强大的 AI Agent，擅长解决复杂问题。
                         
@@ -126,10 +132,13 @@ public class ReactAgentController {
                         """)
                 .user(message)
                 .tools(weatherTools, searchTools, timeTools, calculatorTools)
-                .call()
-                .content();
-        log.info("Agent 完成复杂任务");
-        return response;
+                .stream()
+                .content()
+                .doOnComplete(() -> log.info("Agent 复杂任务流式完成"));
+        return ResponseEntity.ok()
+                .contentType(MediaType.valueOf("text/event-stream;charset=UTF-8"))
+                .header("Cache-Control", "no-cache")
+                .body(stream);
     }
 
     /**
@@ -143,11 +152,9 @@ public class ReactAgentController {
      * @return 回复消息
      */
     @GetMapping("/contextual-chat")
-    public String contextualChat(@RequestParam String message,
+    public ResponseEntity<Flux<String>> contextualChat(@RequestParam String message,
                                        @RequestParam(required = false, defaultValue = "default") String contextId) {
-        // 在实际项目中，应该使用 ChatMemory 来管理对话历史
-        // 这里简化处理，仅展示概念
-        String response = chatClient.prompt()
+        Flux<String> stream = chatClient.prompt()
                 .system("""
                         你是一个智能对话助手，可以进行多轮对话。
                         请记住用户之前提到的信息，并在后续对话中合理利用。
@@ -156,10 +163,12 @@ public class ReactAgentController {
                         """)
                 .user(message)
                 .tools(weatherTools, searchTools, timeTools, calculatorTools)
-                .call()
+                .stream()
                 .content();
-
-        return response;
+        return ResponseEntity.ok()
+                .contentType(MediaType.valueOf("text/event-stream;charset=UTF-8"))
+                .header("Cache-Control", "no-cache")
+                .body(stream);
     }
 
     /**

@@ -7,6 +7,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.ai.chat.client.ChatClient;
 import org.springframework.stereotype.Service;
+import reactor.core.publisher.Flux;
 
 /**
  * Tool Calling（工具调用）服务
@@ -114,5 +115,42 @@ public class ToolCallingService {
         log.info("AI 回复: {}", response);
 
         return response;
+    }
+
+    /**
+     * 天气查询 - 流式
+     */
+    public Flux<String> getWeatherStream(String message) {
+        log.info("天气流式查询: {}", message);
+        return chatClient.prompt()
+                .user(message)
+                .tools(weatherTools)
+                .stream()
+                .content();
+    }
+
+    /**
+     * 时间查询 - 流式
+     */
+    public Flux<String> getTimeStream(String message) {
+        log.info("时间流式查询: {}", message);
+        return chatClient.prompt()
+                .user(message)
+                .tools(timeTools)
+                .stream()
+                .content();
+    }
+
+    /**
+     * 智能助手 - 流式
+     */
+    public Flux<String> smartAssistantStream(String message) {
+        log.info("智能助手流式收到问题: {}", message);
+        return chatClient.prompt()
+                .system("你是一个智能助手，可以根据用户的问题自动调用合适的工具来获取信息。请用中文回答。")
+                .user(message)
+                .tools(weatherTools, timeTools, userTools)
+                .stream()
+                .content();
     }
 }

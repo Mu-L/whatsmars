@@ -1,7 +1,10 @@
 package org.hongxi.whatsmars.ai.controller;
 
 import org.hongxi.whatsmars.ai.service.ToolCallingService;
+import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import reactor.core.publisher.Flux;
 
 /**
  * Tool Calling（工具调用）示例控制器
@@ -37,8 +40,12 @@ public class ToolCallingController {
      * @return AI 回复
      */
     @GetMapping("/weather")
-    public String getWeather(@RequestParam String message) {
-        return toolCallingService.getWeather(message);
+    public ResponseEntity<Flux<String>> getWeather(@RequestParam String message) {
+        Flux<String> stream = toolCallingService.getWeatherStream(message);
+        return ResponseEntity.ok()
+                .contentType(MediaType.valueOf("text/event-stream;charset=UTF-8"))
+                .header("Cache-Control", "no-cache")
+                .body(stream);
     }
 
     /**
@@ -51,8 +58,12 @@ public class ToolCallingController {
      * @return AI 回复
      */
     @GetMapping("/time")
-    public String getTime(@RequestParam String message) {
-        return toolCallingService.getTime(message);
+    public ResponseEntity<Flux<String>> getTime(@RequestParam String message) {
+        Flux<String> stream = toolCallingService.getTimeStream(message);
+        return ResponseEntity.ok()
+                .contentType(MediaType.valueOf("text/event-stream;charset=UTF-8"))
+                .header("Cache-Control", "no-cache")
+                .body(stream);
     }
 
     /**
@@ -68,7 +79,11 @@ public class ToolCallingController {
      * @return AI 回复
      */
     @GetMapping("/ask")
-    public String smartAssistant(@RequestParam String message) {
-        return toolCallingService.smartAssistant(message);
+    public ResponseEntity<Flux<String>> smartAssistant(@RequestParam String message) {
+        Flux<String> stream = toolCallingService.smartAssistantStream(message);
+        return ResponseEntity.ok()
+                .contentType(MediaType.valueOf("text/event-stream;charset=UTF-8"))
+                .header("Cache-Control", "no-cache")
+                .body(stream);
     }
 }

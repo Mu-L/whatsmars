@@ -7,7 +7,10 @@ import org.springframework.ai.chat.messages.AssistantMessage;
 import org.springframework.ai.chat.messages.Message;
 import org.springframework.ai.chat.messages.UserMessage;
 import org.springframework.ai.openai.OpenAiChatOptions;
+import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import reactor.core.publisher.Flux;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -44,19 +47,21 @@ public class AdvancedChatController {
      * @return AI 回复
      */
     @PostMapping("/system-message")
-    public String chatWithSystemMessage(@RequestParam String message) {
+    public ResponseEntity<Flux<String>> chatWithSystemMessage(@RequestParam String message) {
         log.info("System Message 对话: {}", message);
 
-        String response = chatClient.prompt()
+        Flux<String> stream = chatClient.prompt()
                 .system("你是一个资深的 Java 架构师，擅长设计高并发、高可用的分布式系统。回答要专业、深入。")
-                .options(OpenAiChatOptions.builder().temperature(0.4).build()) // 低温度=更准确、更快回答
+                .options(OpenAiChatOptions.builder().temperature(0.4).build())
                 .user(message)
-                .call()
-                .content();
+                .stream()
+                .content()
+                .doOnComplete(() -> log.info("System Message 流式对话完成"));
 
-        log.info("AI 回复: {}", response);
-
-        return response;
+        return ResponseEntity.ok()
+                .contentType(MediaType.valueOf("text/event-stream;charset=UTF-8"))
+                .header("Cache-Control", "no-cache")
+                .body(stream);
     }
 
     /**
@@ -66,10 +71,10 @@ public class AdvancedChatController {
      * @return AI 回复
      */
     @PostMapping("/few-shot")
-    public String fewShotPrompting(@RequestParam String message) {
+    public ResponseEntity<Flux<String>> fewShotPrompting(@RequestParam String message) {
         log.info("Few-shot 提示: {}", message);
 
-        String response = chatClient.prompt()
+        Flux<String> stream = chatClient.prompt()
                 .system("""
                         你是一个代码翻译助手，请将用户的自然语言转换为 Java 代码。
                         
@@ -84,12 +89,14 @@ public class AdvancedChatController {
                         现在请处理用户的请求：
                         """)
                 .user(message)
-                .call()
-                .content();
+                .stream()
+                .content()
+                .doOnComplete(() -> log.info("Few-shot 流式对话完成"));
 
-        log.info("AI 回复: {}", response);
-
-        return response;
+        return ResponseEntity.ok()
+                .contentType(MediaType.valueOf("text/event-stream;charset=UTF-8"))
+                .header("Cache-Control", "no-cache")
+                .body(stream);
     }
 
     /**
@@ -99,13 +106,14 @@ public class AdvancedChatController {
      * @return AI 回复
      */
     @PostMapping("/conversation")
-    public String conversation(@RequestParam String message) {
+    public ResponseEntity<Flux<String>> conversation(@RequestParam String message) {
         log.info("多轮对话 - 当前消息: {}", message);
 
         List<Message> messages = new ArrayList<>();
         messages.addAll(userMessages);
         messages.addAll(assistantMessages);
 
+        // 先同步获取回复以维护上下文
         String response = chatClient.prompt()
                 .messages(messages)
                 .user(message)
@@ -121,7 +129,11 @@ public class AdvancedChatController {
             assistantMessages.add(AssistantMessage.builder().content(response).build());
         }
 
-        return response;
+        // 返回 Flux 以兼容 SSE 响应
+        return ResponseEntity.ok()
+                .contentType(MediaType.valueOf("text/event-stream;charset=UTF-8"))
+                .header("Cache-Control", "no-cache")
+                .body(Flux.just(response));
     }
 
     /**
@@ -131,18 +143,20 @@ public class AdvancedChatController {
      * @return AI 回复
      */
     @PostMapping("/creative")
-    public String creativeChat(@RequestParam String message) {
+    public ResponseEntity<Flux<String>> creativeChat(@RequestParam String message) {
         log.info("创意性对话: {}", message);
 
-        String response = chatClient.prompt()
+        Flux<String> stream = chatClient.prompt()
                 .system("你是一个富有创造力的作家，擅长写故事和诗歌。")
-                .options(OpenAiChatOptions.builder().temperature(0.9).build()) // 高温度=更有创造力
+                .options(OpenAiChatOptions.builder().temperature(0.9).build())
                 .user(message)
-                .call()
-                .content();
+                .stream()
+                .content()
+                .doOnComplete(() -> log.info("创意性流式对话完成"));
 
-        log.info("AI 回复: {}", response);
-
-        return response;
+        return ResponseEntity.ok()
+                .contentType(MediaType.valueOf("text/event-stream;charset=UTF-8"))
+                .header("Cache-Control", "no-cache")
+                .body(stream);
     }
 }

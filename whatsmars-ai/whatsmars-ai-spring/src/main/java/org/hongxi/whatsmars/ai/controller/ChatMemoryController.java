@@ -5,8 +5,10 @@ import org.hongxi.whatsmars.ai.vo.ChatRequest;
 import org.hongxi.whatsmars.ai.vo.ChatResponse;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import reactor.core.publisher.Flux;
 
 /**
  * ChatMemory 多轮对话控制器
@@ -33,19 +35,26 @@ public class ChatMemoryController {
     }
 
     /**
-     * 带记忆的多轮对话
-     * <p>
-     * 示例请求体：
-     * <pre>
-     * {
-     *   "conversationId": "session-001",
-     *   "message": "我想学习 Spring AI"
-     * }
-     * </pre>
-     * 相同 conversationId 的请求会共享对话上下文，AI 能"记住"之前的对话内容。
+     * 带记忆的多轮对话（流式）
      *
-     * @param request 包含 conversationId 和 message
-     * @return AI 回复（包含 conversationId 和回复内容）
+     * @param conversationId 会话 ID
+     * @param message        用户输入
+     * @return 流式 AI 回复
+     */
+    @GetMapping("/chat")
+    public ResponseEntity<Flux<String>> chatStream(
+            @RequestParam(required = false, defaultValue = "default") String conversationId,
+            @RequestParam String message) {
+        log.info("ChatMemory 流式对话请求，conversationId={}", conversationId);
+        Flux<String> stream = chatMemoryService.chatStream(conversationId, message);
+        return ResponseEntity.ok()
+                .contentType(MediaType.valueOf("text/event-stream;charset=UTF-8"))
+                .header("Cache-Control", "no-cache")
+                .body(stream);
+    }
+
+    /**
+     * 带记忆的多轮对话（非流式，保留兼容）
      */
     @PostMapping("/chat")
     public ResponseEntity<ChatResponse> chat(@RequestBody ChatRequest request) {

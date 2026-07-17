@@ -4,8 +4,10 @@ import org.hongxi.whatsmars.ai.service.RagService;
 import org.hongxi.whatsmars.ai.vo.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import reactor.core.publisher.Flux;
 
 /**
  * RAG（检索增强生成）控制器
@@ -57,18 +59,21 @@ public class RagController {
     }
 
     /**
-     * RAG 查询：基于知识库检索并增强 LLM 回答
+     * RAG 查询（流式）：基于知识库检索并增强 LLM 回答
      *
      * @param question 用户问题
      * @param topK     检索文档数量
-     * @return LLM 基于检索上下文生成的回答
+     * @return 流式 LLM 回答
      */
     @GetMapping("/query")
-    public ResponseEntity<String> query(@RequestParam String question,
+    public ResponseEntity<Flux<String>> queryStream(@RequestParam String question,
                                         @RequestParam(required = false, defaultValue = "3") int topK) {
-        log.info("RAG 查询请求，question={}, topK={}", question, topK);
-        String answer = ragService.query(question, topK);
-        return ResponseEntity.ok(answer);
+        log.info("RAG 流式查询请求，question={}, topK={}", question, topK);
+        Flux<String> stream = ragService.queryStream(question, topK);
+        return ResponseEntity.ok()
+                .contentType(MediaType.valueOf("text/event-stream;charset=UTF-8"))
+                .header("Cache-Control", "no-cache")
+                .body(stream);
     }
 
     /**

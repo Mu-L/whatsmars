@@ -6,8 +6,10 @@ import org.hongxi.whatsmars.ai.vo.CustomTemplateRequest;
 import org.hongxi.whatsmars.ai.vo.ProductDescriptionRequest;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import reactor.core.publisher.Flux;
 
 /**
  * PromptTemplate 提示词模板控制器
@@ -47,11 +49,14 @@ public class PromptTemplateController {
      * </pre>
      */
     @PostMapping("/product")
-    public ResponseEntity<String> generateProductDescription(@RequestBody ProductDescriptionRequest request) {
+    public ResponseEntity<Flux<String>> generateProductDescription(@RequestBody ProductDescriptionRequest request) {
         log.info("PromptTemplate 产品描述请求，product={}", request.product());
-        String result = promptTemplateService.generateProductDescription(
+        Flux<String> stream = promptTemplateService.generateProductDescriptionStream(
                 request.product(), request.category(), request.tone());
-        return ResponseEntity.ok(result);
+        return ResponseEntity.ok()
+                .contentType(MediaType.valueOf("text/event-stream;charset=UTF-8"))
+                .header("Cache-Control", "no-cache")
+                .body(stream);
     }
 
     /**
@@ -67,11 +72,14 @@ public class PromptTemplateController {
      * </pre>
      */
     @PostMapping("/code")
-    public ResponseEntity<String> explainCode(@RequestBody CodeExplainRequest request) {
+    public ResponseEntity<Flux<String>> explainCode(@RequestBody CodeExplainRequest request) {
         log.info("PromptTemplate 代码解释请求，language={}", request.language());
-        String result = promptTemplateService.explainCode(
+        Flux<String> stream = promptTemplateService.explainCodeStream(
                 request.code(), request.language(), request.level());
-        return ResponseEntity.ok(result);
+        return ResponseEntity.ok()
+                .contentType(MediaType.valueOf("text/event-stream;charset=UTF-8"))
+                .header("Cache-Control", "no-cache")
+                .body(stream);
     }
 
     /**
@@ -86,9 +94,13 @@ public class PromptTemplateController {
      * </pre>
      */
     @PostMapping("/custom")
-    public ResponseEntity<String> customTemplate(@RequestBody CustomTemplateRequest request) {
+    public ResponseEntity<Flux<String>> customTemplate(@RequestBody CustomTemplateRequest request) {
         log.info("PromptTemplate 自定义模板请求，variables={}", request.variables().keySet());
-        String result = promptTemplateService.customTemplate(request.template(), request.variables());
-        return ResponseEntity.ok(result);
+        Flux<String> stream = promptTemplateService.customTemplateStream(
+                request.template(), request.variables());
+        return ResponseEntity.ok()
+                .contentType(MediaType.valueOf("text/event-stream;charset=UTF-8"))
+                .header("Cache-Control", "no-cache")
+                .body(stream);
     }
 }

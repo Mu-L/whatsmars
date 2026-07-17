@@ -6,6 +6,7 @@ import org.springframework.ai.chat.client.ChatClient;
 import org.springframework.ai.chat.prompt.Prompt;
 import org.springframework.ai.chat.prompt.PromptTemplate;
 import org.springframework.stereotype.Service;
+import reactor.core.publisher.Flux;
 
 import java.util.Map;
 
@@ -123,5 +124,59 @@ public class PromptTemplateService {
 
         log.info("PromptTemplate 自定义模板，variables={}", variables.keySet());
         return chatClient.prompt(prompt).call().content();
+    }
+
+    /**
+     * 基于模板生成产品描述（流式）
+     */
+    public Flux<String> generateProductDescriptionStream(String product, String category, String tone) {
+        String template = """
+                你是一位资深的产品文案专家。
+                请为以下产品撰写一段{tone}风格的产品描述：
+                
+                产品名称：{product}
+                产品类别：{category}
+                
+                要求：
+                1. 突出产品核心卖点
+                2. 语言风格要{tone}
+                3. 控制在 200 字以内
+                """;
+        PromptTemplate promptTemplate = new PromptTemplate(template);
+        Prompt renderedPrompt = promptTemplate.create(Map.of(
+                "product", product, "category", category, "tone", tone));
+        return chatClient.prompt(renderedPrompt).stream().content();
+    }
+
+    /**
+     * 基于模板解释代码（流式）
+     */
+    public Flux<String> explainCodeStream(String code, String language, String level) {
+        String template = """
+                你是一位经验丰富的{language}开发导师。
+                请以适合{level}开发者理解的方式，解释以下{language}代码：
+                
+                ```{language}
+                {code}
+                ```
+                
+                请从以下几个方面进行解释：
+                1. 代码的整体功能
+                2. 关键语法和 API 的用法
+                3. 可能的优化建议
+                """;
+        PromptTemplate promptTemplate = new PromptTemplate(template);
+        Prompt renderedPrompt = promptTemplate.create(Map.of(
+                "code", code, "language", language, "level", level));
+        return chatClient.prompt(renderedPrompt).stream().content();
+    }
+
+    /**
+     * 自定义模板对话（流式）
+     */
+    public Flux<String> customTemplateStream(String template, Map<String, Object> variables) {
+        PromptTemplate promptTemplate = new PromptTemplate(template);
+        Prompt renderedPrompt = promptTemplate.create(variables);
+        return chatClient.prompt(renderedPrompt).stream().content();
     }
 }
