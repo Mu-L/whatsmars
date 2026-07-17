@@ -1,6 +1,8 @@
 server:
   port: 8083
 spring:
+  application:
+    name: whatsmars-ai-spring
   datasource:
     url: jdbc:postgresql://localhost:5432/ai_demo
     username: ai_user
