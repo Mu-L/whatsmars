@@ -28,3 +28,12 @@ langchain4j:
       model-name: text-embedding-v3
       log-requests: false
       log-responses: false
+
+pgvector:
+  host: localhost
+  port: 5432
+  database: ai_demo
+  user: ai_user
+  password: ai_user
+  table: langchain4j_vector_store
+  dimension: 1024  # text-embedding-v3 默认维度

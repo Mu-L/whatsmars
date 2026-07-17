@@ -275,6 +275,14 @@ curl "http://localhost:8082/ai/function/chat?message=计算 123 + 456"
 
 #### 3. RAG 知识库问答（流式）
 
+前置条件：PostgreSQL + pgvector
+```shell
+brew install postgresql
+brew install pgvector
+# 初始化数据库（创建用户、数据库、启用 pgvector 扩展、建表）
+psql -U postgres -f whatsmars-ai/init_ai_demo.sql
+```
+
 基于 LangChain4j 的 RAG 流程：文档加载 → 向量化 → 检索增强 → LLM 流式生成。
 
 知识库文档包含 `spring-boot-basics.md` 和 `java-concurrency.md`，应用启动时自动加载。
