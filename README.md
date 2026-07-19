@@ -32,7 +32,6 @@
 ### Related projects
 - Spring Cloud Alibaba Full-Stack Microservices Sample: [spring-cloud-samples](https://github.com/javahongxi/spring-cloud-samples)
 - High-performance Java 17 RPC framework built on Netty: [jaws](https://github.com/javahongxi/jaws)
-- A coding agent application built with AgentScope Java: [babi](https://github.com/javahongxi/babi)
 - Spring Boot Starter for multiple Redis instances/clusters: [redis-spring](https://github.com/javahongxi/redis-spring)
 
 &copy; [hongxi.org](http://hongxi.org)
