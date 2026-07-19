@@ -22,8 +22,8 @@ import org.springframework.context.annotation.Bean;
  * 7. 位图（Bitmap）与 HyperLogLog 使用示例
  */
 @SpringBootApplication
-public class Application {
-    private static final Logger log = LoggerFactory.getLogger(Application.class);
+public class JedisApplication {
+    private static final Logger log = LoggerFactory.getLogger(JedisApplication.class);
 
     @Autowired
     private BasicDataTypeExample basicDataTypeExample;
@@ -41,7 +41,7 @@ public class Application {
     private BitmapAndHyperLogLogExample bitmapAndHyperLogLogExample;
 
     public static void main(String[] args) {
-        SpringApplication.run(Application.class, args);
+        SpringApplication.run(JedisApplication.class, args);
     }
 
     @Bean

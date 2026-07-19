@@ -14,7 +14,7 @@
 
     <modules>
         <module>whatsmars-redis-jedis</module>
-        <module>whatsmars-redis-redission</module>
+        <module>whatsmars-redis-redisson</module>
         <module>whatsmars-redis-lettuce</module>
     </modules>
 

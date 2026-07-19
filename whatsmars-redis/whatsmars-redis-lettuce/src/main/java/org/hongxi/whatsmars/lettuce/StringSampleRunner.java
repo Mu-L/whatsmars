@@ -3,28 +3,24 @@ package org.hongxi.whatsmars.lettuce;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.boot.CommandLineRunner;
+import org.springframework.core.annotation.Order;
 import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.stereotype.Component;
 
+@Order(2)
 @Component
 public class StringSampleRunner implements CommandLineRunner {
 
     private static final Logger log = LoggerFactory.getLogger(StringSampleRunner.class);
 
     private final StringRedisTemplate defaultStringRedisTemplate;
-    private final StringRedisTemplate orderStringRedisTemplate;
-    private final StringRedisTemplate userStringRedisTemplate;
     private final StringRedisTemplate cacheStringRedisTemplate;
     private final StringRedisTemplate sessionStringRedisTemplate;
 
     public StringSampleRunner(StringRedisTemplate defaultStringRedisTemplate,
-                              StringRedisTemplate orderStringRedisTemplate,
-                              StringRedisTemplate userStringRedisTemplate,
                               StringRedisTemplate cacheStringRedisTemplate,
                               StringRedisTemplate sessionStringRedisTemplate) {
         this.defaultStringRedisTemplate = defaultStringRedisTemplate;
-        this.orderStringRedisTemplate = orderStringRedisTemplate;
-        this.userStringRedisTemplate = userStringRedisTemplate;
         this.cacheStringRedisTemplate = cacheStringRedisTemplate;
         this.sessionStringRedisTemplate = sessionStringRedisTemplate;
     }
@@ -35,8 +31,6 @@ public class StringSampleRunner implements CommandLineRunner {
         log.info("========== Multi-Redis Read/Write Verification ==========");
 
         verifyStringReadWrite("default", defaultStringRedisTemplate);
-        verifyStringReadWrite("order", orderStringRedisTemplate);
-        verifyStringReadWrite("user", userStringRedisTemplate);
         verifyStringReadWrite("cache", cacheStringRedisTemplate);
         verifyStringReadWrite("session", sessionStringRedisTemplate);
 

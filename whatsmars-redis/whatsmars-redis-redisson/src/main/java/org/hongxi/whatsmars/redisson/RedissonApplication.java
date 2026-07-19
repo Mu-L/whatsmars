@@ -1,11 +1,11 @@
-package org.hongxi.whatsmars.redission;
+package org.hongxi.whatsmars.redisson;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 
 @SpringBootApplication
-public class Application {
+public class RedissonApplication {
     public static void main(String[] args) {
-        SpringApplication.run(Application.class, args);
+        SpringApplication.run(RedissonApplication.class, args);
     }
 }

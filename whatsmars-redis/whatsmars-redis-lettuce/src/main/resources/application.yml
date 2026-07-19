@@ -6,32 +6,6 @@ spring:
       port: 6379
       # Multi-cluster format -> {name}RedisTemplate
       clusters:
-        order:
-          host: localhost
-          port: 6380
-          serializer:
-            key: string
-            value: json
-            hash-key: string
-            hash-value: json
-          lettuce:
-            pool:
-              max-active: 16
-              max-idle: 8
-              min-idle: 2
-        user:
-          host: localhost
-          port: 6381
-          serializer:
-            key: string
-            value: json
-            hash-key: string
-            hash-value: json
-          lettuce:
-            pool:
-              max-active: 8
-              max-idle: 4
-              min-idle: 1
         cache:
           cluster:
             nodes:

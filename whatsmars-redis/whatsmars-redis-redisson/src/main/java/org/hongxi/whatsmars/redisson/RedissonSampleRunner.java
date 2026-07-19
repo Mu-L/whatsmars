@@ -1,4 +1,4 @@
-package org.hongxi.whatsmars.redission;
+package org.hongxi.whatsmars.redisson;
 
 import org.redisson.api.RLock;
 import org.redisson.api.RMap;
