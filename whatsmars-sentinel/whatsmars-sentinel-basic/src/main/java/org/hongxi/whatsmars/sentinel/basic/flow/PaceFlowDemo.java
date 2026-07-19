@@ -77,7 +77,7 @@ import java.util.concurrent.atomic.AtomicInteger;
  * total pass:10, total block:90 // 10 requests passed, other 90 requests rejected immediately.
  * </pre>
  *
- * @author shen.hongxi
+ * @author hongxi
  */
 public class PaceFlowDemo {
 

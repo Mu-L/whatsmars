@@ -4,7 +4,7 @@ import java.io.Serial;
 import java.io.Serializable;
 
 /**
- * @author shenhongxi 2019/8/5
+ * @author hongxi
  */
 public record User(String name, int age) implements Serializable {
     @Serial

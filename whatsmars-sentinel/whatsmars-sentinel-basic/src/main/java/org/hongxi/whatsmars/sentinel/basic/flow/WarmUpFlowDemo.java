@@ -40,7 +40,7 @@ import java.util.concurrent.atomic.AtomicInteger;
  * ...
  * </pre>
  *
- * @author shen.hongxi
+ * @author hongxi
  */
 public class WarmUpFlowDemo {
 

@@ -5,7 +5,7 @@ import java.io.Serializable;
 import java.util.Date;
 
 /**
- * @author javahongxi
+ * @author hongxi
  */
 public record User(String name, Integer age, Date createDate) implements Serializable {
     @Serial

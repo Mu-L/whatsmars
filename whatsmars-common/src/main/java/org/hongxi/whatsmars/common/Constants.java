@@ -3,7 +3,7 @@ package org.hongxi.whatsmars.common;
 import java.util.regex.Pattern;
 
 /**
- * @author shenhongxi 2019/8/5
+ * @author hongxi
  */
 public class Constants {
 

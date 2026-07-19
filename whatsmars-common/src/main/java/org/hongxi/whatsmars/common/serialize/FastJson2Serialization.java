@@ -13,7 +13,7 @@ import java.io.IOException;
  * 对于嵌套场景无法支持
  * </pre>
  *
- * @author shenhongxi 2019/8/5
+ * @author hongxi
  */
 public class FastJson2Serialization implements Serialization {
 

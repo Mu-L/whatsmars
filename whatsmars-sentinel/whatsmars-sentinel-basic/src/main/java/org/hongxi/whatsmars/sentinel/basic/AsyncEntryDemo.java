@@ -17,7 +17,7 @@ import java.util.function.Consumer;
 /**
  * An example for asynchronous entry in Sentinel.
  *
- * @author shen.hongxi
+ * @author hongxi
  * @since 0.2.0
  */
 public class AsyncEntryDemo {

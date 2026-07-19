@@ -10,7 +10,7 @@ import java.util.List;
 /**
  * This demo demonstrates flow control by frequent ("hot spot") parameters.
  *
- * @author shen.hongxi
+ * @author hongxi
  * @since 0.2.0
  */
 public class ParamFlowQpsDemo {

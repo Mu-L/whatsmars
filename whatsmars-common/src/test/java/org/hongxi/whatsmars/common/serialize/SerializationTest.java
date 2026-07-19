@@ -5,7 +5,7 @@ import org.junit.jupiter.api.Test;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 /**
- * @author shenhongxi 2019/8/5
+ * @author hongxi
  */
 public class SerializationTest {
 

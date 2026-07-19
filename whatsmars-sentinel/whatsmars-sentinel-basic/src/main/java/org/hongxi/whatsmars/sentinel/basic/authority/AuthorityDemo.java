@@ -15,7 +15,7 @@ import java.util.List;
  * requests will be blocked when blacklist contains current origin, otherwise will pass.
  * In whitelist mode, only requests from whitelist origin can pass.
  *
- * @author shen.hongxi
+ * @author hongxi
  */
 public class AuthorityDemo {
 

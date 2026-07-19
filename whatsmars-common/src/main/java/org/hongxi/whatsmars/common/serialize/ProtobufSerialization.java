@@ -10,7 +10,7 @@ import java.lang.reflect.Method;
 /**
  * protobuf序列化器,支持基本数据类型及其包装类、String、Throwable、Protobuf2/3对象
  *
- * @author shenhongxi 2019/8/5
+ * @author hongxi
  */
 public class ProtobufSerialization implements Serialization {
 

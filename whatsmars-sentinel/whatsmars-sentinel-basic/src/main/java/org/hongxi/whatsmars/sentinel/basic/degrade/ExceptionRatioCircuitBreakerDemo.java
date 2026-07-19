@@ -18,8 +18,8 @@ import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicInteger;
 
 /**
- * @author shen.hongxi
- * @author shen.hongxi
+ * @author hongxi
+ * @author hongxi
  */
 public class ExceptionRatioCircuitBreakerDemo {
 

@@ -38,7 +38,7 @@ import java.util.List;
  * configs.
  * </p>
  *
- * @author shen.hongxi
+ * @author hongxi
  */
 public class JarFileDataSourceDemo {
 

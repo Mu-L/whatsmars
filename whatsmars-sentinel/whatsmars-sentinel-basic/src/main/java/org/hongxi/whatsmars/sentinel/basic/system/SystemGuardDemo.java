@@ -13,7 +13,7 @@ import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicInteger;
 
 /**
- * @author shen.hongxi
+ * @author hongxi
  */
 public class SystemGuardDemo {
 

@@ -16,7 +16,7 @@ import java.util.concurrent.atomic.AtomicLong;
 /**
  * A traffic runner to simulate flow for different parameters.
  *
- * @author shen.hongxi
+ * @author hongxi
  * @since 0.2.0
  */
 public class ParamFlowQpsRunner<T> {

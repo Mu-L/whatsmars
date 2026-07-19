@@ -18,7 +18,7 @@ import org.springframework.web.bind.annotation.RestController;
 import java.net.URISyntaxException;
 
 /**
- * @author shen.hongxi
+ * @author hongxi
  */
 @RestController
 @RequestMapping("/httpclient")

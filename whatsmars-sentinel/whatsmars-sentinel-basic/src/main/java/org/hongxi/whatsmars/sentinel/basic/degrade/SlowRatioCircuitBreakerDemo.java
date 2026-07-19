@@ -37,8 +37,8 @@ import java.util.concurrent.atomic.AtomicInteger;
  * 1529399841854,total:19673, pass:0, block:19676
  * </pre>
  *
- * @author shen.hongxi
- * @author shen.hongxi
+ * @author hongxi
+ * @author hongxi
  */
 public class SlowRatioCircuitBreakerDemo {
 

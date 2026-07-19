@@ -12,7 +12,7 @@ import java.util.concurrent.atomic.AtomicInteger;
 /**
  * Flow Rule demo.
  *
- * @author shen.hongxi
+ * @author hongxi
  */
 public class FlowQpsRunner {
     private static final String KEY = "abc";

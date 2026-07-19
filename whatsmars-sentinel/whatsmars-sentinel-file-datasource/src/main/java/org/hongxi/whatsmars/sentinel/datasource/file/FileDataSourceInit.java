@@ -24,7 +24,7 @@ import java.util.List;
  * registered during the initialization of Sentinel.
  * </p>
  *
- * @author shen.hongxi
+ * @author hongxi
  */
 public class FileDataSourceInit implements InitFunc {
 
