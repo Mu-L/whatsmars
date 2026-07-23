@@ -41,6 +41,14 @@ public class AiChatController {
                 .content();
     }
 
+    @RequestMapping(value = "/chat/stream", produces = MediaType.TEXT_EVENT_STREAM_VALUE)
+    public Flux<String> streamChat(@RequestParam String message) {
+        return chatClient.prompt()
+                .user(message)
+                .stream()
+                .content();
+    }
+
     /**
      * 流式聊天接口
      *
@@ -52,8 +60,8 @@ public class AiChatController {
      * @param message 用户输入
      * @return 流式响应
      */
-    @GetMapping("/chat/stream")
-    public ResponseEntity<Flux<String>> streamChat(@RequestParam String message) {
+    @GetMapping("/chat/stream2")
+    public ResponseEntity<Flux<String>> streamChat2(@RequestParam String message) {
         log.info("开始流式对话: {}", message);
         
         // 使用 stream() 方法，返回 Flux 流式数据
