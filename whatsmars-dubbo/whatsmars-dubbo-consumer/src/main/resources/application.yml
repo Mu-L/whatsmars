@@ -9,7 +9,7 @@ dubbo:
     name: ${spring.application.name}
     qos-port: 33333
   protocol:
-    name: tri
+    name: dubbo
     port: -1
   registry:
     address: nacos://127.0.0.1:8848?username=nacos&password=7fDJZBbiLzO2
